@@ -1,8 +1,10 @@
 package com.asaproject.asalife.runners;
 
 import com.asaproject.asalife.domains.ERole;
+import com.asaproject.asalife.domains.entities.Catering;
 import com.asaproject.asalife.domains.entities.Role;
 import com.asaproject.asalife.domains.entities.User;
+import com.asaproject.asalife.repositories.CateringRepository;
 import com.asaproject.asalife.repositories.RoleRepository;
 import com.asaproject.asalife.repositories.UserRepository;
 
@@ -24,12 +26,15 @@ public class DatabaseSeeder implements ApplicationRunner {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final CateringRepository cateringRepository;
+
 
     @Override
     public void run(ApplicationArguments args) {
         log.info("Seeding DB");
         saveRoles();
         saveUsers();
+        saveCatering();
     }
 
     private void saveRoles() {
@@ -75,6 +80,22 @@ public class DatabaseSeeder implements ApplicationRunner {
         registerUserAdminIfNotExists(superuser);
     }
 
+    private void saveCatering() {
+        Catering catering = new Catering();
+        catering.setUser(userRepository.findByNrp("111"));
+        catering.setDeskripsi("Gosong");
+        catering.setLokasi("Mess Good");
+        catering.setKritik_saran("Jangan Gosong");
+
+        cateringRepository.save(catering);
+    }
+
+    private void saveRoleIfNotExists(Role role) {
+        if (roleRepository.findByName(role.getName()) == null) {
+            roleRepository.save(role);
+        }
+    }
+
     private void registerUserAdminIfNotExists(User user) {
         if (userRepository.findByNrp(user.getNrp()) == null) {
             try {
@@ -85,9 +106,4 @@ public class DatabaseSeeder implements ApplicationRunner {
         }
     }
 
-    private void saveRoleIfNotExists(Role role) {
-        if (roleRepository.findByName(role.getName()) == null) {
-            roleRepository.save(role);
-        }
-    }
 }

@@ -110,8 +110,13 @@ public class User extends Auditable implements UserDetails {
     @JsonIgnore
     private LocalDateTime otpExpiredDate;
 
-    // add one to many users
+    // add one to many refresh token
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<RefreshToken> refreshTokens;
+
+    // add one to many catering
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<Catering> catering;
 }
