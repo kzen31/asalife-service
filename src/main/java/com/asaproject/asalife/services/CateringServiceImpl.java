@@ -1,6 +1,5 @@
 package com.asaproject.asalife.services;
 
-import com.asaproject.asalife.domains.ECateringStatus;
 import com.asaproject.asalife.domains.entities.Catering;
 import com.asaproject.asalife.domains.entities.User;
 import com.asaproject.asalife.domains.models.requests.AduanCatering;
@@ -14,9 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
-import org.yaml.snakeyaml.util.EnumUtils;
 
-import java.net.PortUnreachableException;
 import java.security.Principal;
 import java.util.List;
 
@@ -53,7 +50,6 @@ public class CateringServiceImpl implements CateringService{
         catering.setLokasi(aduanCatering.getLokasi());
         catering.setKritik_saran(aduanCatering.getKritik_saran());
         catering.setDeskripsi(aduanCatering.getDeskripsi());
-
         cateringRepo.save(catering);
 
         return getUserCaterings(principal);
@@ -80,10 +76,4 @@ public class CateringServiceImpl implements CateringService{
         cateringRepo.save(catering);
         return cateringRepo.findCateringByIdNative(id);
     }
-
-//    public Boolean isInECateringStatus (String enum) {
-//        EnumUtils.isValidEnum(ECateringStatus.class, enum)
-//    }
-
-
 }

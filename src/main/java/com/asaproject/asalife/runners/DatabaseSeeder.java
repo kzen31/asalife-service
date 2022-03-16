@@ -1,12 +1,8 @@
 package com.asaproject.asalife.runners;
 
 import com.asaproject.asalife.domains.ERole;
-import com.asaproject.asalife.domains.entities.Catering;
-import com.asaproject.asalife.domains.entities.Role;
-import com.asaproject.asalife.domains.entities.User;
-import com.asaproject.asalife.repositories.CateringRepository;
-import com.asaproject.asalife.repositories.RoleRepository;
-import com.asaproject.asalife.repositories.UserRepository;
+import com.asaproject.asalife.domains.entities.*;
+import com.asaproject.asalife.repositories.*;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +23,8 @@ public class DatabaseSeeder implements ApplicationRunner {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final CateringRepository cateringRepository;
+    private final PertanyaanRepository pertanyaanRepository;
+    private final BobotRepository bobotRepository;
 
 
     @Override
@@ -35,6 +33,8 @@ public class DatabaseSeeder implements ApplicationRunner {
         saveRoles();
         saveUsers();
         saveCatering();
+        savePertanyaan();
+        saveBobot();
     }
 
     private void saveRoles() {
@@ -88,6 +88,32 @@ public class DatabaseSeeder implements ApplicationRunner {
         catering.setKritik_saran("Jangan Gosong");
 
         cateringRepository.save(catering);
+    }
+
+    private void savePertanyaan() {
+        Pertanyaan pertanyaan1 = new Pertanyaan();
+        pertanyaan1.setIsi("Apakah makanannya enak?");
+        pertanyaanRepository.save(pertanyaan1);
+
+        Pertanyaan pertanyaan2 = new Pertanyaan();
+        pertanyaan2.setIsi("Apakah minumannya enak?");
+        pertanyaanRepository.save(pertanyaan2);
+    }
+
+    private void saveBobot() {
+        Pertanyaan pertanyaan = pertanyaanRepository.findPertanyaanByIdNative(1L);
+
+        Bobot bobot1 = new Bobot();
+        bobot1.setPertanyaan(pertanyaan);
+        bobot1.setPilihan("Baik");
+        bobot1.setNilai(5);
+        bobotRepository.save(bobot1);
+
+        Bobot bobot2 = new Bobot();
+        bobot2.setPertanyaan(pertanyaan);
+        bobot2.setPilihan("Buruk");
+        bobot2.setNilai(1);
+        bobotRepository.save(bobot2);
     }
 
     private void saveRoleIfNotExists(Role role) {
