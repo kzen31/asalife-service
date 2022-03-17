@@ -223,5 +223,8 @@ public class CateringController {
         }
     }
 
-
+    @GetMapping("/rating-catering-available")
+    public ResponseEntity<Boolean> getRatingCateringLastUser(Principal principal) {
+        return ResponseEntity.ok(ratingCateringService.isAddRatingCateringAvailable(principal));
+    }
 }

@@ -2,7 +2,6 @@ package com.asaproject.asalife.runners;
 
 import com.asaproject.asalife.domains.ERole;
 import com.asaproject.asalife.domains.entities.*;
-import com.asaproject.asalife.domains.models.responses.RatingCateringDto;
 import com.asaproject.asalife.repositories.*;
 
 import lombok.RequiredArgsConstructor;
@@ -146,5 +145,4 @@ public class DatabaseSeeder implements ApplicationRunner {
             }
         }
     }
-
 }

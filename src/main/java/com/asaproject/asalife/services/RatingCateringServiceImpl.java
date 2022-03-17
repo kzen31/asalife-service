@@ -11,12 +11,17 @@ import com.asaproject.asalife.repositories.RatingCateringRepository;
 import com.asaproject.asalife.utils.mappers.CateringMapper;
 import com.asaproject.asalife.utils.mappers.UserAdminMapper;
 import javassist.NotFoundException;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.security.Principal;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -26,6 +31,7 @@ public class RatingCateringServiceImpl implements RatingCateringService {
     private final RatingCateringRepository ratingCateringRepository;
     private final PertanyaanRepository pertanyaanRepository;
     private final CateringMapper cateringMapper;
+//    private final UserAdminMapper userAdminMapper;
 
     @Override
     public Boolean addRatingCatering(Principal principal, RatingRequest ratingRequest) throws Exception {
@@ -67,5 +73,20 @@ public class RatingCateringServiceImpl implements RatingCateringService {
         return cateringMapper.mapRatingCateringDtoToList();
     }
 
+    @Override
+    public Boolean isAddRatingCateringAvailable(Principal principal) {
+        User user = UserAdminMapper.principalToUser(principal);
+        RatingCatering ratingCatering = ratingCateringRepository.findRatingCateringLastAdByUser(user.getId());
+        if (ObjectUtils.isEmpty(ratingCatering)) {
+            return true;
+        }
 
+        int monthNow = new LocalDate().getMonthOfYear();
+        int monthCreated = ratingCatering.getCreatedAt().getMonth().getValue();
+
+        int yearNow = new LocalDate().getYear();
+        int yearCreated = ratingCatering.getCreatedAt().getYear();
+
+        return monthNow > monthCreated && yearNow >= yearCreated;
+    }
 }

@@ -14,6 +14,7 @@ public interface RatingCateringService {
 
     void addRatingCateringBulk(Principal principal, List<RatingRequest> ratingRequestList) throws Exception;
 
-
     List<RatingCateringDto> getAllRatingCatering();
+
+    Boolean isAddRatingCateringAvailable(Principal principal);
 }
