@@ -12,6 +12,8 @@ public interface PertanyaanService {
 
     void deletePertanyaan(Long id) throws Exception;
 
+    public void deletePertanyaanBobot(Pertanyaan pertanyaan);
+
     Pertanyaan updatePertanyaanIfExist(Long id, PertanyaanRequest pertanyaanRequest) throws Exception;
 
     Pertanyaan updatePertanyaan(Long id, PertanyaanRequest pertanyaanRequest);

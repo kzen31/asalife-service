@@ -27,5 +27,10 @@ public class RatingCatering extends Auditable implements Serializable {
     private Pertanyaan pertanyaan;
 
     @Column(nullable = false)
-    private int bobot;
+    private int nilai;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 }

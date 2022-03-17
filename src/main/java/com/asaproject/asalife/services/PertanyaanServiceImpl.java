@@ -1,7 +1,9 @@
 package com.asaproject.asalife.services;
 
+import com.asaproject.asalife.domains.entities.Bobot;
 import com.asaproject.asalife.domains.entities.Pertanyaan;
 import com.asaproject.asalife.domains.models.requests.PertanyaanRequest;
+import com.asaproject.asalife.repositories.BobotRepository;
 import com.asaproject.asalife.repositories.PertanyaanRepository;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PertanyaanServiceImpl implements PertanyaanService{
     private final PertanyaanRepository pertanyaanRepository;
+    private final BobotRepository bobotRepository;
 
     @Override
     public List<Pertanyaan> getAllPertanyaan() {
@@ -38,6 +41,18 @@ public class PertanyaanServiceImpl implements PertanyaanService{
         }
 
         pertanyaan.setDeletedAt(new Date());
+        pertanyaanRepository.save(pertanyaan);
+        deletePertanyaanBobot(pertanyaan);
+    }
+
+    @Override
+    public void deletePertanyaanBobot(Pertanyaan pertanyaan) {
+        List<Bobot> bobotList = bobotRepository.findAllByPertanyaan(pertanyaan);
+
+        for (Bobot bobot : bobotList) {
+            bobot.setDeletedAt(new Date());
+            bobotRepository.save(bobot);
+        }
     }
 
     @Override

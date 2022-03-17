@@ -4,13 +4,13 @@ import com.asaproject.asalife.domains.ERole;
 import com.asaproject.asalife.domains.entities.Bobot;
 import com.asaproject.asalife.domains.entities.Catering;
 import com.asaproject.asalife.domains.entities.Pertanyaan;
-import com.asaproject.asalife.domains.models.requests.AduanCatering;
-import com.asaproject.asalife.domains.models.requests.BobotRequest;
-import com.asaproject.asalife.domains.models.requests.PertanyaanRequest;
-import com.asaproject.asalife.domains.models.requests.StatusCatering;
+import com.asaproject.asalife.domains.entities.RatingCatering;
+import com.asaproject.asalife.domains.models.requests.*;
+import com.asaproject.asalife.domains.models.responses.RatingCateringDto;
 import com.asaproject.asalife.services.BobotService;
 import com.asaproject.asalife.services.CateringService;
 import com.asaproject.asalife.services.PertanyaanService;
+import com.asaproject.asalife.services.RatingCateringService;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,6 +30,7 @@ public class CateringController {
     private final CateringService cateringService;
     private final PertanyaanService pertanyaanService;
     private final BobotService bobotService;
+    private final RatingCateringService ratingCateringService;
 
     @PostMapping("/add")
     public ResponseEntity<List<Catering>> addAduanCatering(Principal principal, @Valid @RequestBody AduanCatering aduanCatering) {
@@ -181,7 +182,7 @@ public class CateringController {
         }
     }
 
-    @PostMapping("/bobot-delete")
+    @PutMapping("/bobot-delete")
     public ResponseEntity<List<Bobot>> deleteBobot(Long id) {
         try {
             List<Bobot> bobotList = bobotService.deleteBobot(id);
@@ -193,6 +194,34 @@ public class CateringController {
         }
     }
 
+    @GetMapping("/rating-catering")
+    public ResponseEntity<List<RatingCateringDto>> getAllRatingCatering() {
+        return ResponseEntity.ok(ratingCateringService.getAllRatingCatering());
+    }
+
+    @PostMapping("/rating-catering-add")
+    public ResponseEntity<Boolean> addRatingCatering(Principal principal, @RequestBody RatingRequest ratingRequest) {
+        try {
+            Boolean ratingCaterings = ratingCateringService.addRatingCatering(principal, ratingRequest);
+            return ResponseEntity.ok(ratingCaterings);
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
+    @PostMapping("/rating-catering-addbulk")
+    public ResponseEntity<String> addRatingCateringBulk(Principal principal, @RequestBody List<RatingRequest> ratingRequestList) {
+        try {
+            ratingCateringService.addRatingCateringBulk(principal, ratingRequestList);
+            return ResponseEntity.ok("Success");
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
 
 
 }

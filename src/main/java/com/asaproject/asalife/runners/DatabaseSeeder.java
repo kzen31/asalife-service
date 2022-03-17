@@ -2,6 +2,7 @@ package com.asaproject.asalife.runners;
 
 import com.asaproject.asalife.domains.ERole;
 import com.asaproject.asalife.domains.entities.*;
+import com.asaproject.asalife.domains.models.responses.RatingCateringDto;
 import com.asaproject.asalife.repositories.*;
 
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class DatabaseSeeder implements ApplicationRunner {
     private final CateringRepository cateringRepository;
     private final PertanyaanRepository pertanyaanRepository;
     private final BobotRepository bobotRepository;
+    private final RatingCateringRepository ratingCateringRepository;
 
 
     @Override
@@ -35,6 +37,7 @@ public class DatabaseSeeder implements ApplicationRunner {
         saveCatering();
         savePertanyaan();
         saveBobot();
+        saveRatingCatering();
     }
 
     private void saveRoles() {
@@ -114,6 +117,18 @@ public class DatabaseSeeder implements ApplicationRunner {
         bobot2.setPilihan("Buruk");
         bobot2.setNilai(1);
         bobotRepository.save(bobot2);
+    }
+
+    private void saveRatingCatering() {
+        Pertanyaan pertanyaan = pertanyaanRepository.findPertanyaanByIdNative(1L);
+        User user = userRepository.findByNrp("111");
+
+        RatingCatering ratingCatering = new RatingCatering();
+        ratingCatering.setNilai(1);
+        ratingCatering.setPertanyaan(pertanyaan);
+        ratingCatering.setUser(user);
+
+        ratingCateringRepository.save(ratingCatering);
     }
 
     private void saveRoleIfNotExists(Role role) {

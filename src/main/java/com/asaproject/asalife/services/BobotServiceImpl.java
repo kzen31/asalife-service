@@ -30,7 +30,7 @@ public class BobotServiceImpl implements BobotService {
     public List<Bobot> addBobot(BobotRequest bobotRequest) throws Exception {
         Pertanyaan pertanyaan = pertanyaanRepository.findPertanyaanByIdNative(bobotRequest.getId_pertanyaan());
 
-        if (ObjectUtils.isEmpty(pertanyaan)) {
+        if (ObjectUtils.isEmpty(pertanyaan) || !ObjectUtils.isEmpty(pertanyaan.getDeletedAt())) {
             throw new NotFoundException("PERTANYAAN NOT FOUND");
         }
 
