@@ -39,7 +39,7 @@ public class DatabaseSeeder implements ApplicationRunner {
         savePertanyaan();
         saveBobot();
         saveRatingCatering();
-        saveAduanLaundry();
+        saveAduanLaundryAll();
     }
 
     private void saveRoles() {
@@ -133,14 +133,20 @@ public class DatabaseSeeder implements ApplicationRunner {
         ratingCateringRepository.save(ratingCatering);
     }
 
-    private void saveAduanLaundry() {
-        User user = userRepository.findByNrp("111");
+    private void saveAduanLaundryAll() {
+        saveAduanLaundry("111", "Mess Joyfull", "1", "Pakaian Dinas", "Tertukar");
+        saveAduanLaundry("111", "Mess Joyfull", "1", "Pakaian Kaos", "Hilang");
+        saveAduanLaundry("112", "Mess Joyfull", "2", "Pakaian Kerja", "Tertukar");
+    }
+
+    private void saveAduanLaundry(String nrp, String mess, String noKamar, String jenisPakaian, String deviasi) {
+        User user = userRepository.findByNrp(nrp);
         Laundry laundry = new Laundry();
         laundry.setUser(user);
-        laundry.setMess("Mess Joyfull");
-        laundry.setNo_kamar("1");
-        laundry.setJenis_pakaian("Pakaian Dinas");
-        laundry.setJenis_deviasi("Kotor");
+        laundry.setMess(mess);
+        laundry.setNo_kamar(noKamar);
+        laundry.setJenis_pakaian(jenisPakaian);
+        laundry.setJenis_deviasi(deviasi);
         laundry.setTanggal_loundry(new Date());
 
         laundryRepository.save(laundry);
