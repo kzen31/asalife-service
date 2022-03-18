@@ -17,6 +17,7 @@ public final class HousekeepingMapper {
     public HousekeepingDto entityToHousekeepingDto(Housekeeping housekeeping) {
         HousekeepingDto housekeepingDto = modelMapper.map(housekeeping, HousekeepingDto.class);
         housekeepingDto.setUserNrp(housekeeping.getUser().getNrp());
+        housekeepingDto.setUserName(housekeeping.getUser().getName());
         return housekeepingDto;
     }
 
