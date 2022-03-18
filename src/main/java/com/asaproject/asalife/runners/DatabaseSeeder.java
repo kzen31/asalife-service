@@ -28,6 +28,7 @@ public class DatabaseSeeder implements ApplicationRunner {
     private final BobotRepository bobotRepository;
     private final RatingCateringRepository ratingCateringRepository;
     private final LaundryRepository laundryRepository;
+    private final HousekeepingRepository housekeepingRepository;
 
 
     @Override
@@ -40,6 +41,7 @@ public class DatabaseSeeder implements ApplicationRunner {
         saveBobot();
         saveRatingCatering();
         saveAduanLaundry();
+        saveAduanHousekeeping();
     }
 
     private void saveRoles() {
@@ -144,6 +146,24 @@ public class DatabaseSeeder implements ApplicationRunner {
         laundry.setTanggal_loundry(new Date());
 
         laundryRepository.save(laundry);
+    }
+
+    private void saveAduanHousekeeping() {
+        User user = userRepository.findByNrp("111");
+        Housekeeping housekeeping = new Housekeeping();
+        housekeeping.setUser(user);
+        housekeeping.setLokasi("Mess Joyfull");
+        housekeeping.setDeskripsi("Dinding kotor");
+        housekeeping.setStatus("DONE");
+
+        housekeepingRepository.save(housekeeping);
+
+        Housekeeping housekeeping1 = new Housekeeping();
+        housekeeping1.setUser(user);
+        housekeeping1.setLokasi("Mess Security");
+        housekeeping1.setDeskripsi("Lantai kotor");
+
+        housekeepingRepository.save(housekeeping1);
     }
 
     private void saveRoleIfNotExists(Role role) {

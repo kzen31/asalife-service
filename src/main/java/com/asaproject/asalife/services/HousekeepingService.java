@@ -1,0 +1,20 @@
+package com.asaproject.asalife.services;
+
+import com.asaproject.asalife.domains.models.requests.HousekeepingRequest;
+import com.asaproject.asalife.domains.models.requests.StatusHousekeeping;
+import com.asaproject.asalife.domains.models.responses.HousekeepingDto;
+
+import java.security.Principal;
+import java.util.List;
+
+public interface HousekeepingService {
+    List<HousekeepingDto> getAll();
+
+    List<HousekeepingDto> getAllByUser(Principal principal);
+
+    List<HousekeepingDto> addByUser(Principal principal, HousekeepingRequest housekeepingRequest);
+
+    List<HousekeepingDto> updateStatusHousekeeping(Long id, StatusHousekeeping statusHousekeeping) throws Exception;
+
+    Boolean isHousekeepingExist(Long id);
+}
