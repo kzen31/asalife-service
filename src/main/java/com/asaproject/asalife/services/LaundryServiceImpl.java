@@ -3,10 +3,11 @@ package com.asaproject.asalife.services;
 import com.asaproject.asalife.domains.entities.Laundry;
 import com.asaproject.asalife.domains.entities.User;
 import com.asaproject.asalife.domains.models.requests.LaundryRequest;
-import com.asaproject.asalife.domains.models.requests.LaundryUpdateStatus;
+import com.asaproject.asalife.domains.models.requests.StatusLaundry;
 import com.asaproject.asalife.domains.models.responses.LaundryDto;
 import com.asaproject.asalife.repositories.LaundryRepository;
 import com.asaproject.asalife.utils.mappers.LaundryMapper;
+import com.asaproject.asalife.utils.mappers.StatusLaundryUserMapper;
 import com.asaproject.asalife.utils.mappers.UserAdminMapper;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -62,12 +63,14 @@ public class LaundryServiceImpl implements LaundryService{
     }
 
     @Override
-    public List<LaundryDto> updateStatusLaundry(Long id, @RequestBody LaundryUpdateStatus laundryUpdateStatus) throws Exception{
+    public List<LaundryDto> updateStatusLaundry(Long id, @RequestBody StatusLaundry statusLaundry) throws Exception{
         if (!isLaundryExist(id)) {
             throw new NotFoundException("LAUNDRY_NOT_FOUND");
         }
+        String status = StatusLaundryUserMapper.mapStatus(statusLaundry.getStatus());
+
         Laundry laundry = laundryRepository.findLaundryByIdNative(id);
-        laundry.setStatus(laundryUpdateStatus.getStatus());
+        laundry.setStatus(status);
         laundryRepository.save(laundry);
 
         return getAllLaundryDto();

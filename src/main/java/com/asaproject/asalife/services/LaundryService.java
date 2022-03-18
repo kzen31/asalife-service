@@ -2,7 +2,7 @@ package com.asaproject.asalife.services;
 
 import com.asaproject.asalife.domains.entities.Laundry;
 import com.asaproject.asalife.domains.models.requests.LaundryRequest;
-import com.asaproject.asalife.domains.models.requests.LaundryUpdateStatus;
+import com.asaproject.asalife.domains.models.requests.StatusLaundry;
 import com.asaproject.asalife.domains.models.responses.LaundryDto;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -20,7 +20,7 @@ public interface LaundryService {
 
     void addLaundry(Principal principal, LaundryRequest laundryRequest);
 
-    List<LaundryDto> updateStatusLaundry(Long id, @RequestBody LaundryUpdateStatus laundryUpdateStatus)throws Exception;
+    List<LaundryDto> updateStatusLaundry(Long id, @RequestBody StatusLaundry statusLaundry)throws Exception;
 
     Boolean isLaundryExist(Long id);
 }

@@ -1,10 +1,8 @@
 package com.asaproject.asalife.controllers;
 
-import com.asaproject.asalife.domains.entities.Laundry;
 import com.asaproject.asalife.domains.models.requests.LaundryRequest;
-import com.asaproject.asalife.domains.models.requests.LaundryUpdateStatus;
+import com.asaproject.asalife.domains.models.requests.StatusLaundry;
 import com.asaproject.asalife.domains.models.responses.LaundryDto;
-import com.asaproject.asalife.repositories.LaundryRepository;
 import com.asaproject.asalife.services.LaundryService;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -43,9 +41,9 @@ public class LaundryController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<List<LaundryDto>> updateStatusLaundry(Long id, @RequestBody LaundryUpdateStatus laundryUpdateStatus){
+    public ResponseEntity<List<LaundryDto>> updateStatusLaundry(Long id, @RequestBody StatusLaundry statusLaundry){
         try {
-            List<LaundryDto> laundryDtoList = laundryService.updateStatusLaundry(id, laundryUpdateStatus);
+            List<LaundryDto> laundryDtoList = laundryService.updateStatusLaundry(id, statusLaundry);
             return ResponseEntity.ok(laundryDtoList);
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
