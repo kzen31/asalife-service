@@ -123,4 +123,8 @@ public class User extends Auditable implements UserDetails {
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     private List<RatingCatering> ratingCaterings;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    private List<Laundry> laundries;
 }

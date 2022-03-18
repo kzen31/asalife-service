@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
 import java.util.Arrays;
+import java.util.Date;
 
 @Slf4j
 @Transactional
@@ -26,6 +27,7 @@ public class DatabaseSeeder implements ApplicationRunner {
     private final PertanyaanRepository pertanyaanRepository;
     private final BobotRepository bobotRepository;
     private final RatingCateringRepository ratingCateringRepository;
+    private final LaundryRepository laundryRepository;
 
 
     @Override
@@ -37,6 +39,7 @@ public class DatabaseSeeder implements ApplicationRunner {
         savePertanyaan();
         saveBobot();
         saveRatingCatering();
+        saveAduanLaundry();
     }
 
     private void saveRoles() {
@@ -128,6 +131,19 @@ public class DatabaseSeeder implements ApplicationRunner {
         ratingCatering.setUser(user);
 
         ratingCateringRepository.save(ratingCatering);
+    }
+
+    private void saveAduanLaundry() {
+        User user = userRepository.findByNrp("111");
+        Laundry laundry = new Laundry();
+        laundry.setUser(user);
+        laundry.setMess("Mess Joyfull");
+        laundry.setNo_kamar("1");
+        laundry.setJenis_pakaian("Pakaian Dinas");
+        laundry.setJenis_deviasi("Kotor");
+        laundry.setTanggal_loundry(new Date());
+
+        laundryRepository.save(laundry);
     }
 
     private void saveRoleIfNotExists(Role role) {
