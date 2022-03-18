@@ -1,10 +1,13 @@
 package com.asaproject.asalife.utils.mappers;
 
+import com.asaproject.asalife.domains.entities.Catering;
 import com.asaproject.asalife.domains.entities.Pertanyaan;
 import com.asaproject.asalife.domains.entities.RatingCatering;
 import com.asaproject.asalife.domains.entities.User;
 import com.asaproject.asalife.domains.models.requests.RatingRequest;
+import com.asaproject.asalife.domains.models.responses.CateringDto;
 import com.asaproject.asalife.domains.models.responses.RatingCateringDto;
+import com.asaproject.asalife.repositories.CateringRepository;
 import com.asaproject.asalife.repositories.PertanyaanRepository;
 import com.asaproject.asalife.repositories.RatingCateringRepository;
 import javassist.NotFoundException;
@@ -18,10 +21,28 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class CateringMapper {
+public final class CateringMapper {
     private final ModelMapper modelMapper;
     private final RatingCateringRepository ratingCateringRepository;
     private final PertanyaanRepository pertanyaanRepository;
+    private final CateringRepository cateringRepository;
+
+    public CateringDto entityToCateringDto(Catering catering) {
+        CateringDto cateringDto = modelMapper.map(catering, CateringDto.class);
+        cateringDto.setUserName(catering.getUser().getName());
+        cateringDto.setUserNrp(catering.getUser().getNrp());
+        return cateringDto;
+    }
+
+    public List<CateringDto> mapCateringDtoToList (List<Catering> cateringList) {
+        List<CateringDto> cateringDtoList = new ArrayList<CateringDto>();
+
+        for (Catering catering : cateringList) { // (int i = 0; i < list.size(); i++)
+            CateringDto cateringDto = entityToCateringDto(catering);
+            cateringDtoList.add(cateringDto);
+        }
+        return cateringDtoList;
+    }
 
     public RatingCateringDto entityToRatingCateringDto(RatingCatering ratingCatering) {
         RatingCateringDto ratingCateringDto = modelMapper.map(ratingCatering, RatingCateringDto.class);

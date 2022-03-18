@@ -6,6 +6,7 @@ import com.asaproject.asalife.domains.entities.Catering;
 import com.asaproject.asalife.domains.entities.Pertanyaan;
 import com.asaproject.asalife.domains.entities.RatingCatering;
 import com.asaproject.asalife.domains.models.requests.*;
+import com.asaproject.asalife.domains.models.responses.CateringDto;
 import com.asaproject.asalife.domains.models.responses.RatingCateringDto;
 import com.asaproject.asalife.services.BobotService;
 import com.asaproject.asalife.services.CateringService;
@@ -33,20 +34,20 @@ public class CateringController {
     private final RatingCateringService ratingCateringService;
 
     @PostMapping("/add")
-    public ResponseEntity<List<Catering>> addAduanCatering(Principal principal, @Valid @RequestBody AduanCatering aduanCatering) {
+    public ResponseEntity<List<CateringDto>> addAduanCatering(Principal principal, @Valid @RequestBody AduanCatering aduanCatering) {
         try {
-            List<Catering> caterings = cateringService.addAduanCatering(principal, aduanCatering);
-            return ResponseEntity.ok(caterings);
+            List<CateringDto> cateringDtoList = cateringService.addAduanCatering(principal, aduanCatering);
+            return ResponseEntity.ok(cateringDtoList);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
     @GetMapping("/my")
-    public ResponseEntity<List<Catering>> myCaterings(Principal principal) {
+    public ResponseEntity<List<CateringDto>> myCaterings(Principal principal) {
         try {
-            List<Catering> caterings = cateringService.getUserCaterings(principal);
-            return ResponseEntity.ok(caterings);
+            List<CateringDto> cateringDtoList = cateringService.getUserCaterings(principal);
+            return ResponseEntity.ok(cateringDtoList);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
@@ -54,20 +55,20 @@ public class CateringController {
 
     @Secured({ ERole.Constants.ADMIN })
     @GetMapping("/all")
-    public ResponseEntity<List<Catering>> getAllCaterings() {
+    public ResponseEntity<List<CateringDto>> getAllCaterings() {
         try {
-            List<Catering> caterings = cateringService.getCaterings();
-            return ResponseEntity.ok(caterings);
+            List<CateringDto> cateringDtoList = cateringService.getCaterings();
+            return ResponseEntity.ok(cateringDtoList);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
     @GetMapping("/all-by-status")
-    public ResponseEntity<List<Catering>> getAllCateringsByStatus(StatusCatering statusCatering) {
+    public ResponseEntity<List<CateringDto>> getAllCateringsByStatus(StatusCatering statusCatering) {
         try {
-            List<Catering> caterings = cateringService.getCateringsByStatus(statusCatering);
-            return ResponseEntity.ok(caterings);
+            List<CateringDto> cateringDtoList = cateringService.getCateringsByStatus(statusCatering);
+            return ResponseEntity.ok(cateringDtoList);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
