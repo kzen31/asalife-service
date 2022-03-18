@@ -15,7 +15,7 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-public class LaundryMapper {
+public final class LaundryMapper {
     private final ModelMapper modelMapper;
     private final LaundryRepository laundryRepository;
 

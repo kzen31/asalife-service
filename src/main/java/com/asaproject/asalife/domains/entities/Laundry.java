@@ -43,5 +43,5 @@ public class Laundry extends Auditable implements Serializable {
     private Date tanggal_loundry;
 
     @Column(nullable = false)
-    private String status = "INQUIRY";
+    private String status = "WAITING";
 }
