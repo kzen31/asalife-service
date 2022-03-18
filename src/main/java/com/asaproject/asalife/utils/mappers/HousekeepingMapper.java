@@ -1,7 +1,9 @@
 package com.asaproject.asalife.utils.mappers;
 
 import com.asaproject.asalife.domains.entities.Housekeeping;
+import com.asaproject.asalife.domains.entities.RuangDetail;
 import com.asaproject.asalife.domains.models.responses.HousekeepingDto;
+import com.asaproject.asalife.domains.models.responses.RuangDetailDto;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
@@ -28,5 +30,20 @@ public final class HousekeepingMapper {
             housekeepingDtoList.add(housekeepingDto);
         }
         return housekeepingDtoList;
+    }
+
+    public RuangDetailDto entityToRuangDetailDto(RuangDetail ruangDetail) {
+        RuangDetailDto ruangDetailDto = modelMapper.map(ruangDetail, RuangDetailDto.class);
+        ruangDetailDto.setRuang_name(ruangDetail.getRuang().getName());
+        return ruangDetailDto;
+    }
+
+    public List<RuangDetailDto> createListRuangDetailDto(List<RuangDetail> ruangDetailList) {
+        List<RuangDetailDto> ruangDetailDtoList = new ArrayList<RuangDetailDto>();
+        for (RuangDetail ruangDetail: ruangDetailList) {
+            RuangDetailDto ruangDetailDto = entityToRuangDetailDto(ruangDetail);
+            ruangDetailDtoList.add(ruangDetailDto);
+        }
+        return ruangDetailDtoList;
     }
 }

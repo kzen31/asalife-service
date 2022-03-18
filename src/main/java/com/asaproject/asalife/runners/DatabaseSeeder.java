@@ -29,6 +29,8 @@ public class DatabaseSeeder implements ApplicationRunner {
     private final RatingCateringRepository ratingCateringRepository;
     private final LaundryRepository laundryRepository;
     private final HousekeepingRepository housekeepingRepository;
+    private final RuangRepository ruangRepository;
+    private final RuangDetailRepository ruangDetailRepository;
 
 
     @Override
@@ -41,7 +43,9 @@ public class DatabaseSeeder implements ApplicationRunner {
         saveBobot();
         saveRatingCatering();
         saveAduanLaundry();
-        saveAduanHousekeeping();
+        saveAduanHousekeepingAll();
+        saveRuangAll();
+        saveRuangDetailAll();
     }
 
     private void saveRoles() {
@@ -148,22 +152,49 @@ public class DatabaseSeeder implements ApplicationRunner {
         laundryRepository.save(laundry);
     }
 
-    private void saveAduanHousekeeping() {
-        User user = userRepository.findByNrp("111");
+    private void saveAduanHousekeepingAll() {
+        saveAduanHousekeeping("111", "Mess Joyfull", "Dinding kotor", "CLEANING_PROGRESS");
+        saveAduanHousekeeping("111", "Mess Joyfull", "Lantai kotor", "CLEANING_PROGRESS");
+        saveAduanHousekeeping("112", "Mess Joyfull", "Jendela kotor", "DONE");
+    }
+
+    private void saveAduanHousekeeping(String nrp, String lokasi, String deskripsi, String status) {
+        User user = userRepository.findByNrp(nrp);
         Housekeeping housekeeping = new Housekeeping();
         housekeeping.setUser(user);
-        housekeeping.setLokasi("Mess Joyfull");
-        housekeeping.setDeskripsi("Dinding kotor");
-        housekeeping.setStatus("DONE");
-
+        housekeeping.setLokasi(lokasi);
+        housekeeping.setDeskripsi(deskripsi);
+        housekeeping.setStatus(status);
         housekeepingRepository.save(housekeeping);
+    }
 
-        Housekeeping housekeeping1 = new Housekeeping();
-        housekeeping1.setUser(user);
-        housekeeping1.setLokasi("Mess Security");
-        housekeeping1.setDeskripsi("Lantai kotor");
+    private void saveRuangAll() {
+        saveRuang("Ruang Tamu");
+        saveRuang("Ruang Kamar");
+        saveRuang("Lorong");
+    }
 
-        housekeepingRepository.save(housekeeping1);
+    private void saveRuang(String name) {
+        Ruang ruang = new Ruang();
+        ruang.setName(name);
+        ruangRepository.save(ruang);
+    }
+
+    private void saveRuangDetailAll() {
+        saveRuangDetail(1L, "Lantai");
+        saveRuangDetail(1L, "Dinding");
+        saveRuangDetail(1L, "Jendela");
+        saveRuangDetail(2L, "Lantai");
+        saveRuangDetail(2L, "Dinding");
+        saveRuangDetail(3L, "Jendela");
+    }
+
+    private void saveRuangDetail(Long id, String detail){
+        Ruang ruang = ruangRepository.findRuangByIdNative(id);
+        RuangDetail ruangDetail = new RuangDetail();
+        ruangDetail.setDetail(detail);
+        ruangDetail.setRuang(ruang);
+        ruangDetailRepository.save(ruangDetail);
     }
 
     private void saveRoleIfNotExists(Role role) {

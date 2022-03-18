@@ -1,9 +1,14 @@
 package com.asaproject.asalife.controllers;
 
+import com.asaproject.asalife.domains.entities.Ruang;
+import com.asaproject.asalife.domains.entities.RuangDetail;
 import com.asaproject.asalife.domains.models.requests.HousekeepingRequest;
 import com.asaproject.asalife.domains.models.requests.StatusHousekeeping;
 import com.asaproject.asalife.domains.models.responses.HousekeepingDto;
+import com.asaproject.asalife.domains.models.responses.RuangDetailDto;
 import com.asaproject.asalife.services.HousekeepingService;
+import com.asaproject.asalife.services.RuangDetailService;
+import com.asaproject.asalife.services.RuangService;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +24,8 @@ import java.util.List;
 @RequestMapping("/housekeeping")
 public class HousekeepingController {
     private final HousekeepingService housekeepingService;
+    private final RuangService ruangService;
+    private final RuangDetailService ruangDetailService;
 
     @GetMapping("/all")
     public ResponseEntity<List<HousekeepingDto>> getAllHousekeeping () {
@@ -50,6 +57,28 @@ public class HousekeepingController {
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
+    }
+
+    @GetMapping("/ruang")
+    public ResponseEntity<List<Ruang>> getAllRuang() {
+        return ResponseEntity.ok(ruangService.getAllRuang());
+    }
+
+    @GetMapping("/ruang-detail")
+    public ResponseEntity<List<RuangDetailDto>> getAllRuangDetail(Long id) {
+        try {
+            List<RuangDetailDto> ruangDetailList = ruangDetailService.getAllRuangDetail(id);
+            return ResponseEntity.ok(ruangDetailList);
+        } catch (NotFoundException e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
+    @GetMapping("/ruang-detail-all")
+    public ResponseEntity<List<RuangDetailDto>> getAllRuangDetail() {
+        return ResponseEntity.ok(ruangDetailService.getAllRuangDetail());
     }
 
 }
