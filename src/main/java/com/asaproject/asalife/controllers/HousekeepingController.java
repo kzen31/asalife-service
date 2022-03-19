@@ -1,12 +1,15 @@
 package com.asaproject.asalife.controllers;
 
 import com.asaproject.asalife.domains.entities.Ruang;
-import com.asaproject.asalife.domains.entities.RuangDetail;
 import com.asaproject.asalife.domains.models.requests.HousekeepingRequest;
+import com.asaproject.asalife.domains.models.requests.RecordHousekeepingRequest;
 import com.asaproject.asalife.domains.models.requests.StatusHousekeeping;
 import com.asaproject.asalife.domains.models.responses.HousekeepingDto;
+import com.asaproject.asalife.domains.models.responses.RecordHousekeepingDto;
+import com.asaproject.asalife.domains.models.responses.RecordResponse;
 import com.asaproject.asalife.domains.models.responses.RuangDetailDto;
 import com.asaproject.asalife.services.HousekeepingService;
+import com.asaproject.asalife.services.RecordHousekeepingService;
 import com.asaproject.asalife.services.RuangDetailService;
 import com.asaproject.asalife.services.RuangService;
 import javassist.NotFoundException;
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
+
 import java.util.List;
 
 @RestController
@@ -26,6 +30,7 @@ public class HousekeepingController {
     private final HousekeepingService housekeepingService;
     private final RuangService ruangService;
     private final RuangDetailService ruangDetailService;
+    private final RecordHousekeepingService recordHousekeepingService;
 
     @GetMapping("/all")
     public ResponseEntity<List<HousekeepingDto>> getAllHousekeeping () {
@@ -81,4 +86,48 @@ public class HousekeepingController {
         return ResponseEntity.ok(ruangDetailService.getAllRuangDetail());
     }
 
+    @GetMapping("/record")
+    public ResponseEntity<List<RecordResponse>> getALlRecord() {
+        return ResponseEntity.ok(recordHousekeepingService.getAllRecord());
+    }
+
+    @GetMapping("/record-my")
+    public ResponseEntity<List<RecordResponse>> getALlMyRecord(Principal principal) {
+        return ResponseEntity.ok(recordHousekeepingService.getMyRecord(principal));
+    }
+
+    @GetMapping("/record-user")
+    public ResponseEntity<List<RecordResponse>> getALlUserRecord(String nrp) {
+        try {
+            return ResponseEntity.ok(recordHousekeepingService.getAllByUser(nrp));
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
+    @PostMapping("/record-add")
+    public ResponseEntity<String> addUserRecord(Principal principal, Long id, @RequestBody RecordHousekeepingRequest recordRequest) {
+        try {
+            recordHousekeepingService.addRecord(principal, id, recordRequest);
+            return ResponseEntity.ok("Succes");
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
+    @PutMapping("/record-update")
+    public ResponseEntity<String> updateCeklisRecord(Long id, @RequestBody RecordHousekeepingRequest request) {
+        try {
+            recordHousekeepingService.verifyRecordStatus(id, request);
+            return ResponseEntity.ok("Sucess");
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
 }

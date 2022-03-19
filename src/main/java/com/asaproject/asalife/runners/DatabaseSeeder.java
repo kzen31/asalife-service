@@ -31,6 +31,7 @@ public class DatabaseSeeder implements ApplicationRunner {
     private final HousekeepingRepository housekeepingRepository;
     private final RuangRepository ruangRepository;
     private final RuangDetailRepository ruangDetailRepository;
+    private final RecordHousekeepingRepository recordHousekeepingRepository;
 
 
     @Override
@@ -46,6 +47,7 @@ public class DatabaseSeeder implements ApplicationRunner {
         saveAduanHousekeepingAll();
         saveRuangAll();
         saveRuangDetailAll();
+        saveRecordHousekeepingAll();
     }
 
     private void saveRoles() {
@@ -196,6 +198,27 @@ public class DatabaseSeeder implements ApplicationRunner {
         ruangDetail.setRuang(ruang);
         ruangDetailRepository.save(ruangDetail);
     }
+
+    private void saveRecordHousekeepingAll() {
+        saveRecordHousekeeping("111", 1L, true);
+        saveRecordHousekeeping("111", 2L, true);
+        saveRecordHousekeeping("111", 3L, false);
+        saveRecordHousekeeping("111", 4L, false);
+        saveRecordHousekeeping("112", 1L, true);
+        saveRecordHousekeeping("112", 2L, true);
+        saveRecordHousekeeping("112", 3L, false);
+    }
+
+    private void saveRecordHousekeeping(String nrp, Long idRuangDetail, Boolean ceklis) {
+        RecordHousekeeping recordHousekeeping = new RecordHousekeeping();
+        User user = userRepository.findByNrp(nrp);
+        RuangDetail ruangDetail = ruangDetailRepository.findRuangDetailByIdNative(idRuangDetail);
+        recordHousekeeping.setUser(user);
+        recordHousekeeping.setRuangDetail(ruangDetail);
+        recordHousekeeping.setCeklis(ceklis);
+        recordHousekeepingRepository.save(recordHousekeeping);
+    }
+
 
     private void saveRoleIfNotExists(Role role) {
         if (roleRepository.findByName(role.getName()) == null) {

@@ -6,15 +6,14 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class HousekeepingDto {
+public class RecordHousekeepingDto {
     private LocalDateTime createdAt;
     private long id;
-    private String userNrp;
-    private String userName;
-    private String lokasi;
-    private String deskripsi;
-    private String status;
+    private String ruang;
+    private String ruangDetail;
+    private Boolean ceklis;
 }
