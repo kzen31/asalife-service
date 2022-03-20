@@ -6,7 +6,9 @@ import com.asaproject.asalife.domains.entities.Catering;
 import com.asaproject.asalife.domains.entities.Pertanyaan;
 import com.asaproject.asalife.domains.entities.RatingCatering;
 import com.asaproject.asalife.domains.models.requests.*;
+import com.asaproject.asalife.domains.models.responses.CateringDto;
 import com.asaproject.asalife.domains.models.responses.RatingCateringDto;
+import com.asaproject.asalife.domains.models.responses.RatingResponse;
 import com.asaproject.asalife.services.BobotService;
 import com.asaproject.asalife.services.CateringService;
 import com.asaproject.asalife.services.PertanyaanService;
@@ -33,20 +35,20 @@ public class CateringController {
     private final RatingCateringService ratingCateringService;
 
     @PostMapping("/add")
-    public ResponseEntity<List<Catering>> addAduanCatering(Principal principal, @Valid @RequestBody AduanCatering aduanCatering) {
+    public ResponseEntity<List<CateringDto>> addAduanCatering(Principal principal, @Valid @RequestBody AduanCatering aduanCatering) {
         try {
-            List<Catering> caterings = cateringService.addAduanCatering(principal, aduanCatering);
-            return ResponseEntity.ok(caterings);
+            List<CateringDto> cateringDtoList = cateringService.addAduanCatering(principal, aduanCatering);
+            return ResponseEntity.ok(cateringDtoList);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
     @GetMapping("/my")
-    public ResponseEntity<List<Catering>> myCaterings(Principal principal) {
+    public ResponseEntity<List<CateringDto>> myCaterings(Principal principal) {
         try {
-            List<Catering> caterings = cateringService.getUserCaterings(principal);
-            return ResponseEntity.ok(caterings);
+            List<CateringDto> cateringDtoList = cateringService.getUserCaterings(principal);
+            return ResponseEntity.ok(cateringDtoList);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
@@ -54,20 +56,20 @@ public class CateringController {
 
     @Secured({ ERole.Constants.ADMIN })
     @GetMapping("/all")
-    public ResponseEntity<List<Catering>> getAllCaterings() {
+    public ResponseEntity<List<CateringDto>> getAllCaterings() {
         try {
-            List<Catering> caterings = cateringService.getCaterings();
-            return ResponseEntity.ok(caterings);
+            List<CateringDto> cateringDtoList = cateringService.getCaterings();
+            return ResponseEntity.ok(cateringDtoList);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
     @GetMapping("/all-by-status")
-    public ResponseEntity<List<Catering>> getAllCateringsByStatus(StatusCatering statusCatering) {
+    public ResponseEntity<List<CateringDto>> getAllCateringsByStatus(StatusCatering statusCatering) {
         try {
-            List<Catering> caterings = cateringService.getCateringsByStatus(statusCatering);
-            return ResponseEntity.ok(caterings);
+            List<CateringDto> cateringDtoList = cateringService.getCateringsByStatus(statusCatering);
+            return ResponseEntity.ok(cateringDtoList);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
@@ -75,29 +77,27 @@ public class CateringController {
 
     @Secured({ ERole.Constants.MEGAUSER })
     @PutMapping("/update-status")
-    public ResponseEntity<Catering> updateStatusAduanCatering(@RequestParam Long id,
+    public ResponseEntity<CateringDto> updateStatusAduanCatering(@RequestParam Long id,
                                                               @RequestBody StatusCatering statusCatering) {
         try {
-            Catering caterings = cateringService.updateStatusCatering(id, statusCatering);
-            return ResponseEntity.ok(caterings);
+            CateringDto cateringDto = cateringService.updateStatusCatering(id, statusCatering);
+            return ResponseEntity.ok(cateringDto);
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {
-            if(e.getMessage().equals("NOT_FOUND")) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-            } else
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
     @GetMapping("/info")
-    public ResponseEntity<Catering> findCatering(@RequestParam Long id) {
+    public ResponseEntity<CateringDto> findCatering(@RequestParam Long id) {
         try {
-            Catering catering = cateringService.getCateringById(id);
-            return ResponseEntity.ok(catering);
+            CateringDto cateringDto = cateringService.getCateringById(id);
+            return ResponseEntity.ok(cateringDto);
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {
-            if (e.getMessage().equals("NOT_FOUND")) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-            } else
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
@@ -195,15 +195,20 @@ public class CateringController {
     }
 
     @GetMapping("/rating-catering")
-    public ResponseEntity<List<RatingCateringDto>> getAllRatingCatering() {
+    public ResponseEntity<List<RatingResponse>> getAllRatingCatering() {
         return ResponseEntity.ok(ratingCateringService.getAllRatingCatering());
     }
 
+    @GetMapping("/rating-catering-my")
+    public ResponseEntity<List<RatingResponse>> getMyRatingCatering(Principal principal) {
+        return ResponseEntity.ok(ratingCateringService.getUSerRatingCatering(principal));
+    }
+
     @PostMapping("/rating-catering-add")
-    public ResponseEntity<Boolean> addRatingCatering(Principal principal, @RequestBody RatingRequest ratingRequest) {
+    public ResponseEntity<String> addRatingCatering(Principal principal, @RequestBody RatingRequest ratingRequest) {
         try {
-            Boolean ratingCaterings = ratingCateringService.addRatingCatering(principal, ratingRequest);
-            return ResponseEntity.ok(ratingCaterings);
+            ratingCateringService.addRatingCatering(principal, ratingRequest);
+            return ResponseEntity.ok("Success");
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {

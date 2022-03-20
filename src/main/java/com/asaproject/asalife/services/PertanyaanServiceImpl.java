@@ -36,7 +36,7 @@ public class PertanyaanServiceImpl implements PertanyaanService{
     @Override
     public void deletePertanyaan(Long id) throws Exception{
         Pertanyaan pertanyaan = pertanyaanRepository.findPertanyaanByIdNative(id);
-        if (ObjectUtils.isEmpty(pertanyaan)) {
+        if (ObjectUtils.isEmpty(pertanyaan) || !ObjectUtils.isEmpty(pertanyaan.getDeletedAt())) {
             throw new NotFoundException("PERTANYAAN NOT FOUND");
         }
 
@@ -57,8 +57,8 @@ public class PertanyaanServiceImpl implements PertanyaanService{
 
     @Override
     public Pertanyaan updatePertanyaanIfExist(Long id, PertanyaanRequest pertanyaanRequest) throws Exception {
-        Pertanyaan pertanyaan = getPertanyaanByID(id);
-        if (ObjectUtils.isEmpty(pertanyaan)) {
+        Pertanyaan pertanyaan = pertanyaanRepository.findPertanyaanByIdNative(id);
+        if (ObjectUtils.isEmpty(pertanyaan) || !ObjectUtils.isEmpty(pertanyaan.getDeletedAt())) {
             throw new NotFoundException("PERTANYAAN NOT FOUND");
         } else
             return updatePertanyaan(id, pertanyaanRequest);
@@ -75,7 +75,7 @@ public class PertanyaanServiceImpl implements PertanyaanService{
     @Override
     public Pertanyaan getPertanyaanByID(Long id) throws Exception {
         Pertanyaan pertanyaan = pertanyaanRepository.findPertanyaanByIdNative(id);
-        if (ObjectUtils.isEmpty(pertanyaan)) {
+        if (ObjectUtils.isEmpty(pertanyaan) || !ObjectUtils.isEmpty(pertanyaan.getDeletedAt())) {
             throw new NotFoundException("PERTANYAAN NOT FOUND");
         }
         return pertanyaan;
