@@ -28,6 +28,10 @@ public class DatabaseSeeder implements ApplicationRunner {
     private final BobotRepository bobotRepository;
     private final RatingCateringRepository ratingCateringRepository;
     private final LaundryRepository laundryRepository;
+    private final HousekeepingRepository housekeepingRepository;
+    private final RuangRepository ruangRepository;
+    private final RuangDetailRepository ruangDetailRepository;
+    private final RecordHousekeepingRepository recordHousekeepingRepository;
     private final MessRepository messRepository;
 
 
@@ -36,6 +40,10 @@ public class DatabaseSeeder implements ApplicationRunner {
         log.info("Seeding DB");
         saveRoles();
         saveUsers();
+        saveAduanHousekeepingAll();
+        saveRuangAll();
+        saveRuangDetailAll();
+        saveRecordHousekeepingAll();
         saveAduanLaundryAll();
         saveMessAll();
         saveAduanCateringAll();
@@ -170,6 +178,71 @@ public class DatabaseSeeder implements ApplicationRunner {
         laundry.setTanggal_laundry(new Date());
 
         laundryRepository.save(laundry);
+    }
+
+    private void saveAduanHousekeepingAll() {
+        saveAduanHousekeeping("111", "Mess Joyfull", "Dinding kotor", "CLEANING_PROGRESS");
+        saveAduanHousekeeping("111", "Mess Joyfull", "Lantai kotor", "CLEANING_PROGRESS");
+        saveAduanHousekeeping("112", "Mess Joyfull", "Jendela kotor", "DONE");
+    }
+
+    private void saveAduanHousekeeping(String nrp, String lokasi, String deskripsi, String status) {
+        User user = userRepository.findByNrp(nrp);
+        Housekeeping housekeeping = new Housekeeping();
+        housekeeping.setUser(user);
+        housekeeping.setLokasi(lokasi);
+        housekeeping.setDeskripsi(deskripsi);
+        housekeeping.setStatus(status);
+        housekeepingRepository.save(housekeeping);
+    }
+
+    private void saveRuangAll() {
+        saveRuang("Ruang Tamu");
+        saveRuang("Ruang Kamar");
+        saveRuang("Lorong");
+    }
+
+    private void saveRuang(String name) {
+        Ruang ruang = new Ruang();
+        ruang.setName(name);
+        ruangRepository.save(ruang);
+    }
+
+    private void saveRuangDetailAll() {
+        saveRuangDetail(1L, "Lantai");
+        saveRuangDetail(1L, "Dinding");
+        saveRuangDetail(1L, "Jendela");
+        saveRuangDetail(2L, "Lantai");
+        saveRuangDetail(2L, "Dinding");
+        saveRuangDetail(3L, "Jendela");
+    }
+
+    private void saveRuangDetail(Long id, String detail){
+        Ruang ruang = ruangRepository.findRuangByIdNative(id);
+        RuangDetail ruangDetail = new RuangDetail();
+        ruangDetail.setDetail(detail);
+        ruangDetail.setRuang(ruang);
+        ruangDetailRepository.save(ruangDetail);
+    }
+
+    private void saveRecordHousekeepingAll() {
+        saveRecordHousekeeping("111", 1L, true);
+        saveRecordHousekeeping("111", 2L, true);
+        saveRecordHousekeeping("111", 3L, false);
+        saveRecordHousekeeping("111", 4L, false);
+        saveRecordHousekeeping("112", 1L, true);
+        saveRecordHousekeeping("112", 2L, true);
+        saveRecordHousekeeping("112", 3L, false);
+    }
+
+    private void saveRecordHousekeeping(String nrp, Long idRuangDetail, Boolean ceklis) {
+        RecordHousekeeping recordHousekeeping = new RecordHousekeeping();
+        User user = userRepository.findByNrp(nrp);
+        RuangDetail ruangDetail = ruangDetailRepository.findRuangDetailByIdNative(idRuangDetail);
+        recordHousekeeping.setUser(user);
+        recordHousekeeping.setRuangDetail(ruangDetail);
+        recordHousekeeping.setCeklis(ceklis);
+        recordHousekeepingRepository.save(recordHousekeeping);
     }
 
     private void saveMessAll() {
