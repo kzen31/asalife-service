@@ -4,10 +4,7 @@ import com.asaproject.asalife.domains.entities.Ruang;
 import com.asaproject.asalife.domains.models.requests.HousekeepingRequest;
 import com.asaproject.asalife.domains.models.requests.RecordHousekeepingRequest;
 import com.asaproject.asalife.domains.models.requests.StatusHousekeeping;
-import com.asaproject.asalife.domains.models.responses.HousekeepingDto;
-import com.asaproject.asalife.domains.models.responses.RecordHousekeepingDto;
-import com.asaproject.asalife.domains.models.responses.RecordResponse;
-import com.asaproject.asalife.domains.models.responses.RuangDetailDto;
+import com.asaproject.asalife.domains.models.responses.*;
 import com.asaproject.asalife.services.HousekeepingService;
 import com.asaproject.asalife.services.RecordHousekeepingService;
 import com.asaproject.asalife.services.RuangDetailService;
@@ -65,7 +62,7 @@ public class HousekeepingController {
     }
 
     @GetMapping("/ruang")
-    public ResponseEntity<List<Ruang>> getAllRuang() {
+    public ResponseEntity<List<RuangDto>> getAllRuang() {
         return ResponseEntity.ok(ruangService.getAllRuang());
     }
 

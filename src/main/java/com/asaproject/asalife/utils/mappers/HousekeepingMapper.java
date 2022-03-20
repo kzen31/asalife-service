@@ -2,15 +2,13 @@ package com.asaproject.asalife.utils.mappers;
 
 import com.asaproject.asalife.domains.entities.Housekeeping;
 import com.asaproject.asalife.domains.entities.RecordHousekeeping;
+import com.asaproject.asalife.domains.entities.Ruang;
 import com.asaproject.asalife.domains.entities.RuangDetail;
-import com.asaproject.asalife.domains.models.responses.HousekeepingDto;
-import com.asaproject.asalife.domains.models.responses.RecordHousekeepingDto;
-import com.asaproject.asalife.domains.models.responses.RecordResponse;
-import com.asaproject.asalife.domains.models.responses.RuangDetailDto;
+import com.asaproject.asalife.domains.models.responses.*;
+import com.asaproject.asalife.repositories.RuangRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +18,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public final class HousekeepingMapper {
     private final ModelMapper modelMapper;
+    private final RuangRepository ruangRepository;
 
     public HousekeepingDto entityToHousekeepingDto(Housekeeping housekeeping) {
         HousekeepingDto housekeepingDto = modelMapper.map(housekeeping, HousekeepingDto.class);
@@ -29,12 +28,36 @@ public final class HousekeepingMapper {
     }
 
     public List<HousekeepingDto> createListHousekeepingDto(List<Housekeeping> housekeepingList) {
-        List<HousekeepingDto> housekeepingDtoList = new ArrayList<HousekeepingDto>();
+        List<HousekeepingDto> housekeepingDtoList = new ArrayList<>();
         for (Housekeeping housekeeping: housekeepingList) {
             HousekeepingDto housekeepingDto = entityToHousekeepingDto(housekeeping);
             housekeepingDtoList.add(housekeepingDto);
         }
         return housekeepingDtoList;
+    }
+
+
+    public List<RuangDto> createTemplateRuangDtoList(List<RuangDetail> ruangDetailList) {
+        List<RuangDto> ruangDtoList = new ArrayList<>();
+
+        List<Ruang> ruangList = ruangRepository.findAll();
+
+        for (Ruang ruang: ruangList) {
+            RuangDto ruangDto = new RuangDto();
+            List<RuangDetailDto> ruangDetailDtoList = new ArrayList<>();
+
+            String ruangName = ruang.getName();
+            for (RuangDetail ruangDetail: ruangDetailList) {
+                if (Objects.equals(ruangName, ruangDetail.getRuang().getName())) {
+                    RuangDetailDto ruangDetailDto = entityToRuangDetailDto(ruangDetail);
+                    ruangDetailDtoList.add(ruangDetailDto);
+                }
+            }
+            ruangDto.setRuangDetailDtoList(ruangDetailDtoList);
+            ruangDto.setName(ruangName);
+            ruangDtoList.add(ruangDto);
+        }
+        return ruangDtoList;
     }
 
     public RuangDetailDto entityToRuangDetailDto(RuangDetail ruangDetail) {
@@ -44,7 +67,7 @@ public final class HousekeepingMapper {
     }
 
     public List<RuangDetailDto> createListRuangDetailDto(List<RuangDetail> ruangDetailList) {
-        List<RuangDetailDto> ruangDetailDtoList = new ArrayList<RuangDetailDto>();
+        List<RuangDetailDto> ruangDetailDtoList = new ArrayList<>();
         for (RuangDetail ruangDetail: ruangDetailList) {
             RuangDetailDto ruangDetailDto = entityToRuangDetailDto(ruangDetail);
             ruangDetailDtoList.add(ruangDetailDto);
@@ -60,7 +83,7 @@ public final class HousekeepingMapper {
     }
 
     public List<RecordHousekeepingDto> createListRecordHousekeepingDto(List<RecordHousekeeping> recordHousekeepingList) {
-        List<RecordHousekeepingDto> recordHousekeepingDtoList = new ArrayList<RecordHousekeepingDto>();
+        List<RecordHousekeepingDto> recordHousekeepingDtoList = new ArrayList<>();
         for (RecordHousekeeping recordHousekeeping: recordHousekeepingList) {
             RecordHousekeepingDto recordHousekeepingDto = entityToRecordHousekeepingDto(recordHousekeeping);
             recordHousekeepingDtoList.add(recordHousekeepingDto);
@@ -69,10 +92,10 @@ public final class HousekeepingMapper {
     }
 
     public List<RecordResponse> createTemplateRecordList(List<RecordHousekeeping> recordHousekeeping) {
-        List<RecordResponse> recordResponseList = new ArrayList<RecordResponse>();
+        List<RecordResponse> recordResponseList = new ArrayList<>();
         int i = 0;
         while (i < recordHousekeeping.size()) {
-            List<RecordHousekeepingDto> recordDtoList = new ArrayList<RecordHousekeepingDto>();
+            List<RecordHousekeepingDto> recordDtoList = new ArrayList<>();
             RecordResponse recordResponse = new RecordResponse();
 
             Integer lengthRecordDtoList = checkrecordDtoSize (i,  recordHousekeeping);
@@ -114,4 +137,4 @@ public final class HousekeepingMapper {
         boolean checkDate = Objects.equals(timeA, timeB);
         return checkName == checkDate;
     }
-};
+}

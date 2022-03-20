@@ -33,7 +33,7 @@ public class HousekeepingServiceImpl implements HousekeepingService{
     @Override
     public List<HousekeepingDto> getAllByUser(Principal principal) {
         User user = UserAdminMapper.principalToUser(principal);
-        List<Housekeeping> housekeepingList = housekeepingRepository.findAll();
+        List<Housekeeping> housekeepingList = housekeepingRepository.findAllByUser(user);
         return housekeepingMapper.createListHousekeepingDto(housekeepingList);
     }
 
