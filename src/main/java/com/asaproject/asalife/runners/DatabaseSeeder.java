@@ -33,6 +33,8 @@ public class DatabaseSeeder implements ApplicationRunner {
     private final RuangDetailRepository ruangDetailRepository;
     private final RecordHousekeepingRepository recordHousekeepingRepository;
     private final MessRepository messRepository;
+    private final MaintenanceRepository maintenanceRepository;
+    private final TaskMaintenanceRepository taskMaintenanceRepository;
 
 
     @Override
@@ -40,6 +42,8 @@ public class DatabaseSeeder implements ApplicationRunner {
         log.info("Seeding DB");
         saveRoles();
         saveUsers();
+        saveMaintenanceAll();
+        saveTaskMaintenanceAll();
         saveAduanHousekeepingAll();
         saveRuangAll();
         saveRuangDetailAll();
@@ -256,6 +260,47 @@ public class DatabaseSeeder implements ApplicationRunner {
         Mess mess = new Mess();
         mess.setName(name);
         messRepository.save(mess);
+    }
+
+    private void saveMaintenanceAll() {
+        saveMaintenance("111", "Lampu Mati", "Mess Enjoy");
+        saveMaintenance("112", "Colokan Mati", "Mess Enjoy");
+        saveMaintenance("111", "Kulkas rusak", "Mess Security");
+        saveMaintenance("112", "Lampu Mati", "Mess Security");
+        saveMaintenance("001", "Lampu Mati", "Mess Enjoy");
+        saveMaintenance("002", "Lampu Mati", "Mess Funny");
+    }
+
+    private void saveMaintenance(String nrp, String jenisAduan, String lokasi) {
+        User user = userRepository.findByNrp(nrp);
+
+        Maintenance maintenance = new Maintenance();
+        maintenance.setUser(user);
+        maintenance.setJenisAduan(jenisAduan);
+        maintenance.setLokasi(lokasi);
+        maintenanceRepository.save(maintenance);
+    }
+
+    private void saveTaskMaintenanceAll() {
+        saveTaskMaintenance("111", "Mesin Cuci", "Mess Enjoy", "Masik layak", "BAGUS");
+        saveTaskMaintenance("111", "Televisi", "Mess Enjoy", "Masik layak pakai", "BAGUS");
+        saveTaskMaintenance("111", "Pompa Air", "Mess Enjoy", "sudah diperbaiki", "BAGUS");
+        saveTaskMaintenance("112", "Pompa Air", "Mess Security", "sudah diperbaiki", "BAGUS");
+        saveTaskMaintenance("001", "Kulkas", "Mess Funny", "sudah diperbaiki", "BAGUS");
+        saveTaskMaintenance("002", "Televisi", "Mess Funny", "sudah diperbaiki", "BAGUS");
+    }
+
+
+    private void saveTaskMaintenance(String nrp, String jenisAset, String lokasiAset, String keterangan, String status) {
+        User user = userRepository.findByNrp(nrp);
+
+        TaskMaintenance taskMaintenance = new TaskMaintenance();
+        taskMaintenance.setJenisAset(jenisAset);
+        taskMaintenance.setLokasiAset(lokasiAset);
+        taskMaintenance.setKeterangan(keterangan);
+        taskMaintenance.setStatus(status);
+        taskMaintenance.setUser(user);
+        taskMaintenanceRepository.save(taskMaintenance);
     }
 
     private void saveRoleIfNotExists(Role role) {
