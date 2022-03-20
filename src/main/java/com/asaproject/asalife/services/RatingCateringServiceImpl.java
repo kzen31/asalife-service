@@ -1,27 +1,23 @@
 package com.asaproject.asalife.services;
 
-import com.asaproject.asalife.domains.entities.Bobot;
 import com.asaproject.asalife.domains.entities.Pertanyaan;
 import com.asaproject.asalife.domains.entities.RatingCatering;
 import com.asaproject.asalife.domains.entities.User;
 import com.asaproject.asalife.domains.models.requests.RatingRequest;
-import com.asaproject.asalife.domains.models.responses.RatingCateringDto;
+import com.asaproject.asalife.domains.models.responses.RatingResponse;
 import com.asaproject.asalife.repositories.PertanyaanRepository;
 import com.asaproject.asalife.repositories.RatingCateringRepository;
 import com.asaproject.asalife.utils.mappers.CateringMapper;
 import com.asaproject.asalife.utils.mappers.UserAdminMapper;
 import javassist.NotFoundException;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.security.Principal;
-import java.util.Calendar;
-import java.util.Date;
+
 import java.util.List;
 
 @Service
@@ -31,10 +27,9 @@ public class RatingCateringServiceImpl implements RatingCateringService {
     private final RatingCateringRepository ratingCateringRepository;
     private final PertanyaanRepository pertanyaanRepository;
     private final CateringMapper cateringMapper;
-//    private final UserAdminMapper userAdminMapper;
 
     @Override
-    public Boolean addRatingCatering(Principal principal, RatingRequest ratingRequest) throws Exception {
+    public void addRatingCatering(Principal principal, RatingRequest ratingRequest) throws Exception {
         User user = UserAdminMapper.principalToUser(principal);
         if (ObjectUtils.isEmpty(user)) {
             throw new NotFoundException("USER NOT FOUND");
@@ -51,8 +46,6 @@ public class RatingCateringServiceImpl implements RatingCateringService {
         ratingCatering.setUser(user);
 
         ratingCateringRepository.save(ratingCatering);
-
-        return true;
     }
 
     @Override
@@ -69,8 +62,14 @@ public class RatingCateringServiceImpl implements RatingCateringService {
     }
 
     @Override
-    public List<RatingCateringDto> getAllRatingCatering() {
-        return cateringMapper.mapRatingCateringDtoToList();
+    public List<RatingResponse> getAllRatingCatering() {
+        return cateringMapper.createTemplateRatingList(ratingCateringRepository.findAll());
+    }
+
+    @Override
+    public List<RatingResponse> getUSerRatingCatering(Principal principal) {
+        User user = UserAdminMapper.principalToUser(principal);
+        return cateringMapper.createTemplateRatingList(ratingCateringRepository.findAllByUser(user));
     }
 
     @Override

@@ -8,6 +8,7 @@ import com.asaproject.asalife.domains.entities.RatingCatering;
 import com.asaproject.asalife.domains.models.requests.*;
 import com.asaproject.asalife.domains.models.responses.CateringDto;
 import com.asaproject.asalife.domains.models.responses.RatingCateringDto;
+import com.asaproject.asalife.domains.models.responses.RatingResponse;
 import com.asaproject.asalife.services.BobotService;
 import com.asaproject.asalife.services.CateringService;
 import com.asaproject.asalife.services.PertanyaanService;
@@ -194,15 +195,20 @@ public class CateringController {
     }
 
     @GetMapping("/rating-catering")
-    public ResponseEntity<List<RatingCateringDto>> getAllRatingCatering() {
+    public ResponseEntity<List<RatingResponse>> getAllRatingCatering() {
         return ResponseEntity.ok(ratingCateringService.getAllRatingCatering());
     }
 
+    @GetMapping("/rating-catering-my")
+    public ResponseEntity<List<RatingResponse>> getMyRatingCatering(Principal principal) {
+        return ResponseEntity.ok(ratingCateringService.getUSerRatingCatering(principal));
+    }
+
     @PostMapping("/rating-catering-add")
-    public ResponseEntity<Boolean> addRatingCatering(Principal principal, @RequestBody RatingRequest ratingRequest) {
+    public ResponseEntity<String> addRatingCatering(Principal principal, @RequestBody RatingRequest ratingRequest) {
         try {
-            Boolean ratingCaterings = ratingCateringService.addRatingCatering(principal, ratingRequest);
-            return ResponseEntity.ok(ratingCaterings);
+            ratingCateringService.addRatingCatering(principal, ratingRequest);
+            return ResponseEntity.ok("Success");
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {

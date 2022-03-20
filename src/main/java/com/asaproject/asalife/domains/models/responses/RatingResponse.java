@@ -10,6 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RatingResponse {
-    private String user_nrp;
+    private String usernrp;
+    private String username;
     private List<RatingCateringDto> ratingCateringDto;
 }
