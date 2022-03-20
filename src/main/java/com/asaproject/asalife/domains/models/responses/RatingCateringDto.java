@@ -15,5 +15,4 @@ public class RatingCateringDto {
     private String isi_pertanyaan;
     private long id;
     private int nilai;
-    private String user_nrp;
 }

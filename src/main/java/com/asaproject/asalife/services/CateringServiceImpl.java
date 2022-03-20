@@ -4,8 +4,10 @@ import com.asaproject.asalife.domains.entities.Catering;
 import com.asaproject.asalife.domains.entities.User;
 import com.asaproject.asalife.domains.models.requests.AduanCatering;
 import com.asaproject.asalife.domains.models.requests.StatusCatering;
+import com.asaproject.asalife.domains.models.responses.CateringDto;
 import com.asaproject.asalife.repositories.CateringRepository;
 import com.asaproject.asalife.repositories.UserRepository;
+import com.asaproject.asalife.utils.mappers.CateringMapper;
 import com.asaproject.asalife.utils.mappers.StatusCateringUserMapper;
 import com.asaproject.asalife.utils.mappers.UserAdminMapper;
 import javassist.NotFoundException;
@@ -21,28 +23,32 @@ import java.util.List;
 @Transactional
 @RequiredArgsConstructor
 public class CateringServiceImpl implements CateringService{
-    private final UserRepository userRepo;
     private final CateringRepository cateringRepo;
+    private final CateringMapper cateringMapper;
 
     @Override
-    public List<Catering> getCaterings() {
-        return cateringRepo.findAll();
+    public List<CateringDto> getCaterings() {
+        return cateringMapper.mapCateringDtoToList(cateringRepo.findAll());
     }
 
     @Override
-    public List<Catering> getCateringsByStatus(StatusCatering statusCatering) {
+    public List<CateringDto> getCateringsByStatus(StatusCatering statusCatering) {
         String status = StatusCateringUserMapper.mapStatus(statusCatering.getStatus());
 
-        return cateringRepo.findAllByStatus(status);
+        return cateringMapper.mapCateringDtoToList(cateringRepo.findAllByStatus(status));
     }
 
     @Override
-    public Catering getCateringById(Long id)  {
-        return cateringRepo.findCateringByIdNative(id);
+    public CateringDto getCateringById(Long id) throws Exception {
+        CateringDto cateringDto = cateringMapper.entityToCateringDto(cateringRepo.findCateringByIdNative(id));
+        if (ObjectUtils.isEmpty(cateringDto)) {
+            throw new NotFoundException("CATERING_WITH_ID_NOT_FOUND");
+        }
+        return cateringDto;
     }
 
     @Override
-    public List<Catering> addAduanCatering(Principal principal, AduanCatering aduanCatering) throws Exception {
+    public List<CateringDto> addAduanCatering(Principal principal, AduanCatering aduanCatering) throws Exception {
         User user = UserAdminMapper.principalToUser(principal);
         Catering catering = new Catering();
 
@@ -56,15 +62,15 @@ public class CateringServiceImpl implements CateringService{
     }
 
     @Override
-    public List<Catering> getUserCaterings(Principal principal) {
+    public List<CateringDto> getUserCaterings(Principal principal) {
         User user = UserAdminMapper.principalToUser(principal);
 
         List<Catering> caterings = cateringRepo.findByUser(user);
-        return caterings;
+        return cateringMapper.mapCateringDtoToList(caterings);
     }
 
     @Override
-    public Catering updateStatusCatering(Long id, StatusCatering statusCatering) throws Exception {
+    public CateringDto updateStatusCatering(Long id, StatusCatering statusCatering) throws Exception {
         Catering catering = cateringRepo.findCateringByIdNative(id);
 
         if (ObjectUtils.isEmpty(catering)) {
@@ -74,6 +80,6 @@ public class CateringServiceImpl implements CateringService{
 
         catering.setStatus(status);
         cateringRepo.save(catering);
-        return cateringRepo.findCateringByIdNative(id);
+        return cateringMapper.entityToCateringDto(cateringRepo.findCateringByIdNative(id));
     }
 }

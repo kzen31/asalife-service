@@ -19,7 +19,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class Catering extends Auditable implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
