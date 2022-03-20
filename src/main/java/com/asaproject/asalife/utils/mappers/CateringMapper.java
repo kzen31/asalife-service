@@ -7,6 +7,7 @@ import com.asaproject.asalife.domains.entities.User;
 import com.asaproject.asalife.domains.models.requests.RatingRequest;
 import com.asaproject.asalife.domains.models.responses.CateringDto;
 import com.asaproject.asalife.domains.models.responses.RatingCateringDto;
+import com.asaproject.asalife.domains.models.responses.RatingResponse;
 import com.asaproject.asalife.repositories.CateringRepository;
 import com.asaproject.asalife.repositories.PertanyaanRepository;
 import com.asaproject.asalife.repositories.RatingCateringRepository;

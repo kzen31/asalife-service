@@ -39,8 +39,12 @@ public class CateringServiceImpl implements CateringService{
     }
 
     @Override
-    public Catering getCateringById(Long id)  {
-        return cateringRepo.findCateringByIdNative(id);
+    public CateringDto getCateringById(Long id) throws Exception {
+        CateringDto cateringDto = cateringMapper.entityToCateringDto(cateringRepo.findCateringByIdNative(id));
+        if (ObjectUtils.isEmpty(cateringDto)) {
+            throw new NotFoundException("CATERING_WITH_ID_NOT_FOUND");
+        }
+        return cateringDto;
     }
 
     @Override
@@ -66,7 +70,7 @@ public class CateringServiceImpl implements CateringService{
     }
 
     @Override
-    public Catering updateStatusCatering(Long id, StatusCatering statusCatering) throws Exception {
+    public CateringDto updateStatusCatering(Long id, StatusCatering statusCatering) throws Exception {
         Catering catering = cateringRepo.findCateringByIdNative(id);
 
         if (ObjectUtils.isEmpty(catering)) {
@@ -76,6 +80,6 @@ public class CateringServiceImpl implements CateringService{
 
         catering.setStatus(status);
         cateringRepo.save(catering);
-        return cateringRepo.findCateringByIdNative(id);
+        return cateringMapper.entityToCateringDto(cateringRepo.findCateringByIdNative(id));
     }
 }

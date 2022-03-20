@@ -13,11 +13,11 @@ public interface CateringService {
 
     List<CateringDto> getCateringsByStatus(StatusCatering statusCatering);
 
-    Catering getCateringById(Long id);
+    CateringDto getCateringById(Long id) throws Exception;
 
     List<CateringDto> addAduanCatering(Principal principal, AduanCatering aduanCatering) throws Exception;
 
     List<CateringDto> getUserCaterings(Principal principal);
 
-    Catering updateStatusCatering(Long id, StatusCatering statusCatering) throws Exception;
+    CateringDto updateStatusCatering(Long id, StatusCatering statusCatering) throws Exception;
 }

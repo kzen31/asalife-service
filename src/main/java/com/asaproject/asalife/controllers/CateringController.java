@@ -76,29 +76,27 @@ public class CateringController {
 
     @Secured({ ERole.Constants.MEGAUSER })
     @PutMapping("/update-status")
-    public ResponseEntity<Catering> updateStatusAduanCatering(@RequestParam Long id,
+    public ResponseEntity<CateringDto> updateStatusAduanCatering(@RequestParam Long id,
                                                               @RequestBody StatusCatering statusCatering) {
         try {
-            Catering caterings = cateringService.updateStatusCatering(id, statusCatering);
-            return ResponseEntity.ok(caterings);
+            CateringDto cateringDto = cateringService.updateStatusCatering(id, statusCatering);
+            return ResponseEntity.ok(cateringDto);
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {
-            if(e.getMessage().equals("NOT_FOUND")) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
-            } else
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
     @GetMapping("/info")
-    public ResponseEntity<Catering> findCatering(@RequestParam Long id) {
+    public ResponseEntity<CateringDto> findCatering(@RequestParam Long id) {
         try {
-            Catering catering = cateringService.getCateringById(id);
-            return ResponseEntity.ok(catering);
+            CateringDto cateringDto = cateringService.getCateringById(id);
+            return ResponseEntity.ok(cateringDto);
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {
-            if (e.getMessage().equals("NOT_FOUND")) {
-                throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-            } else
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
