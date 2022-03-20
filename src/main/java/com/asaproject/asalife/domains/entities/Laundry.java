@@ -1,6 +1,5 @@
 package com.asaproject.asalife.domains.entities;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,14 +9,15 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
-@Table(name = "catering")
+@Table(name = "laundry")
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Catering extends Auditable implements Serializable {
+public class Laundry extends Auditable implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -27,14 +27,21 @@ public class Catering extends Auditable implements Serializable {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @Column(nullable = false)
-    private String lokasi;
+    @Column
+    private String mess;
 
     @Column(nullable = false)
-    private String deskripsi;
-
-    private String kritik_saran;
+    private String no_kamar;
 
     @Column(nullable = false)
-    private String status = "INQUIRY";
+    private String jenis_pakaian;
+
+    @Column(nullable = false)
+    private String jenis_deviasi;
+
+    @Column
+    private Date tanggal_laundry;
+
+    @Column(nullable = false)
+    private String status = "WAITING";
 }

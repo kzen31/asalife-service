@@ -9,10 +9,12 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RatingCateringDto {
+public class HousekeepingDto {
     private LocalDateTime createdAt;
-    private Long id_pertanyaan;
-    private String isi_pertanyaan;
     private long id;
-    private int nilai;
+    private String userNrp;
+    private String userName;
+    private String lokasi;
+    private String deskripsi;
+    private String status;
 }

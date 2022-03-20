@@ -40,13 +40,13 @@ public class BobotServiceImpl implements BobotService {
         bobot.setPertanyaan(pertanyaan);
         bobotRepository.save(bobot);
 
-        return getListBobot();
+        return bobotRepository.findAllByPertanyaan_Id(bobotRequest.getId_pertanyaan());
     }
 
     @Override
     public List<Bobot> getListBobotByPertanyaan(Long id) throws Exception {
         Pertanyaan pertanyaan = pertanyaanRepository.findPertanyaanByIdNative(id);
-        if (ObjectUtils.isEmpty(pertanyaan)) {
+        if (ObjectUtils.isEmpty(pertanyaan)  || !ObjectUtils.isEmpty(pertanyaan.getDeletedAt())) {
             throw new NotFoundException("PERTANYAAN NOT FOUND");
         }
         return bobotRepository.findAllByPertanyaan_Id(id);
@@ -55,7 +55,7 @@ public class BobotServiceImpl implements BobotService {
     @Override
     public List<Bobot> deleteBobot(Long id) throws Exception {
         Bobot bobot = bobotRepository.findBobotByIdNative(id);
-        if (ObjectUtils.isEmpty(bobot)) {
+        if (ObjectUtils.isEmpty(bobot) || !ObjectUtils.isEmpty(bobot.getDeletedAt())) {
             throw new NotFoundException("BOBOT NOT FOUND");
         }
 

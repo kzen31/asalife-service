@@ -1,6 +1,5 @@
 package com.asaproject.asalife.domains.entities;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,13 +10,13 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 import java.io.Serializable;
 
-@Table(name = "catering")
+@Table(name = "recordhousekeeping")
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Catering extends Auditable implements Serializable {
+public class RecordHousekeeping extends Auditable implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -27,14 +26,11 @@ public class Catering extends Auditable implements Serializable {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @Column(nullable = false)
-    private String lokasi;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "ruangdetail_id", referencedColumnName = "id")
+    private RuangDetail ruangDetail;
 
     @Column(nullable = false)
-    private String deskripsi;
-
-    private String kritik_saran;
-
-    @Column(nullable = false)
-    private String status = "INQUIRY";
+    private Boolean ceklis = false;
 }
