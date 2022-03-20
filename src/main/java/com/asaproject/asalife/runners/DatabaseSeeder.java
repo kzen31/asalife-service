@@ -32,6 +32,7 @@ public class DatabaseSeeder implements ApplicationRunner {
     private final RuangRepository ruangRepository;
     private final RuangDetailRepository ruangDetailRepository;
     private final RecordHousekeepingRepository recordHousekeepingRepository;
+    private final MessRepository messRepository;
 
 
     @Override
@@ -39,15 +40,16 @@ public class DatabaseSeeder implements ApplicationRunner {
         log.info("Seeding DB");
         saveRoles();
         saveUsers();
-        saveCatering();
-        savePertanyaan();
-        saveBobot();
-        saveRatingCatering();
-        saveAduanLaundry();
         saveAduanHousekeepingAll();
         saveRuangAll();
         saveRuangDetailAll();
         saveRecordHousekeepingAll();
+        saveAduanLaundryAll();
+        saveMessAll();
+        saveAduanCateringAll();
+        savePertanyaanAll();
+        saveBobotAll();
+        saveRatingCateringAll();
     }
 
     private void saveRoles() {
@@ -93,63 +95,87 @@ public class DatabaseSeeder implements ApplicationRunner {
         registerUserAdminIfNotExists(superuser);
     }
 
-    private void saveCatering() {
+    private void saveAduanCateringAll() {
+        saveCatering("111", "Gosong", "Mess Enjoy", "Jangan Gosong");
+        saveCatering("111", "Asin", "Mess Enjoy", "Jangan Asin");
+        saveCatering("112", "Hambar", "Mess Healthy", "Tambah garam");
+
+    }
+
+    private void saveCatering(String nrp, String deskripsi, String lokasi, String kritikSaran) {
         Catering catering = new Catering();
-        catering.setUser(userRepository.findByNrp("111"));
-        catering.setDeskripsi("Gosong");
-        catering.setLokasi("Mess Good");
-        catering.setKritik_saran("Jangan Gosong");
+        catering.setUser(userRepository.findByNrp(nrp));
+        catering.setDeskripsi(deskripsi);
+        catering.setLokasi(lokasi);
+        catering.setKritik_saran(kritikSaran);
 
         cateringRepository.save(catering);
     }
 
-    private void savePertanyaan() {
-        Pertanyaan pertanyaan1 = new Pertanyaan();
-        pertanyaan1.setIsi("Apakah makanannya enak?");
-        pertanyaanRepository.save(pertanyaan1);
+    private void savePertanyaanAll() {
+        savePertanyaan("Apakah makanannya enak?");
+        savePertanyaan("Apakah minumannya enak?");
+        savePertanyaan("Tingkat Pelayanan?");
 
-        Pertanyaan pertanyaan2 = new Pertanyaan();
-        pertanyaan2.setIsi("Apakah minumannya enak?");
-        pertanyaanRepository.save(pertanyaan2);
     }
 
-    private void saveBobot() {
-        Pertanyaan pertanyaan = pertanyaanRepository.findPertanyaanByIdNative(1L);
-
-        Bobot bobot1 = new Bobot();
-        bobot1.setPertanyaan(pertanyaan);
-        bobot1.setPilihan("Baik");
-        bobot1.setNilai(5);
-        bobotRepository.save(bobot1);
-
-        Bobot bobot2 = new Bobot();
-        bobot2.setPertanyaan(pertanyaan);
-        bobot2.setPilihan("Buruk");
-        bobot2.setNilai(1);
-        bobotRepository.save(bobot2);
+    private void savePertanyaan(String isi) {
+        Pertanyaan pertanyaan = new Pertanyaan();
+        pertanyaan.setIsi(isi);
+        pertanyaanRepository.save(pertanyaan);
     }
 
-    private void saveRatingCatering() {
-        Pertanyaan pertanyaan = pertanyaanRepository.findPertanyaanByIdNative(1L);
-        User user = userRepository.findByNrp("111");
+    private void saveBobotAll() {
+        saveBobot(1L, "Nikmat", 5);
+        saveBobot(1L, "Lumayan", 3);
+        saveBobot(1L, "Buruk", 1);
+        saveBobot(2L, "Nikmat", 5);
+        saveBobot(2L, "Lumayan", 1);
+    }
+
+    private void saveBobot(Long id, String pilihan, int nilai) {
+        Pertanyaan pertanyaan = pertanyaanRepository.findPertanyaanByIdNative(id);
+        Bobot bobot = new Bobot();
+        bobot.setPertanyaan(pertanyaan);
+        bobot.setPilihan(pilihan);
+        bobot.setNilai(nilai);
+        bobotRepository.save(bobot);
+    }
+
+    private void saveRatingCateringAll() {
+        saveRatingCatering("111", 1L, 5);
+        saveRatingCatering("111", 2L, 3);
+        saveRatingCatering("112", 3L, 1);
+
+    }
+
+    private void saveRatingCatering(String nrp, Long idPertanyaan, int nilai) {
+        Pertanyaan pertanyaan = pertanyaanRepository.findPertanyaanByIdNative(idPertanyaan);
+        User user = userRepository.findByNrp(nrp);
 
         RatingCatering ratingCatering = new RatingCatering();
-        ratingCatering.setNilai(1);
+        ratingCatering.setNilai(nilai);
         ratingCatering.setPertanyaan(pertanyaan);
         ratingCatering.setUser(user);
 
         ratingCateringRepository.save(ratingCatering);
     }
 
-    private void saveAduanLaundry() {
-        User user = userRepository.findByNrp("111");
+    private void saveAduanLaundryAll() {
+        saveAduanLaundry("111", "Mess Joyfull", "1", "Pakaian Dinas", "Tertukar");
+        saveAduanLaundry("111", "Mess Joyfull", "1", "Pakaian Kaos", "Hilang");
+        saveAduanLaundry("112", "Mess Joyfull", "2", "Pakaian Kerja", "Tertukar");
+    }
+
+    private void saveAduanLaundry(String nrp, String mess, String noKamar, String jenisPakaian, String deviasi) {
+        User user = userRepository.findByNrp(nrp);
         Laundry laundry = new Laundry();
         laundry.setUser(user);
-        laundry.setMess("Mess Joyfull");
-        laundry.setNo_kamar("1");
-        laundry.setJenis_pakaian("Pakaian Dinas");
-        laundry.setJenis_deviasi("Kotor");
-        laundry.setTanggal_loundry(new Date());
+        laundry.setMess(mess);
+        laundry.setNo_kamar(noKamar);
+        laundry.setJenis_pakaian(jenisPakaian);
+        laundry.setJenis_deviasi(deviasi);
+        laundry.setTanggal_laundry(new Date());
 
         laundryRepository.save(laundry);
     }
@@ -219,6 +245,18 @@ public class DatabaseSeeder implements ApplicationRunner {
         recordHousekeepingRepository.save(recordHousekeeping);
     }
 
+    private void saveMessAll() {
+        saveMess("Mess Funny");
+        saveMess("Mess Enjoy");
+        saveMess("Mess Security");
+        saveMess("Mess Good");
+    }
+
+    private void saveMess(String name) {
+        Mess mess = new Mess();
+        mess.setName(name);
+        messRepository.save(mess);
+    }
 
     private void saveRoleIfNotExists(Role role) {
         if (roleRepository.findByName(role.getName()) == null) {

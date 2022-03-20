@@ -1,23 +1,24 @@
 package com.asaproject.asalife.domains.models.responses;
 
+import com.asaproject.asalife.domains.entities.User;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
-import java.util.Date;
+import javax.persistence.*;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LaundryDto {
+public class CateringDto {
     private long id;
+    private String userName;
     private String userNrp;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String mess;
-    private String no_kamar;
-    private String jenis_pakaian;
-    private String jenis_deviasi;
-    private Date tanggal_laundry;
+    private String lokasi;
+    private String deskripsi;
+    private String kritik_saran;
     private String status;
 }
