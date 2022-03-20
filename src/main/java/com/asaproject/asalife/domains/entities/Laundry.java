@@ -39,8 +39,8 @@ public class Laundry extends Auditable implements Serializable {
     @Column(nullable = false)
     private String jenis_deviasi;
 
-    @Column(nullable = false)
-    private Date tanggal_loundry;
+    @Column
+    private Date tanggal_laundry;
 
     @Column(nullable = false)
     private String status = "WAITING";

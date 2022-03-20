@@ -55,7 +55,7 @@ public class LaundryServiceImpl implements LaundryService{
 
         laundry.setNo_kamar(laundryRequest.getNo_kamar());
         laundry.setJenis_deviasi(laundryRequest.getJenis_deviasi());
-        laundry.setTanggal_loundry(laundryRequest.getTanggal_loundry());
+        laundry.setTanggal_laundry(laundryRequest.getTanggal_loundry());
         laundry.setJenis_pakaian(laundryRequest.getJenis_pakaian());
         laundry.setMess(laundryRequest.getMess());
         laundry.setUser(user);

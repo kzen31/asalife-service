@@ -147,7 +147,7 @@ public class DatabaseSeeder implements ApplicationRunner {
         laundry.setNo_kamar(noKamar);
         laundry.setJenis_pakaian(jenisPakaian);
         laundry.setJenis_deviasi(deviasi);
-        laundry.setTanggal_loundry(new Date());
+        laundry.setTanggal_laundry(new Date());
 
         laundryRepository.save(laundry);
     }

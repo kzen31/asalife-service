@@ -18,6 +18,6 @@ public class LaundryDto {
     private String no_kamar;
     private String jenis_pakaian;
     private String jenis_deviasi;
-    private Date tanggal_loundry;
+    private Date tanggal_laundry;
     private String status;
 }
