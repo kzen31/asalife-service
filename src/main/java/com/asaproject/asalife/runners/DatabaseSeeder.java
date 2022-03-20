@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
 import java.util.Arrays;
+import java.util.Date;
 
 @Slf4j
 @Transactional
@@ -26,6 +27,7 @@ public class DatabaseSeeder implements ApplicationRunner {
     private final PertanyaanRepository pertanyaanRepository;
     private final BobotRepository bobotRepository;
     private final RatingCateringRepository ratingCateringRepository;
+    private final LaundryRepository laundryRepository;
     private final MessRepository messRepository;
 
 
@@ -34,6 +36,7 @@ public class DatabaseSeeder implements ApplicationRunner {
         log.info("Seeding DB");
         saveRoles();
         saveUsers();
+        saveAduanLaundryAll();
         saveMessAll();
         saveAduanCateringAll();
         savePertanyaanAll();
@@ -148,6 +151,25 @@ public class DatabaseSeeder implements ApplicationRunner {
         ratingCatering.setUser(user);
 
         ratingCateringRepository.save(ratingCatering);
+    }
+
+    private void saveAduanLaundryAll() {
+        saveAduanLaundry("111", "Mess Joyfull", "1", "Pakaian Dinas", "Tertukar");
+        saveAduanLaundry("111", "Mess Joyfull", "1", "Pakaian Kaos", "Hilang");
+        saveAduanLaundry("112", "Mess Joyfull", "2", "Pakaian Kerja", "Tertukar");
+    }
+
+    private void saveAduanLaundry(String nrp, String mess, String noKamar, String jenisPakaian, String deviasi) {
+        User user = userRepository.findByNrp(nrp);
+        Laundry laundry = new Laundry();
+        laundry.setUser(user);
+        laundry.setMess(mess);
+        laundry.setNo_kamar(noKamar);
+        laundry.setJenis_pakaian(jenisPakaian);
+        laundry.setJenis_deviasi(deviasi);
+        laundry.setTanggal_laundry(new Date());
+
+        laundryRepository.save(laundry);
     }
 
     private void saveMessAll() {
