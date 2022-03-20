@@ -26,6 +26,7 @@ public class DatabaseSeeder implements ApplicationRunner {
     private final PertanyaanRepository pertanyaanRepository;
     private final BobotRepository bobotRepository;
     private final RatingCateringRepository ratingCateringRepository;
+    private final MessRepository messRepository;
 
 
     @Override
@@ -33,6 +34,7 @@ public class DatabaseSeeder implements ApplicationRunner {
         log.info("Seeding DB");
         saveRoles();
         saveUsers();
+        saveMessAll();
         saveAduanCateringAll();
         savePertanyaanAll();
         saveBobotAll();
@@ -146,6 +148,19 @@ public class DatabaseSeeder implements ApplicationRunner {
         ratingCatering.setUser(user);
 
         ratingCateringRepository.save(ratingCatering);
+    }
+
+    private void saveMessAll() {
+        saveMess("Mess Funny");
+        saveMess("Mess Enjoy");
+        saveMess("Mess Security");
+        saveMess("Mess Good");
+    }
+
+    private void saveMess(String name) {
+        Mess mess = new Mess();
+        mess.setName(name);
+        messRepository.save(mess);
     }
 
     private void saveRoleIfNotExists(Role role) {
