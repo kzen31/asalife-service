@@ -1,10 +1,8 @@
 package com.asaproject.asalife.runners;
 
 import com.asaproject.asalife.domains.ERole;
-import com.asaproject.asalife.domains.entities.Role;
-import com.asaproject.asalife.domains.entities.User;
-import com.asaproject.asalife.repositories.RoleRepository;
-import com.asaproject.asalife.repositories.UserRepository;
+import com.asaproject.asalife.domains.entities.*;
+import com.asaproject.asalife.repositories.*;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,12 +22,21 @@ public class DatabaseSeeder implements ApplicationRunner {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final CateringRepository cateringRepository;
+    private final PertanyaanRepository pertanyaanRepository;
+    private final BobotRepository bobotRepository;
+    private final RatingCateringRepository ratingCateringRepository;
+
 
     @Override
     public void run(ApplicationArguments args) {
         log.info("Seeding DB");
         saveRoles();
         saveUsers();
+        saveAduanCateringAll();
+        savePertanyaanAll();
+        saveBobotAll();
+        saveRatingCateringAll();
     }
 
     private void saveRoles() {
@@ -75,6 +82,78 @@ public class DatabaseSeeder implements ApplicationRunner {
         registerUserAdminIfNotExists(superuser);
     }
 
+    private void saveAduanCateringAll() {
+        saveCatering("111", "Gosong", "Mess Enjoy", "Jangan Gosong");
+        saveCatering("111", "Asin", "Mess Enjoy", "Jangan Asin");
+        saveCatering("112", "Hambar", "Mess Healthy", "Tambah garam");
+
+    }
+
+    private void saveCatering(String nrp, String deskripsi, String lokasi, String kritikSaran) {
+        Catering catering = new Catering();
+        catering.setUser(userRepository.findByNrp(nrp));
+        catering.setDeskripsi(deskripsi);
+        catering.setLokasi(lokasi);
+        catering.setKritik_saran(kritikSaran);
+
+        cateringRepository.save(catering);
+    }
+
+    private void savePertanyaanAll() {
+        savePertanyaan("Apakah makanannya enak?");
+        savePertanyaan("Apakah minumannya enak?");
+        savePertanyaan("Tingkat Pelayanan?");
+
+    }
+
+    private void savePertanyaan(String isi) {
+        Pertanyaan pertanyaan = new Pertanyaan();
+        pertanyaan.setIsi(isi);
+        pertanyaanRepository.save(pertanyaan);
+    }
+
+    private void saveBobotAll() {
+        saveBobot(1L, "Nikmat", 5);
+        saveBobot(1L, "Lumayan", 3);
+        saveBobot(1L, "Buruk", 1);
+        saveBobot(2L, "Nikmat", 5);
+        saveBobot(2L, "Lumayan", 1);
+    }
+
+    private void saveBobot(Long id, String pilihan, int nilai) {
+        Pertanyaan pertanyaan = pertanyaanRepository.findPertanyaanByIdNative(id);
+        Bobot bobot = new Bobot();
+        bobot.setPertanyaan(pertanyaan);
+        bobot.setPilihan(pilihan);
+        bobot.setNilai(nilai);
+        bobotRepository.save(bobot);
+    }
+
+    private void saveRatingCateringAll() {
+        saveRatingCatering("111", 1L, 5);
+        saveRatingCatering("111", 2L, 3);
+        saveRatingCatering("112", 3L, 1);
+
+    }
+
+    private void saveRatingCatering(String nrp, Long idPertanyaan, int nilai) {
+        Pertanyaan pertanyaan = pertanyaanRepository.findPertanyaanByIdNative(idPertanyaan);
+        User user = userRepository.findByNrp(nrp);
+
+        RatingCatering ratingCatering = new RatingCatering();
+        ratingCatering.setNilai(nilai);
+        ratingCatering.setPertanyaan(pertanyaan);
+        ratingCatering.setUser(user);
+
+        ratingCateringRepository.save(ratingCatering);
+    }
+
+    private void saveRoleIfNotExists(Role role) {
+        if (roleRepository.findByName(role.getName()) == null) {
+            roleRepository.save(role);
+        }
+    }
+
     private void registerUserAdminIfNotExists(User user) {
         if (userRepository.findByNrp(user.getNrp()) == null) {
             try {
@@ -82,12 +161,6 @@ public class DatabaseSeeder implements ApplicationRunner {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    private void saveRoleIfNotExists(Role role) {
-        if (roleRepository.findByName(role.getName()) == null) {
-            roleRepository.save(role);
         }
     }
 }

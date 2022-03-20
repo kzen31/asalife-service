@@ -21,7 +21,7 @@ public interface UserService {
 
     User getUser(String nrp);
 
-     List<User> getUsers();
+    List<User> getUsers();
 
     boolean getIsNrpAvailable(String nrp);
 
