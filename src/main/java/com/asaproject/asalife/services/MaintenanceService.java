@@ -16,11 +16,11 @@ public interface MaintenanceService {
 
     List<MaintenanceDto> getAllPicMaintenance(Principal principal);
 
-    MaintenanceDto addMaintenance(Principal principal, MaintenanceRequest maintenanceRequest);
+    void addMaintenance(Principal principal, MaintenanceRequest maintenanceRequest);
 
-    MaintenanceDto updateOrder(Long id, MaintenanceOrder maintenanceOrder) throws Exception;
+    void updateOrder(Long id, MaintenanceOrder maintenanceOrder) throws Exception;
 
-    MaintenanceDto updateOrderStatus(Long id, StatusMaintenance StatusMaintenance) throws Exception;
+    void updateOrderStatus(Long id, StatusMaintenance StatusMaintenance) throws Exception;
 
     void cancelOrder(Long id) throws Exception;
 }

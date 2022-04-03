@@ -7,12 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CateringDto {
-    private long id;
-    private String userName;
-    private String userNrp;
-    private String lokasi;
-    private String deskripsi;
-    private String kritik_saran;
+public class ResponseTemplate {
     private String status;
+    private String message;
 }

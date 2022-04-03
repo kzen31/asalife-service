@@ -20,7 +20,7 @@ public interface LaundryService {
 
     void addLaundry(Principal principal, LaundryRequest laundryRequest);
 
-    List<LaundryDto> updateStatusLaundry(Long id, @RequestBody StatusLaundry statusLaundry)throws Exception;
+    void updateStatusLaundry(Long id, @RequestBody StatusLaundry statusLaundry)throws Exception;
 
     Boolean isLaundryExist(Long id);
 }

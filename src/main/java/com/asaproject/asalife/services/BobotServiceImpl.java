@@ -3,8 +3,10 @@ package com.asaproject.asalife.services;
 import com.asaproject.asalife.domains.entities.Bobot;
 import com.asaproject.asalife.domains.entities.Pertanyaan;
 import com.asaproject.asalife.domains.models.requests.BobotRequest;
+import com.asaproject.asalife.domains.models.responses.BobotDto;
 import com.asaproject.asalife.repositories.BobotRepository;
 import com.asaproject.asalife.repositories.PertanyaanRepository;
+import com.asaproject.asalife.utils.mappers.BobotMapper;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,14 +22,15 @@ import java.util.List;
 public class BobotServiceImpl implements BobotService {
     private final BobotRepository bobotRepository;
     private final PertanyaanRepository pertanyaanRepository;
+    private final BobotMapper bobotMapper;
 
     @Override
-    public List<Bobot> getListBobot() {
-        return bobotRepository.findAll();
+    public List<BobotDto> getListBobot() {
+        return bobotMapper.mapBobotDtoToList(bobotRepository.findAll());
     }
 
     @Override
-    public List<Bobot> addBobot(BobotRequest bobotRequest) throws Exception {
+    public void addBobot(BobotRequest bobotRequest) throws Exception {
         Pertanyaan pertanyaan = pertanyaanRepository.findPertanyaanByIdNative(bobotRequest.getId_pertanyaan());
 
         if (ObjectUtils.isEmpty(pertanyaan) || !ObjectUtils.isEmpty(pertanyaan.getDeletedAt())) {
@@ -39,27 +42,24 @@ public class BobotServiceImpl implements BobotService {
         bobot.setNilai(bobotRequest.getNilai());
         bobot.setPertanyaan(pertanyaan);
         bobotRepository.save(bobot);
-
-        return bobotRepository.findAllByPertanyaan_Id(bobotRequest.getId_pertanyaan());
     }
 
     @Override
-    public List<Bobot> getListBobotByPertanyaan(Long id) throws Exception {
+    public List<BobotDto> getListBobotByPertanyaan(Long id) throws Exception {
         Pertanyaan pertanyaan = pertanyaanRepository.findPertanyaanByIdNative(id);
         if (ObjectUtils.isEmpty(pertanyaan)  || !ObjectUtils.isEmpty(pertanyaan.getDeletedAt())) {
             throw new NotFoundException("PERTANYAAN NOT FOUND");
         }
-        return bobotRepository.findAllByPertanyaan_Id(id);
+        return bobotMapper.mapBobotDtoToList(bobotRepository.findAllByPertanyaan_Id(id));
     }
 
     @Override
-    public List<Bobot> deleteBobot(Long id) throws Exception {
+    public void deleteBobot(Long id) throws Exception {
         Bobot bobot = bobotRepository.findBobotByIdNative(id);
         if (ObjectUtils.isEmpty(bobot) || !ObjectUtils.isEmpty(bobot.getDeletedAt())) {
             throw new NotFoundException("BOBOT NOT FOUND");
         }
 
         bobot.setDeletedAt(new Date());
-        return bobotRepository.findAllByPertanyaan(bobot.getPertanyaan());
     }
 }

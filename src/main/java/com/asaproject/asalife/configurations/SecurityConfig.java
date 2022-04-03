@@ -6,6 +6,7 @@ import com.asaproject.asalife.utils.filters.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,6 +18,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -41,7 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private static final String[] AUTH_LIST = {
-            "/user/**", "/my/**", "/profile/**", "/admin/**", "/password", "/notifications/**"
+            "/admin/**", "/catering/**", "/housekeeping/**", "/laundry/**", "/maintenance", "/mess/**", "/users/my"
     };
 
     @Override
@@ -51,13 +53,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().httpBasic().disable()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().authorizeRequests()
-//                .antMatchers(AUTH_LIST).authenticated()
+                .and()
+                .authorizeRequests()
+                    .antMatchers(AUTH_LIST).authenticated()
 //                .and().authorizeRequests()
 //                .antMatchers("/worker/**").hasAnyAuthority(ERole.Constants.WORKER)
-                .anyRequest()
-                .permitAll()
+                    .anyRequest().permitAll()
                 .and().exceptionHandling()
+                .authenticationEntryPoint(new AuthenticationEntryPointConfig())
                 .and().addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
 

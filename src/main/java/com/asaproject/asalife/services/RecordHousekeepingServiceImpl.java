@@ -31,13 +31,13 @@ public class RecordHousekeepingServiceImpl implements RecordHousekeepingService{
 
     @Override
     public List<RecordResponse> getAllRecord() {
-        return housekeepingMapper.createTemplateRecordList(recordHousekeepingRepository.findAll());
+        return housekeepingMapper.createTemplateRecordList(recordHousekeepingRepository.findAllAndOrder());
     }
 
     @Override
     public List<RecordResponse> getMyRecord(Principal principal) {
         User user = UserAdminMapper.principalToUser(principal);
-        List<RecordHousekeeping> recordHousekeeping = recordHousekeepingRepository.findAllByUser(user);
+        List<RecordHousekeeping> recordHousekeeping = recordHousekeepingRepository.findAllByUserAndOrder(user.getId());
         return housekeepingMapper.createTemplateRecordList(recordHousekeeping);
     }
 
@@ -47,7 +47,7 @@ public class RecordHousekeepingServiceImpl implements RecordHousekeepingService{
         if (ObjectUtils.isEmpty(user)) {
             throw new NotFoundException("USER_NOT_FOUND");
         }
-        List<RecordHousekeeping> recordHousekeeping = recordHousekeepingRepository.findAllByUser(user);
+        List<RecordHousekeeping> recordHousekeeping = recordHousekeepingRepository.findAllByUserAndOrder(user.getId());
         return housekeepingMapper.createTemplateRecordList(recordHousekeeping);
     }
 

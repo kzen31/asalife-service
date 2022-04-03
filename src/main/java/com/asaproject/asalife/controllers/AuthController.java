@@ -21,6 +21,7 @@ import java.net.URI;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class AuthController extends HandlerController {
     private final UserService userService;
     private final TokenService tokenService;
@@ -89,7 +90,7 @@ public class AuthController extends HandlerController {
         } catch (Exception e) {
             e.printStackTrace();
             if (e.getMessage().equals("Token Not Found")) {
-                return ResponseEntity.notFound().build();
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Token Not Found", e.getCause());
             }
             throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, "Failed", e.getCause());
         }
@@ -103,10 +104,9 @@ public class AuthController extends HandlerController {
         } catch (Exception e) {
             e.printStackTrace();
             if (e.getMessage().equals("Token Not Found")) {
-                return ResponseEntity.notFound().build();
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Token Not Found", e.getCause());
             }
-            return ResponseEntity.badRequest().build();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found", e.getCause());
         }
     }
-
 }

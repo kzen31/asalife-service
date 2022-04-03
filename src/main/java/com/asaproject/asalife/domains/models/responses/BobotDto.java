@@ -1,5 +1,4 @@
 package com.asaproject.asalife.domains.models.responses;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,12 +6,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CateringDto {
+public class BobotDto {
     private long id;
-    private String userName;
-    private String userNrp;
-    private String lokasi;
-    private String deskripsi;
-    private String kritik_saran;
-    private String status;
+    private String pilihan;
+    private Integer nilai;
 }

@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/admin")
-public class AdminController {
+@RequestMapping("/api/admin")
+public class AdminController extends HandlerController {
 
     @Secured({ ERole.Constants.ADMIN })
     @GetMapping("/home")

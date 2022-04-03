@@ -4,15 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CateringDto {
+public class PertanyaanDto {
     private long id;
-    private String userName;
-    private String userNrp;
-    private String lokasi;
-    private String deskripsi;
-    private String kritik_saran;
-    private String status;
+    private List<BobotDto> bobots;
+    private String isi;
 }

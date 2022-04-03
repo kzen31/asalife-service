@@ -4,7 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-public class WebController {
+public class WebController extends HandlerController {
     @RequestMapping(value = "/index")
     public String index() {
         return "index";

@@ -15,4 +15,12 @@ public interface RatingCateringRepository extends JpaRepository<RatingCatering, 
     RatingCatering findRatingCateringLastAdByUser(@Param("id") Long id);
 
     List<RatingCatering> findAllByUser(User user);
+
+    @Query(value = "SELECT * FROM RatingCatering c " +
+            "ORDER BY c.created_at ASC ", nativeQuery = true)
+    List<RatingCatering> findAllAndOrder();
+
+    @Query(value = "SELECT * FROM RatingCatering c WHERE c.user_id = :id " +
+            "ORDER BY c.created_at ASC ", nativeQuery = true)
+    List<RatingCatering> findAllByUserAndOrder(@Param("id") Long id);
 }

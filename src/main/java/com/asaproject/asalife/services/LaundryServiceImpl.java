@@ -38,14 +38,14 @@ public class LaundryServiceImpl implements LaundryService{
 
     @Override
     public List<Laundry> getAllLaundry() {
-       return laundryRepository.findAll();
+       return laundryRepository.findAllAndOrder();
     }
 
 
     @Override
     public List<Laundry> getAllLaundryByUser(Principal principal) {
         User user = UserAdminMapper.principalToUser(principal);
-        return laundryRepository.findAllByUser(user);
+        return laundryRepository.findAllByUserAndOrder(user.getId());
     }
 
     @Override
@@ -63,7 +63,7 @@ public class LaundryServiceImpl implements LaundryService{
     }
 
     @Override
-    public List<LaundryDto> updateStatusLaundry(Long id, @RequestBody StatusLaundry statusLaundry) throws Exception{
+    public void updateStatusLaundry(Long id, @RequestBody StatusLaundry statusLaundry) throws Exception{
         if (!isLaundryExist(id)) {
             throw new NotFoundException("LAUNDRY_NOT_FOUND");
         }
@@ -72,8 +72,6 @@ public class LaundryServiceImpl implements LaundryService{
         Laundry laundry = laundryRepository.findLaundryByIdNative(id);
         laundry.setStatus(status);
         laundryRepository.save(laundry);
-
-        return getAllLaundryDto();
     }
 
     @Override
