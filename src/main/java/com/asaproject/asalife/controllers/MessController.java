@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class MessController extends HandlerController {
 
     @Secured({ ERole.Constants.ADMIN })
     @PostMapping("/add")
-    public ResponseEntity<ApiResponse> addMessName(@RequestBody MessRequest messRequest) {
+    public ResponseEntity<ApiResponse> addMessName(@Valid @RequestBody MessRequest messRequest) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/add").toUriString());
 
         try {

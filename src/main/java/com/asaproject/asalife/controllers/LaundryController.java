@@ -35,7 +35,7 @@ public class LaundryController extends HandlerController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<ApiResponse> addLaundryByUser(Principal principal, @RequestBody LaundryRequest laundryRequest) {
+    public ResponseEntity<ApiResponse> addLaundryByUser(Principal principal, @Valid @RequestBody LaundryRequest laundryRequest) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/add").toUriString());
         try {
             laundryService.addLaundry(principal, laundryRequest);
@@ -47,7 +47,7 @@ public class LaundryController extends HandlerController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<ApiResponse> updateStatusLaundry(@PathVariable Long id, @RequestBody StatusLaundry statusLaundry){
+    public ResponseEntity<ApiResponse> updateStatusLaundry(@PathVariable Long id, @Valid @RequestBody StatusLaundry statusLaundry){
         try {
             laundryService.updateStatusLaundry(id, statusLaundry);
             return ResponseEntity.ok(ApiResponse.builder().message("Successfully Update Status Laundry").build());

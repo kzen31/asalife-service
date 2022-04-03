@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.security.Principal;
 import java.util.List;
@@ -43,7 +44,7 @@ public class MaintenanceController extends HandlerController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<ApiResponse> addOrderMaintenance(Principal principal, @RequestBody MaintenanceRequest maintenanceRequest) {
+    public ResponseEntity<ApiResponse> addOrderMaintenance(Principal principal, @Valid @RequestBody MaintenanceRequest maintenanceRequest) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/add").toUriString());
         try {
             maintenanceService.addMaintenance(principal, maintenanceRequest);
@@ -55,7 +56,7 @@ public class MaintenanceController extends HandlerController {
     }
 
     @PutMapping("/update-order/{id}")
-    public ResponseEntity<ApiResponse> updateOrderMaintenance(@PathVariable Long id, @RequestBody MaintenanceOrder maintenanceOrder) {
+    public ResponseEntity<ApiResponse> updateOrderMaintenance(@PathVariable Long id, @Valid @RequestBody MaintenanceOrder maintenanceOrder) {
         try {
             maintenanceService.updateOrder(id, maintenanceOrder);
             return ResponseEntity.ok(ApiResponse.builder().message("Successfully Update Order PIC").build());
@@ -67,7 +68,7 @@ public class MaintenanceController extends HandlerController {
     }
 
     @PutMapping("/update-status-order/{id}")
-    public ResponseEntity<ApiResponse> updateStatusOrderMaintenance(@PathVariable Long id, @RequestBody StatusMaintenance statusMaintenance) {
+    public ResponseEntity<ApiResponse> updateStatusOrderMaintenance(@PathVariable Long id, @Valid @RequestBody StatusMaintenance statusMaintenance) {
         try {
             maintenanceService.updateOrderStatus(id, statusMaintenance);
             return ResponseEntity.ok(ApiResponse.builder().message("Successfully Update Status Order").build());
@@ -103,7 +104,7 @@ public class MaintenanceController extends HandlerController {
     }
 
     @PostMapping("/task-add")
-    public ResponseEntity<ApiResponse> addTaskMaintenance(Principal principal, @RequestBody TaskMaintenanceRequest taskMaintenanceRequest){
+    public ResponseEntity<ApiResponse> addTaskMaintenance(Principal principal, @Valid @RequestBody TaskMaintenanceRequest taskMaintenanceRequest){
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/task-add").toUriString());
         try {
             taskMaintenanceService.addTask(principal, taskMaintenanceRequest);
@@ -139,9 +140,9 @@ public class MaintenanceController extends HandlerController {
     }
 
     @PutMapping("/task-update/{id}")
-    public ResponseEntity<ApiResponse> updateTaskMaintenance(@PathVariable Long id, @RequestBody StatusTaskMaintenance statusTaskMaintenance) {
+    public ResponseEntity<ApiResponse> updateTaskMaintenance(@PathVariable Long id, @Valid @RequestBody StatusTaskMaintenance statusTaskMaintenance) {
         try {
-            TaskMaintenanceDto taskMaintenanceDto = taskMaintenanceService.updateStatusTask(id, statusTaskMaintenance.getStatus());
+            taskMaintenanceService.updateStatusTask(id, statusTaskMaintenance.getStatus());
             return ResponseEntity.ok(ApiResponse.builder().message("Successfully Update Task Maintenance").build());
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());

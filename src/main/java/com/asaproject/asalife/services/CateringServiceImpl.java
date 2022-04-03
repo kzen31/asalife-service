@@ -32,14 +32,18 @@ public class CateringServiceImpl implements CateringService{
 
     @Override
     public List<CateringDto> getCaterings() {
-        return cateringMapper.mapCateringDtoToList(cateringRepo.findAll());
+        return cateringMapper.mapCateringDtoToList(cateringRepo.findAllByOrderByCreatedAtAsc());
     }
 
     @Override
     public List<CateringDto> getCateringsByStatus(ECateringStatus eCateringStatus) throws Exception {
-        String status = StatusCateringUserMapper.mapStatus(eCateringStatus);
 
-        return cateringMapper.mapCateringDtoToList(cateringRepo.findAllByStatus(status));
+        if (ObjectUtils.isEmpty(eCateringStatus)) {
+            return getCaterings();
+        }
+
+        String status = StatusCateringUserMapper.mapStatus(eCateringStatus);
+        return cateringMapper.mapCateringDtoToList(cateringRepo.findAllByStatusOrderByCreatedAtAsc(status));
     }
 
     @Override
@@ -68,7 +72,7 @@ public class CateringServiceImpl implements CateringService{
     public List<CateringDto> getUserCaterings(Principal principal) {
         User user = UserAdminMapper.principalToUser(principal);
 
-        List<Catering> caterings = cateringRepo.findByUser(user);
+        List<Catering> caterings = cateringRepo.findByUserOrderByCreatedAtAsc(user);
         return cateringMapper.mapCateringDtoToList(caterings);
     }
 

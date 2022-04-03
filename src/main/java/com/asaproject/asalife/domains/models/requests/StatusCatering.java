@@ -7,13 +7,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Setter
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class StatusCatering {
-    @NotBlank(message = "Status is mandatory")
+    @NotNull(message = "Name is mandatory")
     @ValidEnum(enumClass = ECateringStatus.class, groups = ECateringStatus.class, message = "Status is not valid")
     private ECateringStatus status;
 }

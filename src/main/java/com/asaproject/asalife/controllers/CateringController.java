@@ -65,7 +65,7 @@ public class CateringController extends HandlerController {
     }
 
     @GetMapping("/all-by-status")
-    public ResponseEntity<List<CateringDto>> getAllCateringsByStatus(@RequestParam("status") ECateringStatus status) {
+    public ResponseEntity<List<CateringDto>> getAllCateringsByStatus(@RequestParam(required = false) ECateringStatus status) {
         try {
             List<CateringDto> cateringDtoList = cateringService.getCateringsByStatus(status);
             return ResponseEntity.ok(cateringDtoList);
@@ -77,7 +77,7 @@ public class CateringController extends HandlerController {
     @Secured({ ERole.Constants.MEGAUSER })
     @PutMapping("/update-status/{id}")
     public ResponseEntity<ApiResponse> updateStatusAduanCatering(@PathVariable Long id,
-                                                              @RequestBody StatusCatering statusCatering) {
+                                                              @Valid @RequestBody StatusCatering statusCatering) {
         try {
             cateringService.updateStatusCatering(id, statusCatering);
             return ResponseEntity.ok(ApiResponse.builder().message("Successfully Update Status Aduan Catering").build());
@@ -108,7 +108,7 @@ public class CateringController extends HandlerController {
 
     @Secured({ ERole.Constants.ADMIN })
     @PostMapping("/pertanyaan-add")
-    public ResponseEntity<ApiResponse> addPertanyaan(@RequestBody PertanyaanRequest pertanyaanRequest) {
+    public ResponseEntity<ApiResponse> addPertanyaan(@Valid @RequestBody PertanyaanRequest pertanyaanRequest) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/pertanyaan-add").toUriString());
         try {
             pertanyaanService.addPertanyaan(pertanyaanRequest);
@@ -121,7 +121,7 @@ public class CateringController extends HandlerController {
 
     @Secured({ ERole.Constants.ADMIN })
     @PutMapping("/pertanyaan-update/{id}")
-    public ResponseEntity<PertanyaanDto> updatePertanyaan(@PathVariable Long id, @RequestBody PertanyaanRequest pertanyaanRequest) {
+    public ResponseEntity<PertanyaanDto> updatePertanyaan(@PathVariable Long id, @Valid @RequestBody PertanyaanRequest pertanyaanRequest) {
         try {
             PertanyaanDto pertanyaan = pertanyaanService.updatePertanyaanIfExist(id, pertanyaanRequest);
             return ResponseEntity.ok(pertanyaan);
@@ -177,7 +177,7 @@ public class CateringController extends HandlerController {
 
     @Secured({ ERole.Constants.ADMIN })
     @PostMapping("/bobot-add")
-    public ResponseEntity<ApiResponse> addBobotToPertanyaan(@RequestBody BobotRequest bobotRequest) {
+    public ResponseEntity<ApiResponse> addBobotToPertanyaan(@Valid @RequestBody BobotRequest bobotRequest) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/bobot-add").toUriString());
         try {
             bobotService.addBobot(bobotRequest);
@@ -215,7 +215,7 @@ public class CateringController extends HandlerController {
     }
 
     @PostMapping("/rating-catering-add")
-    public ResponseEntity<ApiResponse> addRatingCatering(Principal principal, @RequestBody RatingRequest ratingRequest) {
+    public ResponseEntity<ApiResponse> addRatingCatering(Principal principal, @Valid @RequestBody RatingRequest ratingRequest) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/rating-catering-add").toUriString());
         try {
             ratingCateringService.addRatingCatering(principal, ratingRequest);
@@ -229,7 +229,7 @@ public class CateringController extends HandlerController {
     }
 
     @PostMapping("/rating-catering-addbulk")
-    public ResponseEntity<ApiResponse> addRatingCateringBulk(Principal principal, @RequestBody List<RatingRequest> ratingRequestList) {
+    public ResponseEntity<ApiResponse> addRatingCateringBulk(Principal principal, @Valid @RequestBody List<RatingRequest> ratingRequestList) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/rating-catering-addbulk").toUriString());
         try {
             ratingCateringService.addRatingCateringBulk(principal, ratingRequestList);

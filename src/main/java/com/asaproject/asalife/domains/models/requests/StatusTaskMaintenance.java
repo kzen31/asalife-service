@@ -7,12 +7,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class StatusTaskMaintenance {
-    @NotEmpty(message = "Status is mandatory")
+    @NotNull(message = "Status is mandatory")
     @ValidEnum(enumClass = ETaskMaintenanceStatus.class, groups = ETaskMaintenanceStatus.class, message = "Status is not valid")
     private ETaskMaintenanceStatus status;
 }

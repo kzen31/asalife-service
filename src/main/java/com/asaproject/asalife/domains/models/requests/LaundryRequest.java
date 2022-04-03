@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Data
@@ -22,6 +23,6 @@ public class LaundryRequest {
     @NotEmpty(message = "jenis_deviasi is mandatory")
     private String jenis_deviasi;
 
-    @NotEmpty(message = "tanggal_loundry is mandatory")
+    @NotNull(message = "tanggal_loundry is mandatory")
     private Date tanggal_loundry;
 }

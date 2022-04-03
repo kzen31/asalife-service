@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.security.Principal;
 
@@ -42,7 +43,7 @@ public class HousekeepingController extends HandlerController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<ApiResponse> addHousekeepingByUser(Principal principal, @RequestBody HousekeepingRequest housekeepingRequest) {
+    public ResponseEntity<ApiResponse> addHousekeepingByUser(Principal principal, @Valid @RequestBody HousekeepingRequest housekeepingRequest) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/add").toUriString());
         try {
             housekeepingService.addByUser(principal, housekeepingRequest);
@@ -54,7 +55,7 @@ public class HousekeepingController extends HandlerController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<ApiResponse> updateStatusHousekeeping(@PathVariable Long id, @RequestBody StatusHousekeeping statusHousekeeping){
+    public ResponseEntity<ApiResponse> updateStatusHousekeeping(@PathVariable Long id, @Valid @RequestBody StatusHousekeeping statusHousekeeping){
         try {
             housekeepingService.updateStatusHousekeeping(id, statusHousekeeping);
             return ResponseEntity.ok(ApiResponse.builder().message("Successfully Update Aduan Housekeeping").build());
@@ -110,7 +111,7 @@ public class HousekeepingController extends HandlerController {
     }
 
     @PostMapping("/record-add/{id}")
-    public ResponseEntity<ApiResponse> addUserRecord(Principal principal, @PathVariable Long id, @RequestBody RecordHousekeepingRequest recordRequest) {
+    public ResponseEntity<ApiResponse> addUserRecord(Principal principal, @PathVariable Long id, @Valid @RequestBody RecordHousekeepingRequest recordRequest) {
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/record-add/{id}").toUriString());
         try {
             recordHousekeepingService.addRecord(principal, id, recordRequest);
@@ -124,7 +125,7 @@ public class HousekeepingController extends HandlerController {
     }
 
     @PutMapping("/record-update/{id}")
-    public ResponseEntity<ApiResponse> updateCeklisRecord(@PathVariable Long id, @RequestBody RecordHousekeepingRequest request) {
+    public ResponseEntity<ApiResponse> updateCeklisRecord(@PathVariable Long id, @Valid @RequestBody RecordHousekeepingRequest request) {
         try {
             recordHousekeepingService.verifyRecordStatus(id, request);
             return ResponseEntity.ok(ApiResponse.builder().message("Successfully Update Record").build());
