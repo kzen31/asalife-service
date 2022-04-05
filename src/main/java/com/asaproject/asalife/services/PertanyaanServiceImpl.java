@@ -3,8 +3,10 @@ package com.asaproject.asalife.services;
 import com.asaproject.asalife.domains.entities.Bobot;
 import com.asaproject.asalife.domains.entities.Pertanyaan;
 import com.asaproject.asalife.domains.models.requests.PertanyaanRequest;
+import com.asaproject.asalife.domains.models.responses.PertanyaanDto;
 import com.asaproject.asalife.repositories.BobotRepository;
 import com.asaproject.asalife.repositories.PertanyaanRepository;
+import com.asaproject.asalife.utils.mappers.PertanyaanMapper;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,17 +22,18 @@ import java.util.List;
 public class PertanyaanServiceImpl implements PertanyaanService{
     private final PertanyaanRepository pertanyaanRepository;
     private final BobotRepository bobotRepository;
+    private final PertanyaanMapper pertanyaanMapper;
 
     @Override
-    public List<Pertanyaan> getAllPertanyaan() {
-        return pertanyaanRepository.findAll();
+    public List<PertanyaanDto> getAllPertanyaan() {
+        return pertanyaanMapper.mapPertanyaanDtoToList(pertanyaanRepository.findAll());
     }
 
     @Override
-    public Pertanyaan addPertanyaan(PertanyaanRequest pertanyaanRequest) {
+    public void addPertanyaan(PertanyaanRequest pertanyaanRequest) {
         Pertanyaan pertanyaan = new Pertanyaan();
         pertanyaan.setIsi(pertanyaanRequest.getIsi());
-        return pertanyaanRepository.save(pertanyaan);
+        pertanyaanRepository.save(pertanyaan);
     }
 
     @Override
@@ -40,28 +43,28 @@ public class PertanyaanServiceImpl implements PertanyaanService{
             throw new NotFoundException("PERTANYAAN NOT FOUND");
         }
 
+        deletePertanyaanBobot(id);
         pertanyaan.setDeletedAt(new Date());
-        pertanyaanRepository.save(pertanyaan);
-        deletePertanyaanBobot(pertanyaan);
     }
 
     @Override
-    public void deletePertanyaanBobot(Pertanyaan pertanyaan) {
-        List<Bobot> bobotList = bobotRepository.findAllByPertanyaan(pertanyaan);
+    public void deletePertanyaanBobot(Long id) {
+        List<Bobot> bobotList = bobotRepository.findAllByPertanyaan_Id(id);
 
-        for (Bobot bobot : bobotList) {
-            bobot.setDeletedAt(new Date());
-            bobotRepository.save(bobot);
+        if (!ObjectUtils.isEmpty(bobotList)) {
+            for (Bobot bobot : bobotList) {
+                bobot.setDeletedAt(new Date());
+            }
         }
     }
 
     @Override
-    public Pertanyaan updatePertanyaanIfExist(Long id, PertanyaanRequest pertanyaanRequest) throws Exception {
+    public PertanyaanDto updatePertanyaanIfExist(Long id, PertanyaanRequest pertanyaanRequest) throws Exception {
         Pertanyaan pertanyaan = pertanyaanRepository.findPertanyaanByIdNative(id);
         if (ObjectUtils.isEmpty(pertanyaan) || !ObjectUtils.isEmpty(pertanyaan.getDeletedAt())) {
             throw new NotFoundException("PERTANYAAN NOT FOUND");
         } else
-            return updatePertanyaan(id, pertanyaanRequest);
+            return pertanyaanMapper.entityToPertanyaanDto(updatePertanyaan(id, pertanyaanRequest));
     }
 
     @Override
@@ -73,11 +76,11 @@ public class PertanyaanServiceImpl implements PertanyaanService{
     }
 
     @Override
-    public Pertanyaan getPertanyaanByID(Long id) throws Exception {
+    public PertanyaanDto getPertanyaanByID(Long id) throws Exception {
         Pertanyaan pertanyaan = pertanyaanRepository.findPertanyaanByIdNative(id);
         if (ObjectUtils.isEmpty(pertanyaan) || !ObjectUtils.isEmpty(pertanyaan.getDeletedAt())) {
             throw new NotFoundException("PERTANYAAN NOT FOUND");
         }
-        return pertanyaan;
+        return pertanyaanMapper.entityToPertanyaanDto(pertanyaan);
     }
 }

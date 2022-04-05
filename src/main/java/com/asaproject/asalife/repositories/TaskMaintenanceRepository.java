@@ -12,5 +12,8 @@ public interface TaskMaintenanceRepository extends JpaRepository<TaskMaintenance
     @Query(value = "SELECT * FROM Taskmaintenance c WHERE c.id = :id", nativeQuery = true)
     TaskMaintenance findTaskMaintenanceByIdNative(@Param("id") Long id);
 
-    List<TaskMaintenance> findAllByUser(User user);
+    List<TaskMaintenance> findAllByUserOrderByCreatedAtAsc(User user);
+
+    List<TaskMaintenance> findAllByOrderByCreatedAtAsc();
+
 }

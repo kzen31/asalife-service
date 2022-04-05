@@ -15,15 +15,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
+import java.net.URI;
 import java.security.Principal;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/housekeeping")
-public class HousekeepingController {
+@RequestMapping("/api/housekeeping")
+public class HousekeepingController extends HandlerController {
     private final HousekeepingService housekeepingService;
     private final RuangService ruangService;
     private final RuangDetailService ruangDetailService;
@@ -40,20 +43,23 @@ public class HousekeepingController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addHousekeepingByUser(Principal principal, @RequestBody HousekeepingRequest housekeepingRequest) {
+    public ResponseEntity<ApiResponse> addHousekeepingByUser(Principal principal, @Valid @RequestBody HousekeepingRequest housekeepingRequest) {
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/add").toUriString());
         try {
             housekeepingService.addByUser(principal, housekeepingRequest);
-            return ResponseEntity.ok("Success");
+            return ResponseEntity.created(uri)
+                    .body(ApiResponse.builder().message("Created Aduan HouseKeeping").build());
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<List<HousekeepingDto>> updateStatusHousekeeping(Long id, @RequestBody StatusHousekeeping statusHousekeeping){
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ApiResponse> updateStatusHousekeeping(@PathVariable Long id, @Valid @RequestBody StatusHousekeeping statusHousekeeping){
         try {
-            List<HousekeepingDto> housekeepingDtoList = housekeepingService.updateStatusHousekeeping(id, statusHousekeeping);
-            return ResponseEntity.ok(housekeepingDtoList);
+            housekeepingService.updateStatusHousekeeping(id, statusHousekeeping);
+            return ResponseEntity.ok(ApiResponse.builder().message("Successfully Update Aduan Housekeeping").build());
+
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {
@@ -66,8 +72,8 @@ public class HousekeepingController {
         return ResponseEntity.ok(ruangService.getAllRuang());
     }
 
-    @GetMapping("/ruang-detail")
-    public ResponseEntity<List<RuangDetailDto>> getAllRuangDetail(Long id) {
+    @GetMapping("/ruang-detail/{id}")
+    public ResponseEntity<List<RuangDetailDto>> getAllRuangDetail(@PathVariable Long id) {
         try {
             List<RuangDetailDto> ruangDetailList = ruangDetailService.getAllRuangDetail(id);
             return ResponseEntity.ok(ruangDetailList);
@@ -104,11 +110,13 @@ public class HousekeepingController {
         }
     }
 
-    @PostMapping("/record-add")
-    public ResponseEntity<String> addUserRecord(Principal principal, Long id, @RequestBody RecordHousekeepingRequest recordRequest) {
+    @PostMapping("/record-add/{id}")
+    public ResponseEntity<ApiResponse> addUserRecord(Principal principal, @PathVariable Long id, @Valid @RequestBody RecordHousekeepingRequest recordRequest) {
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/record-add/{id}").toUriString());
         try {
             recordHousekeepingService.addRecord(principal, id, recordRequest);
-            return ResponseEntity.ok("Succes");
+            return ResponseEntity.created(uri)
+                    .body(ApiResponse.builder().message("Created Record").build());
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {
@@ -116,11 +124,11 @@ public class HousekeepingController {
         }
     }
 
-    @PutMapping("/record-update")
-    public ResponseEntity<String> updateCeklisRecord(Long id, @RequestBody RecordHousekeepingRequest request) {
+    @PutMapping("/record-update/{id}")
+    public ResponseEntity<ApiResponse> updateCeklisRecord(@PathVariable Long id, @Valid @RequestBody RecordHousekeepingRequest request) {
         try {
             recordHousekeepingService.verifyRecordStatus(id, request);
-            return ResponseEntity.ok("Sucess");
+            return ResponseEntity.ok(ApiResponse.builder().message("Successfully Update Record").build());
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {

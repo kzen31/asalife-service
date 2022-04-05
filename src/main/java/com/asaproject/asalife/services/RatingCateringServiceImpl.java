@@ -63,13 +63,13 @@ public class RatingCateringServiceImpl implements RatingCateringService {
 
     @Override
     public List<RatingResponse> getAllRatingCatering() {
-        return cateringMapper.createTemplateRatingList(ratingCateringRepository.findAll());
+        return cateringMapper.createTemplateRatingList(ratingCateringRepository.findAllAndOrder());
     }
 
     @Override
     public List<RatingResponse> getUSerRatingCatering(Principal principal) {
         User user = UserAdminMapper.principalToUser(principal);
-        return cateringMapper.createTemplateRatingList(ratingCateringRepository.findAllByUser(user));
+        return cateringMapper.createTemplateRatingList(ratingCateringRepository.findAllByUserAndOrder(user.getId()));
     }
 
     @Override

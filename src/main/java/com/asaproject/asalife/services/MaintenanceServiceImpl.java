@@ -29,34 +29,34 @@ public class MaintenanceServiceImpl implements MaintenanceService{
 
     @Override
     public List<MaintenanceDto> getAllMaintenance() {
-        return maintenanceMapper.mapMaintenanceDtoToList(maintenanceRepository.findAll());
+        return maintenanceMapper.mapMaintenanceDtoToList(maintenanceRepository.findAllAndOrder());
     }
 
     @Override
     public List<MaintenanceDto> getAllUserMaintenance(Principal principal) {
         User user = UserAdminMapper.principalToUser(principal);
-        return maintenanceMapper.mapMaintenanceDtoToList(maintenanceRepository.findAllByUser(user));
+        return maintenanceMapper.mapMaintenanceDtoToList(maintenanceRepository.findAllByUserOrderByCreatedAtAsc(user));
     }
 
     @Override
     public List<MaintenanceDto> getAllPicMaintenance(Principal principal) {
         User user = UserAdminMapper.principalToUser(principal);
-        return maintenanceMapper.mapMaintenanceDtoToList(maintenanceRepository.findAllByPicNrp(user.getNrp()));
+        return maintenanceMapper.mapMaintenanceDtoToList(maintenanceRepository.findAllByPicNrpOrderByCreatedAtAsc(user.getNrp()));
     }
 
     @Override
-    public MaintenanceDto addMaintenance(Principal principal, MaintenanceRequest maintenanceRequest) {
+    public void addMaintenance(Principal principal, MaintenanceRequest maintenanceRequest) {
         User user = UserAdminMapper.principalToUser(principal);
         Maintenance maintenance = new Maintenance();
 
         maintenance.setUser(user);
         maintenance.setLokasi(maintenanceRequest.getLokasi());
         maintenance.setJenisAduan(maintenanceRequest.getJenisaduan());
-        return maintenanceMapper.entityToMaintenanceDto(maintenanceRepository.save(maintenance));
+        maintenanceRepository.save(maintenance);
     }
 
     @Override
-    public MaintenanceDto updateOrder(Long id, MaintenanceOrder maintenanceOrder) throws Exception {
+    public void updateOrder(Long id, MaintenanceOrder maintenanceOrder) throws Exception {
         Maintenance maintenance = maintenanceRepository.findMaintenanceByIdNative(id);
         if (ObjectUtils.isEmpty(maintenance) || !ObjectUtils.isEmpty(maintenance.getDeletedAt())) {
             throw new NotFoundException("MAINTENANCE_NOT_FOUND");
@@ -65,11 +65,11 @@ public class MaintenanceServiceImpl implements MaintenanceService{
         maintenance.setPriority(maintenanceOrder.getPriority());
         maintenance.setPicNrp(maintenanceOrder.getPicnrp());
         maintenance.setDuration(maintenanceOrder.getDuration());
-        return maintenanceMapper.entityToMaintenanceDto(maintenanceRepository.save(maintenance));
+        maintenanceRepository.save(maintenance);
     }
 
     @Override
-    public MaintenanceDto updateOrderStatus(Long id, StatusMaintenance statusMaintenance) throws Exception {
+    public void updateOrderStatus(Long id, StatusMaintenance statusMaintenance) throws Exception {
         Maintenance maintenance = maintenanceRepository.findMaintenanceByIdNative(id);
         if (ObjectUtils.isEmpty(maintenance) || !ObjectUtils.isEmpty(maintenance.getDeletedAt())) {
             throw new NotFoundException("MAINTENANCE_NOT_FOUND");
@@ -77,7 +77,7 @@ public class MaintenanceServiceImpl implements MaintenanceService{
         String status = StatusMaintenanceMapper.mapStatus(statusMaintenance.getStatus());
 
         maintenance.setStatus(status);
-        return maintenanceMapper.entityToMaintenanceDto(maintenanceRepository.save(maintenance));
+        maintenanceRepository.save(maintenance);
     }
 
     @Override

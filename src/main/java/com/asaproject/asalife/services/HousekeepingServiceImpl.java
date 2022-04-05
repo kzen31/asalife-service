@@ -27,18 +27,18 @@ public class HousekeepingServiceImpl implements HousekeepingService{
 
     @Override
     public List<HousekeepingDto> getAll() {
-        return housekeepingMapper.createListHousekeepingDto(housekeepingRepository.findAll());
+        return housekeepingMapper.createListHousekeepingDto(housekeepingRepository.findAllAndOrder());
     }
 
     @Override
     public List<HousekeepingDto> getAllByUser(Principal principal) {
         User user = UserAdminMapper.principalToUser(principal);
-        List<Housekeeping> housekeepingList = housekeepingRepository.findAllByUser(user);
+        List<Housekeeping> housekeepingList = housekeepingRepository.findAllByUserOrderByCreatedAtAsc(user);
         return housekeepingMapper.createListHousekeepingDto(housekeepingList);
     }
 
     @Override
-    public List<HousekeepingDto> addByUser(Principal principal, HousekeepingRequest housekeepingRequest) {
+    public void addByUser(Principal principal, HousekeepingRequest housekeepingRequest) {
         User user = UserAdminMapper.principalToUser(principal);
 
         Housekeeping housekeeping = new Housekeeping();
@@ -46,12 +46,10 @@ public class HousekeepingServiceImpl implements HousekeepingService{
         housekeeping.setLokasi(housekeepingRequest.getLokasi());
         housekeeping.setUser(user);
         housekeepingRepository.save(housekeeping);
-
-        return getAllByUser(principal);
     }
 
     @Override
-    public List<HousekeepingDto> updateStatusHousekeeping(Long id, StatusHousekeeping statusHousekeeping) throws Exception {
+    public void updateStatusHousekeeping(Long id, StatusHousekeeping statusHousekeeping) throws Exception {
         if (!isHousekeepingExist(id)) {
             throw new NotFoundException("HOUSEKEEPING_NOT_FOUND");
         }
@@ -60,8 +58,6 @@ public class HousekeepingServiceImpl implements HousekeepingService{
         Housekeeping housekeeping = housekeepingRepository.findHousekeepingByIdNative(id);
         housekeeping.setStatus(status);
         housekeepingRepository.save(housekeeping);
-
-        return getAll();
     }
 
     @Override

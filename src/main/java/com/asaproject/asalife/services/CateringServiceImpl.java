@@ -1,5 +1,6 @@
 package com.asaproject.asalife.services;
 
+import com.asaproject.asalife.domains.ECateringStatus;
 import com.asaproject.asalife.domains.entities.Catering;
 import com.asaproject.asalife.domains.entities.User;
 import com.asaproject.asalife.domains.models.requests.AduanCatering;
@@ -10,6 +11,8 @@ import com.asaproject.asalife.repositories.UserRepository;
 import com.asaproject.asalife.utils.mappers.CateringMapper;
 import com.asaproject.asalife.utils.mappers.StatusCateringUserMapper;
 import com.asaproject.asalife.utils.mappers.UserAdminMapper;
+//import com.sun.media.sound.InvalidFormatException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.security.Principal;
+import java.util.InvalidPropertiesFormatException;
 import java.util.List;
 
 @Service
@@ -28,27 +32,32 @@ public class CateringServiceImpl implements CateringService{
 
     @Override
     public List<CateringDto> getCaterings() {
-        return cateringMapper.mapCateringDtoToList(cateringRepo.findAll());
+        return cateringMapper.mapCateringDtoToList(cateringRepo.findAllByOrderByCreatedAtAsc());
     }
 
     @Override
-    public List<CateringDto> getCateringsByStatus(StatusCatering statusCatering) {
-        String status = StatusCateringUserMapper.mapStatus(statusCatering.getStatus());
+    public List<CateringDto> getCateringsByStatus(ECateringStatus eCateringStatus) throws Exception {
 
-        return cateringMapper.mapCateringDtoToList(cateringRepo.findAllByStatus(status));
+        if (ObjectUtils.isEmpty(eCateringStatus)) {
+            return getCaterings();
+        }
+
+        String status = StatusCateringUserMapper.mapStatus(eCateringStatus);
+        return cateringMapper.mapCateringDtoToList(cateringRepo.findAllByStatusOrderByCreatedAtAsc(status));
     }
 
     @Override
     public CateringDto getCateringById(Long id) throws Exception {
-        CateringDto cateringDto = cateringMapper.entityToCateringDto(cateringRepo.findCateringByIdNative(id));
-        if (ObjectUtils.isEmpty(cateringDto)) {
-            throw new NotFoundException("CATERING_WITH_ID_NOT_FOUND");
+        Catering catering = cateringRepo.findCateringByIdNative(id);
+        if (ObjectUtils.isEmpty(catering)) {
+            throw new NotFoundException("Catering Not Found");
         }
+        CateringDto cateringDto = cateringMapper.entityToCateringDto(cateringRepo.findCateringByIdNative(id));
         return cateringDto;
     }
 
     @Override
-    public List<CateringDto> addAduanCatering(Principal principal, AduanCatering aduanCatering) throws Exception {
+    public void addAduanCatering(Principal principal, AduanCatering aduanCatering) throws Exception {
         User user = UserAdminMapper.principalToUser(principal);
         Catering catering = new Catering();
 
@@ -57,15 +66,13 @@ public class CateringServiceImpl implements CateringService{
         catering.setKritik_saran(aduanCatering.getKritik_saran());
         catering.setDeskripsi(aduanCatering.getDeskripsi());
         cateringRepo.save(catering);
-
-        return getUserCaterings(principal);
     }
 
     @Override
     public List<CateringDto> getUserCaterings(Principal principal) {
         User user = UserAdminMapper.principalToUser(principal);
 
-        List<Catering> caterings = cateringRepo.findByUser(user);
+        List<Catering> caterings = cateringRepo.findByUserOrderByCreatedAtAsc(user);
         return cateringMapper.mapCateringDtoToList(caterings);
     }
 

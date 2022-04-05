@@ -1,14 +1,9 @@
 package com.asaproject.asalife.controllers;
 
+import com.asaproject.asalife.domains.ECateringStatus;
 import com.asaproject.asalife.domains.ERole;
-import com.asaproject.asalife.domains.entities.Bobot;
-import com.asaproject.asalife.domains.entities.Catering;
-import com.asaproject.asalife.domains.entities.Pertanyaan;
-import com.asaproject.asalife.domains.entities.RatingCatering;
 import com.asaproject.asalife.domains.models.requests.*;
-import com.asaproject.asalife.domains.models.responses.CateringDto;
-import com.asaproject.asalife.domains.models.responses.RatingCateringDto;
-import com.asaproject.asalife.domains.models.responses.RatingResponse;
+import com.asaproject.asalife.domains.models.responses.*;
 import com.asaproject.asalife.services.BobotService;
 import com.asaproject.asalife.services.CateringService;
 import com.asaproject.asalife.services.PertanyaanService;
@@ -20,25 +15,29 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.security.Principal;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/catering")
-public class CateringController {
+@RequestMapping("/api/catering")
+public class CateringController extends HandlerController {
     private final CateringService cateringService;
     private final PertanyaanService pertanyaanService;
     private final BobotService bobotService;
     private final RatingCateringService ratingCateringService;
 
     @PostMapping("/add")
-    public ResponseEntity<List<CateringDto>> addAduanCatering(Principal principal, @Valid @RequestBody AduanCatering aduanCatering) {
+    public ResponseEntity<ApiResponse> addAduanCatering(Principal principal, @Valid @RequestBody AduanCatering aduanCatering) {
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/add").toUriString());
         try {
-            List<CateringDto> cateringDtoList = cateringService.addAduanCatering(principal, aduanCatering);
-            return ResponseEntity.ok(cateringDtoList);
+            cateringService.addAduanCatering(principal, aduanCatering);
+            return ResponseEntity.created(uri)
+                    .body(ApiResponse.builder().message("Created Aduan Catering").build());
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
@@ -66,9 +65,9 @@ public class CateringController {
     }
 
     @GetMapping("/all-by-status")
-    public ResponseEntity<List<CateringDto>> getAllCateringsByStatus(StatusCatering statusCatering) {
+    public ResponseEntity<List<CateringDto>> getAllCateringsByStatus(@RequestParam(required = false) ECateringStatus status) {
         try {
-            List<CateringDto> cateringDtoList = cateringService.getCateringsByStatus(statusCatering);
+            List<CateringDto> cateringDtoList = cateringService.getCateringsByStatus(status);
             return ResponseEntity.ok(cateringDtoList);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -76,12 +75,13 @@ public class CateringController {
     }
 
     @Secured({ ERole.Constants.MEGAUSER })
-    @PutMapping("/update-status")
-    public ResponseEntity<CateringDto> updateStatusAduanCatering(@RequestParam Long id,
-                                                              @RequestBody StatusCatering statusCatering) {
+    @PutMapping("/update-status/{id}")
+    public ResponseEntity<ApiResponse> updateStatusAduanCatering(@PathVariable Long id,
+                                                              @Valid @RequestBody StatusCatering statusCatering) {
         try {
-            CateringDto cateringDto = cateringService.updateStatusCatering(id, statusCatering);
-            return ResponseEntity.ok(cateringDto);
+            cateringService.updateStatusCatering(id, statusCatering);
+            return ResponseEntity.ok(ApiResponse.builder().message("Successfully Update Status Aduan Catering").build());
+
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {
@@ -89,8 +89,8 @@ public class CateringController {
         }
     }
 
-    @GetMapping("/info")
-    public ResponseEntity<CateringDto> findCatering(@RequestParam Long id) {
+    @GetMapping("/info/{id}")
+    public ResponseEntity<CateringDto> findCatering(@PathVariable Long id) {
         try {
             CateringDto cateringDto = cateringService.getCateringById(id);
             return ResponseEntity.ok(cateringDto);
@@ -102,24 +102,28 @@ public class CateringController {
     }
 
     @GetMapping("/pertanyaan")
-    public ResponseEntity<List<Pertanyaan>> getAllPertanyaan() {
+    public ResponseEntity<List<PertanyaanDto>> getAllPertanyaan() {
         return ResponseEntity.ok(pertanyaanService.getAllPertanyaan());
     }
 
+    @Secured({ ERole.Constants.ADMIN })
     @PostMapping("/pertanyaan-add")
-    public ResponseEntity<Pertanyaan> addPertanyaan(@RequestBody PertanyaanRequest pertanyaanRequest) {
+    public ResponseEntity<ApiResponse> addPertanyaan(@Valid @RequestBody PertanyaanRequest pertanyaanRequest) {
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/pertanyaan-add").toUriString());
         try {
-            Pertanyaan pertanyaan = pertanyaanService.addPertanyaan(pertanyaanRequest);
-            return ResponseEntity.ok(pertanyaan);
+            pertanyaanService.addPertanyaan(pertanyaanRequest);
+            return ResponseEntity.created(uri)
+                    .body(ApiResponse.builder().message("Created Pertanyaan").build());
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
-    @PutMapping("/pertanyaan-update")
-    public ResponseEntity<Pertanyaan> updatePertanyaan(@RequestParam Long id, @RequestBody PertanyaanRequest pertanyaanRequest) {
+    @Secured({ ERole.Constants.ADMIN })
+    @PutMapping("/pertanyaan-update/{id}")
+    public ResponseEntity<PertanyaanDto> updatePertanyaan(@PathVariable Long id, @Valid @RequestBody PertanyaanRequest pertanyaanRequest) {
         try {
-            Pertanyaan pertanyaan = pertanyaanService.updatePertanyaanIfExist(id, pertanyaanRequest);
+            PertanyaanDto pertanyaan = pertanyaanService.updatePertanyaanIfExist(id, pertanyaanRequest);
             return ResponseEntity.ok(pertanyaan);
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -128,11 +132,12 @@ public class CateringController {
         }
     }
 
-    @PutMapping("/pertanyaan-delete")
-    public ResponseEntity<String> deletePertanyaan(@RequestParam Long id) {
+    @Secured({ ERole.Constants.ADMIN })
+    @PutMapping("/pertanyaan-delete/{id}")
+    public ResponseEntity<ApiResponse> deletePertanyaan(@PathVariable Long id) {
         try {
             pertanyaanService.deletePertanyaan(id);
-            return ResponseEntity.ok("Success");
+            return ResponseEntity.ok(ApiResponse.builder().message("Successfully Delete Pertanyaan").build());
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {
@@ -140,10 +145,10 @@ public class CateringController {
         }
     }
 
-    @GetMapping("/pertanyaan-byid")
-    public ResponseEntity<Pertanyaan> getPertanyaanById(@RequestParam Long id) {
+    @GetMapping("/pertanyaan-byid/{id}")
+    public ResponseEntity<PertanyaanDto> getPertanyaanById(@PathVariable Long id) {
         try {
-            Pertanyaan pertanyaan = pertanyaanService.getPertanyaanByID(id);
+            PertanyaanDto pertanyaan = pertanyaanService.getPertanyaanByID(id);
             return ResponseEntity.ok(pertanyaan);
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -153,15 +158,15 @@ public class CateringController {
     }
 
     @GetMapping("/bobot")
-    public ResponseEntity<List<Bobot>> getAllBobotPertanyaan() {
-        List<Bobot> bobotList = bobotService.getListBobot();
+    public ResponseEntity<List<BobotDto>> getAllBobotPertanyaan() {
+        List<BobotDto> bobotList = bobotService.getListBobot();
         return ResponseEntity.ok(bobotList);
     }
 
-    @GetMapping("/bobot-bypertanyaan")
-    public ResponseEntity<List<Bobot>> getAllBobotByPertanyaan(@RequestParam Long id) {
+    @GetMapping("/bobot-bypertanyaan/{id}")
+    public ResponseEntity<List<BobotDto>> getAllBobotByPertanyaan(@PathVariable Long id) {
         try {
-            List<Bobot> bobotList = bobotService.getListBobotByPertanyaan(id);
+            List<BobotDto> bobotList = bobotService.getListBobotByPertanyaan(id);
             return ResponseEntity.ok(bobotList);
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -170,11 +175,14 @@ public class CateringController {
         }
     }
 
+    @Secured({ ERole.Constants.ADMIN })
     @PostMapping("/bobot-add")
-    public ResponseEntity<List<Bobot>> addBobotToPertanyaan(@RequestBody BobotRequest bobotRequest) {
+    public ResponseEntity<ApiResponse> addBobotToPertanyaan(@Valid @RequestBody BobotRequest bobotRequest) {
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/bobot-add").toUriString());
         try {
-            List<Bobot> bobotList = bobotService.addBobot(bobotRequest);
-            return ResponseEntity.ok(bobotList);
+            bobotService.addBobot(bobotRequest);
+            return ResponseEntity.created(uri)
+                    .body(ApiResponse.builder().message("Created Bobot").build());
         } catch (NotFoundException e) {
             throw new  ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {
@@ -182,18 +190,20 @@ public class CateringController {
         }
     }
 
-    @PutMapping("/bobot-delete")
-    public ResponseEntity<List<Bobot>> deleteBobot(Long id) {
+    @Secured({ ERole.Constants.ADMIN })
+    @PutMapping("/bobot-delete/{id}")
+    public ResponseEntity<ApiResponse> deleteBobot(@PathVariable Long id) {
         try {
-            List<Bobot> bobotList = bobotService.deleteBobot(id);
-            return ResponseEntity.ok(bobotList);
+            bobotService.deleteBobot(id);
+            return ResponseEntity.ok(ApiResponse.builder().message("Successfully Delete Bobot").build());
         } catch (NotFoundException e) {
-            throw new  ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Bobot Not Found", e.getCause());
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request not valid", e.getCause());
         }
     }
 
+    @Secured({ ERole.Constants.ADMIN })
     @GetMapping("/rating-catering")
     public ResponseEntity<List<RatingResponse>> getAllRatingCatering() {
         return ResponseEntity.ok(ratingCateringService.getAllRatingCatering());
@@ -205,10 +215,12 @@ public class CateringController {
     }
 
     @PostMapping("/rating-catering-add")
-    public ResponseEntity<String> addRatingCatering(Principal principal, @RequestBody RatingRequest ratingRequest) {
+    public ResponseEntity<ApiResponse> addRatingCatering(Principal principal, @Valid @RequestBody RatingRequest ratingRequest) {
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/rating-catering-add").toUriString());
         try {
             ratingCateringService.addRatingCatering(principal, ratingRequest);
-            return ResponseEntity.ok("Success");
+            return ResponseEntity.created(uri)
+                    .body(ApiResponse.builder().message("Created Rating Catering").build());
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {
@@ -217,10 +229,12 @@ public class CateringController {
     }
 
     @PostMapping("/rating-catering-addbulk")
-    public ResponseEntity<String> addRatingCateringBulk(Principal principal, @RequestBody List<RatingRequest> ratingRequestList) {
+    public ResponseEntity<ApiResponse> addRatingCateringBulk(Principal principal, @Valid @RequestBody List<RatingRequest> ratingRequestList) {
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/rating-catering-addbulk").toUriString());
         try {
             ratingCateringService.addRatingCateringBulk(principal, ratingRequestList);
-            return ResponseEntity.ok("Success");
+            return ResponseEntity.created(uri)
+                    .body(ApiResponse.builder().message("Created Rating Catering").build());
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {

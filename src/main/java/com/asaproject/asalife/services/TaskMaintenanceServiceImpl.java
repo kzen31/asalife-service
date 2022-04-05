@@ -28,14 +28,14 @@ public class TaskMaintenanceServiceImpl implements TaskMaintenanceService{
 
     @Override
     public List<TaskMaintenanceDto> getAllTask() {
-        return taskMaintenanceMapper.mapTaskMaintenanceDtoToList(taskMaintenanceRepository.findAll());
+        return taskMaintenanceMapper.mapTaskMaintenanceDtoToList(taskMaintenanceRepository.findAllByOrderByCreatedAtAsc());
     }
 
     @Override
     public List<TaskMaintenanceDto> getMyTask(Principal principal) {
         User user = UserAdminMapper.principalToUser(principal);
 
-        return taskMaintenanceMapper.mapTaskMaintenanceDtoToList(taskMaintenanceRepository.findAllByUser(user));
+        return taskMaintenanceMapper.mapTaskMaintenanceDtoToList(taskMaintenanceRepository.findAllByUserOrderByCreatedAtAsc(user));
     }
 
     @Override

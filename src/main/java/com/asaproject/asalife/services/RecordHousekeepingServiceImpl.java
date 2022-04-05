@@ -11,6 +11,7 @@ import com.asaproject.asalife.repositories.RuangDetailRepository;
 import com.asaproject.asalife.repositories.UserRepository;
 import com.asaproject.asalife.utils.mappers.HousekeepingMapper;
 import com.asaproject.asalife.utils.mappers.UserAdminMapper;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,13 +32,13 @@ public class RecordHousekeepingServiceImpl implements RecordHousekeepingService{
 
     @Override
     public List<RecordResponse> getAllRecord() {
-        return housekeepingMapper.createTemplateRecordList(recordHousekeepingRepository.findAll());
+        return housekeepingMapper.createTemplateRecordList(recordHousekeepingRepository.findAllAndOrder());
     }
 
     @Override
     public List<RecordResponse> getMyRecord(Principal principal) {
         User user = UserAdminMapper.principalToUser(principal);
-        List<RecordHousekeeping> recordHousekeeping = recordHousekeepingRepository.findAllByUser(user);
+        List<RecordHousekeeping> recordHousekeeping = recordHousekeepingRepository.findAllByUserAndOrder(user.getId());
         return housekeepingMapper.createTemplateRecordList(recordHousekeeping);
     }
 
@@ -47,7 +48,7 @@ public class RecordHousekeepingServiceImpl implements RecordHousekeepingService{
         if (ObjectUtils.isEmpty(user)) {
             throw new NotFoundException("USER_NOT_FOUND");
         }
-        List<RecordHousekeeping> recordHousekeeping = recordHousekeepingRepository.findAllByUser(user);
+        List<RecordHousekeeping> recordHousekeeping = recordHousekeepingRepository.findAllByUserAndOrder(user.getId());
         return housekeepingMapper.createTemplateRecordList(recordHousekeeping);
     }
 
@@ -59,10 +60,12 @@ public class RecordHousekeepingServiceImpl implements RecordHousekeepingService{
             throw new NotFoundException("RUANG_DETAIL_NOT_FOUND");
         }
 
+        boolean ceklis = Boolean.parseBoolean(recordHousekeepingRequest.getCeklis());
+
         RecordHousekeeping record = new RecordHousekeeping();
         record.setUser(user);
         record.setRuangDetail(ruangDetail);
-        record.setCeklis(recordHousekeepingRequest.getCeklis());
+        record.setCeklis(ceklis);
         recordHousekeepingRepository.save(record);
     }
 
@@ -72,7 +75,10 @@ public class RecordHousekeepingServiceImpl implements RecordHousekeepingService{
         if (ObjectUtils.isEmpty(record)) {
             throw new NotFoundException("RECORD_NOT_FOUND");
         }
-        record.setCeklis(recordHousekeepingRequest.getCeklis());
+
+        boolean ceklis = Boolean.parseBoolean(recordHousekeepingRequest.getCeklis());
+
+        record.setCeklis(ceklis);
         recordHousekeepingRepository.save(record);
     }
 }

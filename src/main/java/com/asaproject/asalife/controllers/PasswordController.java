@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/password")
+@RequestMapping("/api/password")
 @RequiredArgsConstructor
 public class PasswordController extends HandlerController {
     private final UserService userService;
