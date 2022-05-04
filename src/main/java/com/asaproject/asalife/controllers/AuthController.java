@@ -75,7 +75,7 @@ public class AuthController extends HandlerController {
         } catch (BadCredentialsException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Nrp or password is incorrect", e.getCause());
         } catch (NotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found", e.getCause());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found", e.getCause());
         } catch (Exception e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, "Failed to login", e.getCause());

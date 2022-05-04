@@ -1,12 +1,10 @@
 package com.asaproject.asalife.configurations;
 
-import com.asaproject.asalife.domains.ERole;
 import com.asaproject.asalife.services.UserServiceImpl;
 import com.asaproject.asalife.utils.filters.JwtFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -43,7 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private static final String[] AUTH_LIST = {
-            "/admin/**", "/catering/**", "/housekeeping/**", "/laundry/**", "/maintenance", "/mess/**", "/users/my"
+            "/api/admin/**", "/api/catering/**", "/api/housekeeping/**", "/api/laundry/**", "/api/maintenance/**", "/api/mess/**", "/api/users/my"
     };
 
     @Override
