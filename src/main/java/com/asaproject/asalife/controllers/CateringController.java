@@ -2,12 +2,10 @@ package com.asaproject.asalife.controllers;
 
 import com.asaproject.asalife.domains.ECateringStatus;
 import com.asaproject.asalife.domains.ERole;
+import com.asaproject.asalife.domains.entities.RatingCateringMany;
 import com.asaproject.asalife.domains.models.requests.*;
 import com.asaproject.asalife.domains.models.responses.*;
-import com.asaproject.asalife.services.BobotService;
-import com.asaproject.asalife.services.CateringService;
-import com.asaproject.asalife.services.PertanyaanService;
-import com.asaproject.asalife.services.RatingCateringService;
+import com.asaproject.asalife.services.*;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,6 +28,7 @@ public class CateringController extends HandlerController {
     private final PertanyaanService pertanyaanService;
     private final BobotService bobotService;
     private final RatingCateringService ratingCateringService;
+    private final RatingCateringManyService ratingCateringManyService;
 
     @PostMapping("/add")
     public ResponseEntity<ApiResponse> addAduanCatering(Principal principal, @Valid @RequestBody AduanCatering aduanCatering) {
@@ -245,5 +244,25 @@ public class CateringController extends HandlerController {
     @GetMapping("/rating-catering-available")
     public ResponseEntity<Boolean> getRatingCateringLastUser(Principal principal) {
         return ResponseEntity.ok(ratingCateringService.isAddRatingCateringAvailable(principal));
+    }
+
+
+    @PostMapping("/rating-catering-many")
+    public ResponseEntity<ApiResponse> addRatingCateringMany(Principal principal, @Valid @RequestBody RatingManyRequest ratingManyRequests) {
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/rating-catering-many").toUriString());
+        try {
+            ratingCateringManyService.addRatingCateringMany(principal, ratingManyRequests);
+            return ResponseEntity.created(uri)
+                    .body(ApiResponse.builder().message("Created Rating Catering").build());
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
+    @GetMapping("/rating-catering-many")
+    public ResponseEntity<List<RatingCateringMany>> getRatingCateringMany() {
+        return ResponseEntity.ok(ratingCateringManyService.getRatingCateringMany());
     }
 }
