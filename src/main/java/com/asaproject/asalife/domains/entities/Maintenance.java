@@ -40,7 +40,7 @@ public class Maintenance extends Auditable implements Serializable {
 
     private Date duration;
 
-    private String status;
+    private String status = "OPEN";
 
     private String picNrp;
 }
