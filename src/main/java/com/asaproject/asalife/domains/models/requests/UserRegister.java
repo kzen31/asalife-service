@@ -23,6 +23,9 @@ public class UserRegister {
     @NotEmpty(message = "Password is mandatory")
     private String password;
 
+    @NotEmpty(message = "department is mandatory")
+    private String department;
+
     @NotNull(message = "Role is mandatory")
     @ValidEnum(enumClass = ERoleUserRegister.class, groups = ERoleUserRegister.class, message = "Role is not available")
     private ERoleUserRegister role;

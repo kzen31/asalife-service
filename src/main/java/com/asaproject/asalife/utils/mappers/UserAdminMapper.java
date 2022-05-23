@@ -14,6 +14,7 @@ public final class UserAdminMapper {
     public static User userRegisterToUser(UserRegister userRegister) {
         User user = new User();
         user.setName(userRegister.getName());
+        user.setDepartment(userRegister.getDepartment());
         user.setNrp(userRegister.getNrp());
         user.setPassword(userRegister.getPassword());
         return user;
@@ -22,6 +23,7 @@ public final class UserAdminMapper {
     public static User userRegisterToAdmin(AdminRegister adminRegister) {
         User user = new User();
         user.setName(adminRegister.getName());
+        user.setDepartment(adminRegister.getDepartment());
         user.setNrp(adminRegister.getNrp());
         user.setPassword(adminRegister.getPassword());
         return user;
