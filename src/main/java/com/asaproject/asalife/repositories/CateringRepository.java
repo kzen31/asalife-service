@@ -37,4 +37,7 @@ public interface CateringRepository extends JpaRepository<Catering, Long> {
             "GROUP BY 1, 2, 3 " +
             "ORDER BY 1 DESC, 2 DESC, 3 DESC ", nativeQuery = true)
     List<CountByMonth> countByMonth();
+
+    @Query(value = "SELECT count(c.id) FROM Catering c WHERE c.status = :status", nativeQuery = true)
+    Long countCateringByStatus(@Param("status") String status);
 }
