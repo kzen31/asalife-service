@@ -241,11 +241,11 @@ public class CateringController extends HandlerController {
         }
     }
 
+    // Rating many hardcore colom
     @GetMapping("/rating-catering-available")
     public ResponseEntity<Boolean> getRatingCateringLastUser(Principal principal) {
         return ResponseEntity.ok(ratingCateringService.isAddRatingCateringAvailable(principal));
     }
-
 
     @PostMapping("/rating-catering-many")
     public ResponseEntity<ApiResponse> addRatingCateringMany(Principal principal, @Valid @RequestBody RatingManyRequest ratingManyRequests) {

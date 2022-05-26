@@ -23,4 +23,7 @@ public interface TaskRoomService {
     List<SetTaskRoom> finByUser(Principal principal);
 
     List<TaskRoom> findAll();
+
+    void deleteTaskRoom(Long id) throws Exception;
+
 }

@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.security.Principal;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -98,5 +99,20 @@ public class TaskMessServiceImpl implements TaskMessService{
     @Override
     public List<TaskMess> findAll() {
         return taskMessRepository.findAllByOrderByCreatedAtAsc();
+    }
+
+    @Override
+    public void deleteTaskMess(Long id) throws Exception {
+        TaskMess taskMess = taskMessRepository.findTaskMessByIdNative(id);
+        if (ObjectUtils.isEmpty(taskMess)) {
+            throw new NotFoundException("Task Mess id not valid");
+        }
+
+        if (!ObjectUtils.isEmpty(taskMess.getDeletedAt())) {
+            throw new NotFoundException("Task Mess id not valid");
+        }
+
+        taskMess.setDeletedAt(new Date());
+        taskMessRepository.save(taskMess);
     }
 }

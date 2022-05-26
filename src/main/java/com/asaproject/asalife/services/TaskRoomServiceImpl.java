@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.security.Principal;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -93,5 +94,20 @@ public class TaskRoomServiceImpl implements TaskRoomService{
     @Override
     public List<TaskRoom> findAll() {
         return taskRoomRepository.findAllByOrderByCreatedAtAsc();
+    }
+
+    @Override
+    public void deleteTaskRoom(Long id) throws Exception{
+        TaskRoom taskRoom = taskRoomRepository.findTaskRoomByIdNative(id);
+        if (ObjectUtils.isEmpty(taskRoom)) {
+            throw new NotFoundException("Task Room id not valid");
+        }
+
+        if (!ObjectUtils.isEmpty(taskRoom.getDeletedAt())) {
+            throw new NotFoundException("Task Room id not valid");
+        }
+
+        taskRoom.setDeletedAt(new Date());
+        taskRoomRepository.save(taskRoom);
     }
 }

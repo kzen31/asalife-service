@@ -23,7 +23,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/task")
-public class TaskRoomMessControlller {
+public class TaskRoomMessControlller extends HandlerController{
     private final TaskRoomService taskRoomService;
     private final TaskMessService taskMessService;
 
@@ -55,7 +55,19 @@ public class TaskRoomMessControlller {
             taskRoomService.updateTaskRoom(id,setTaskRoom);
             return ResponseEntity.ok(ApiResponse.builder().message("Successfully Update A Task Room").build());
         } catch (NotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Room with given id is Not Found");
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
+    @PutMapping("/room-delete/{id}")
+    public ResponseEntity<ApiResponse> deleteATaskRoom(@PathVariable Long id) {
+        try {
+            taskRoomService.deleteTaskRoom(id);
+            return ResponseEntity.ok(ApiResponse.builder().message("Successfully Delete A Task Room").build());
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Room with given id is Not Found");
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
@@ -89,10 +101,21 @@ public class TaskRoomMessControlller {
             taskMessService.updateTaskMess(id,setTaskMess);
             return ResponseEntity.ok(ApiResponse.builder().message("Successfully Update A Task Mess").build());
         } catch (NotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Mess with given id is Not Found");
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
+    @PutMapping("/mess-delete/{id}")
+    public ResponseEntity<ApiResponse> deleteATaskMess(@PathVariable Long id) {
+        try {
+            taskMessService.deleteTaskMess(id);
+            return ResponseEntity.ok(ApiResponse.builder().message("Successfully Delete A Task Mess").build());
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Mess with given id is Not Found");
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
 }

@@ -19,4 +19,6 @@ public interface TaskMessService {
     List<SetTaskMess> finByUser(Principal principal);
 
     List<TaskMess> findAll();
+
+    void deleteTaskMess(Long id) throws Exception;
 }
