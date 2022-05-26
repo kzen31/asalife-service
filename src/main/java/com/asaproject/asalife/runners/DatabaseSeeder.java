@@ -2,6 +2,8 @@ package com.asaproject.asalife.runners;
 
 import com.asaproject.asalife.domains.ERole;
 import com.asaproject.asalife.domains.entities.*;
+import com.asaproject.asalife.domains.models.reqres.SetTaskMess;
+import com.asaproject.asalife.domains.models.reqres.SetTaskRoom;
 import com.asaproject.asalife.repositories.*;
 
 import lombok.RequiredArgsConstructor;
@@ -36,6 +38,8 @@ public class DatabaseSeeder implements ApplicationRunner {
     private final MaintenanceRepository maintenanceRepository;
     private final TaskMaintenanceRepository taskMaintenanceRepository;
 
+    private final TaskRoomRepository taskRoomRepository;
+    private final TaskMessRepository taskMessRepository;
 
     @Override
     public void run(ApplicationArguments args) {
@@ -54,6 +58,9 @@ public class DatabaseSeeder implements ApplicationRunner {
         savePertanyaanAll();
         saveBobotAll();
         saveRatingCateringAll();
+        saveTaskRoomMany ();
+        saveTaskMessMany();
+
     }
 
     private void saveRoles() {
@@ -317,5 +324,88 @@ public class DatabaseSeeder implements ApplicationRunner {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void saveTaskRoomMany () {
+        saveTaskRoom("111", new SetTaskRoom(null, "MESS JOY","1a", true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true));
+        saveTaskRoom("112", new SetTaskRoom(null, "MESS JOY","1b", true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true));
+        saveTaskRoom("111", new SetTaskRoom(null, "MESS JOY","1c", true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true));
+        saveTaskRoom("112", new SetTaskRoom(null, "MESS JOY","1d", true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true));
+    }
+
+    private void saveTaskRoom (String nrp, SetTaskRoom setTaskRoom) {
+        User user = userRepository.findByNrp(nrp);
+
+        TaskRoom taskRoom = new TaskRoom();
+        taskRoom.setUser(user);
+
+        taskRoom.setMess(setTaskRoom.getMess());
+        taskRoom.setNoKamar(setTaskRoom.getNokamar());
+
+        taskRoom.setLantaiKamar(setTaskRoom.getLantaikamar());
+        taskRoom.setLantaiToilet(setTaskRoom.getLantaitoilet());
+        taskRoom.setLantaiLangitKamar(setTaskRoom.getLantailangitkamar());
+        taskRoom.setLantaiLangitKamarMandi(setTaskRoom.getLantailangitkamarmandi());
+        taskRoom.setWc(setTaskRoom.getWc());
+        taskRoom.setWastafel(setTaskRoom.getWastafel());
+        taskRoom.setTempatTidur(setTaskRoom.getTempattidur());
+        taskRoom.setSprei(setTaskRoom.getSprei());
+        taskRoom.setSelimut(setTaskRoom.getSelimut());
+        taskRoom.setAc(setTaskRoom.getAc());
+        taskRoom.setMeja(setTaskRoom.getMeja());
+        taskRoom.setCermin(setTaskRoom.getCermin());
+        taskRoom.setKeran(setTaskRoom.getKeran());
+        taskRoom.setShower(setTaskRoom.getShower());
+        taskRoom.setTempatSampah(setTaskRoom.getTempatsampah());
+        taskRoom.setJendela(setTaskRoom.getJendela());
+        taskRoom.setGorden(setTaskRoom.getGorden());
+        taskRoom.setLemari(setTaskRoom.getLemari());
+
+        taskRoomRepository.save(taskRoom);
+    }
+
+    private void saveTaskMessMany() {
+        saveTaskMess("111", new SetTaskMess(null, "MESS HAPPY", true,true,true,true,true,true,true,true,false,false,false,true,true,true,false,true,true,true,true,true,true,true,true,true,true));
+        saveTaskMess("111", new SetTaskMess(null, "MESS ENJOY", false,true,true,true,true,true,true,true,false,false,true,true,true,false,true,true,true,true,true,true,false,true,true,true,true));
+        saveTaskMess("111", new SetTaskMess(null, "MESS FUN", false,true,true,true,true,true,false,false,true,true,true,true,true,true,false,true,true,true,true,true,false,true,true,true,true));
+        saveTaskMess("111", new SetTaskMess(null, "MESS HEALTH", true,true,true,true,true,true,true,true,true,true,false,false,false,true,true,true,true,true,true,true,false,true,true,true,true));
+    }
+
+    private void saveTaskMess (String nrp, SetTaskMess setTaskMess) {
+        User user = userRepository.findByNrp(nrp);
+
+        TaskMess taskMess = new TaskMess();
+        taskMess.setUser(user);
+
+        taskMess.setMess(setTaskMess.getMess());
+
+        taskMess.setRuangTvKacaJendelaKusen(setTaskMess.getRuangtvkacajendelakusen());
+        taskMess.setRuangTvCermin(setTaskMess.getRuangtvcermin());
+        taskMess.setRuangTvDispenser(setTaskMess.getRuangtvdispenser());
+        taskMess.setRuangTvAc(setTaskMess.getRuangtvac());
+        taskMess.setRuangTvFurniture(setTaskMess.getRuangtvfurniture());
+        taskMess.setRuangTvRakTv(setTaskMess.getRuangtvraktv());
+        taskMess.setRuangTvTiraiKarpet(setTaskMess.getRuangtvtiraikarpet());
+        taskMess.setRuangTvDinding(setTaskMess.getRuangtvdinding());
+        taskMess.setRuangTvLantai(setTaskMess.getRuangtvlantai());
+
+        taskMess.setKoridorTempatSampah(setTaskMess.getKoridortempatsampah());
+        taskMess.setKoridorPintu(setTaskMess.getKoridorpintu());
+        taskMess.setKoridorLantaiSudutLantai(setTaskMess.getKoridorlantaisudutlantai());
+        taskMess.setKoridorKeset(setTaskMess.getKoridorkeset());
+        taskMess.setKoridorPantry(setTaskMess.getKoridorpantry());
+        taskMess.setKoridorWastafelChromeFixture(setTaskMess.getKoridorwastafelchromefixture());
+        taskMess.setKoridorPeralatanMakanRakPiring(setTaskMess.getKoridorperalatanmakanrakpiring());
+        taskMess.setKoridorPintuDinding(setTaskMess.getKoridorpintudinding());
+        taskMess.setKoridorKancaJendelaKusen(setTaskMess.getKoridorkancajendelakusen());
+
+        taskMess.setToiletPintuDinding(setTaskMess.getToiletpintudinding());
+        taskMess.setToiletTempatSampah(setTaskMess.getToilettempatsampah());
+        taskMess.setToiletWastafelChromeFixture(setTaskMess.getToiletwastafelchromefixture());
+        taskMess.setToiletUrinoirSelangToiletBowl(setTaskMess.getToileturinoirselangtoiletbowl());
+        taskMess.setToiletShowerAreaCurtain(setTaskMess.getToiletshowerareacurtain());
+        taskMess.setToiletLantaiSudutLantai(setTaskMess.getToiletlantaisudutlantai());
+        taskMess.setToiletTeras(setTaskMess.getToiletteras());
+        taskMessRepository.save(taskMess);
     }
 }

@@ -1,12 +1,16 @@
 package com.asaproject.asalife.services;
 
 import com.asaproject.asalife.domains.entities.TaskRoom;
+import com.asaproject.asalife.domains.entities.User;
 import com.asaproject.asalife.domains.models.reqres.SetTaskRoom;
 import com.asaproject.asalife.repositories.TaskRoomRepository;
+import com.asaproject.asalife.utils.mappers.TaskRoomMapper;
+import com.asaproject.asalife.utils.mappers.UserAdminMapper;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.security.Principal;
 import java.util.List;
@@ -16,15 +20,28 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TaskRoomServiceImpl implements TaskRoomService{
     private final TaskRoomRepository taskRoomRepository;
+    private final TaskRoomMapper taskRoomMapper;
 
-    public void setTaskRoomToEntity(TaskRoom taskRoom, SetTaskRoom setTaskRoom){
-        taskRoom.setLantaiKamar(setTaskRoom.getLantaiKamar());
-        taskRoom.setLantaiToilet(setTaskRoom.getLantaiToilet());
-        taskRoom.setLantaiLangitKamar(setTaskRoom.getLantaiLangitKamar());
-        taskRoom.setLantaiLangitKamarMandi(setTaskRoom.getLantaiLangitKamarMandi());
+    @Override
+    public void setTaskRoomToEntity(User user, TaskRoom taskRoom, SetTaskRoom setTaskRoom){
+        saveSetTaskRoom(taskRoom, setTaskRoom);
+        taskRoom.setUser(user);
+
+        taskRoomRepository.save(taskRoom);
+    }
+
+    @Override
+    public void saveSetTaskRoom(TaskRoom taskRoom, SetTaskRoom setTaskRoom) {
+        taskRoom.setMess(setTaskRoom.getMess());
+        taskRoom.setNoKamar(setTaskRoom.getNokamar());
+
+        taskRoom.setLantaiKamar(setTaskRoom.getLantaikamar());
+        taskRoom.setLantaiToilet(setTaskRoom.getLantaitoilet());
+        taskRoom.setLantaiLangitKamar(setTaskRoom.getLantailangitkamar());
+        taskRoom.setLantaiLangitKamarMandi(setTaskRoom.getLantailangitkamarmandi());
         taskRoom.setWc(setTaskRoom.getWc());
         taskRoom.setWastafel(setTaskRoom.getWastafel());
-        taskRoom.setTempatTidur(setTaskRoom.getTempatTidur());
+        taskRoom.setTempatTidur(setTaskRoom.getTempattidur());
         taskRoom.setSprei(setTaskRoom.getSprei());
         taskRoom.setSelimut(setTaskRoom.getSelimut());
         taskRoom.setAc(setTaskRoom.getAc());
@@ -32,24 +49,26 @@ public class TaskRoomServiceImpl implements TaskRoomService{
         taskRoom.setCermin(setTaskRoom.getCermin());
         taskRoom.setKeran(setTaskRoom.getKeran());
         taskRoom.setShower(setTaskRoom.getShower());
-        taskRoom.setTempatSampah(setTaskRoom.getTempatSampah());
+        taskRoom.setTempatSampah(setTaskRoom.getTempatsampah());
         taskRoom.setJendela(setTaskRoom.getJendela());
         taskRoom.setGorden(setTaskRoom.getGorden());
         taskRoom.setLemari(setTaskRoom.getLemari());
-        taskRoomRepository.save(taskRoom);
     }
 
     @Override
-    public void addTaskRoom(SetTaskRoom setTaskRoom) {
+    public void addTaskRoom(Principal principal, SetTaskRoom setTaskRoom) {
+        User user = UserAdminMapper.principalToUser(principal);
+
         TaskRoom taskRoom = new TaskRoom();
-        setTaskRoomToEntity(taskRoom, setTaskRoom);
+        setTaskRoomToEntity(user, taskRoom, setTaskRoom);
     }
 
     @Override
     public void updateTaskRoom(Long id, SetTaskRoom setTaskRoom) throws Exception {
         try {
             TaskRoom taskRoom = findById(id);
-            setTaskRoomToEntity(taskRoom, setTaskRoom);
+            User user = taskRoom.getUser();
+            setTaskRoomToEntity(user, taskRoom, setTaskRoom);
         } catch (Exception e){
             throw new NotFoundException(e.getMessage());
         }
@@ -57,16 +76,22 @@ public class TaskRoomServiceImpl implements TaskRoomService{
 
     @Override
     public TaskRoom findById(Long id) throws Exception {
+        TaskRoom taskRoom = taskRoomRepository.findTaskRoomByIdNative(id);
+        if (ObjectUtils.isEmpty(taskRoom)) {
+            throw new NotFoundException("Task Room id not valid");
+        }
         return taskRoomRepository.findTaskRoomByIdNative(id);
     }
 
     @Override
-    public List<TaskRoom> finByUser(Principal principal) {
-        return null;
+    public List<SetTaskRoom> finByUser(Principal principal) {
+        User user = UserAdminMapper.principalToUser(principal);
+
+        return taskRoomMapper.mapToSetTaskRoomList(taskRoomRepository.findByUserOrderByCreatedAtAsc(user));
     }
 
     @Override
     public List<TaskRoom> findAll() {
-        return null;
+        return taskRoomRepository.findAllByOrderByCreatedAtAsc();
     }
 }

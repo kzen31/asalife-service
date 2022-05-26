@@ -9,6 +9,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Table(name = "taskmess")
 @Entity
@@ -17,7 +18,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Where(clause = "deleted_at IS NULL")
-public class TaskMess {
+public class TaskMess extends Auditable implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -101,4 +102,7 @@ public class TaskMess {
 
     @Column(nullable = false)
     private Boolean toiletTeras;
+
+    @Column(nullable = false)
+    private String mess;
 }
