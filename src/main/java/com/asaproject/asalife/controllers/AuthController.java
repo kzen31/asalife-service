@@ -59,6 +59,23 @@ public class AuthController extends HandlerController {
         }
     }
 
+    @PostMapping("/regis")
+    public ResponseEntity<ApiResponse> registerCommon(@Valid @RequestBody Register user) {
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/regis").toUriString());
+        try {
+            userService.register(user);
+            return ResponseEntity.created(uri)
+                    .body(ApiResponse.builder().message("Create User Success").build());
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (e.getMessage().equals("NRP_UNAVAILABLE")) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "NRP is taken", e.getCause());
+            }
+            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, e.getMessage());
+        }
+    }
+
+
     @PostMapping("/nrp-availability")
     public ResponseEntity<Boolean> checkNrpAvailability(@Valid @RequestBody NrpRequest availability) {
         boolean getIsAvailable = userService.getIsNrpAvailable(availability.getNrp());

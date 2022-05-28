@@ -1,18 +1,18 @@
 package com.asaproject.asalife.services;
 
 import com.asaproject.asalife.domains.ERole;
+import com.asaproject.asalife.domains.ERoleAdminRegister;
+import com.asaproject.asalife.domains.ERoleRegister;
 import com.asaproject.asalife.domains.entities.Role;
 import com.asaproject.asalife.domains.entities.User;
 import com.asaproject.asalife.domains.models.reqres.UpdateUser;
-import com.asaproject.asalife.domains.models.requests.AdminRegister;
-import com.asaproject.asalife.domains.models.requests.PasswordChangeRequest;
-import com.asaproject.asalife.domains.models.requests.SignInRequest;
-import com.asaproject.asalife.domains.models.requests.UserRegister;
+import com.asaproject.asalife.domains.models.requests.*;
 import com.asaproject.asalife.domains.models.responses.MyProfile;
 import com.asaproject.asalife.domains.models.responses.TokenResponse;
 import com.asaproject.asalife.repositories.RoleRepository;
 import com.asaproject.asalife.repositories.UserRepository;
 import com.asaproject.asalife.utils.mappers.RoleAdminMapper;
+import com.asaproject.asalife.utils.mappers.RoleCommonMapper;
 import com.asaproject.asalife.utils.mappers.RoleUserMapper;
 import com.asaproject.asalife.utils.mappers.UserAdminMapper;
 
@@ -50,6 +50,20 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             log.info("NRP found {}", nrp);
         }
         return user;
+    }
+
+    @Override
+    public void register(Register register) throws Exception {
+        User user = UserAdminMapper.userRegisterCommon(register);
+        if (!getIsNrpAvailable(user.getNrp()))
+            throw new Exception("NRP_UNAVAILABLE");
+        saveUser(user);
+        addRoleToUser(user.getNrp(), RoleCommonMapper.mapRole(register.getRole()));
+        if (ERoleRegister.getAdmin().contains(register.getRole())) {
+            addRoleToUser(user.getNrp(), ERole.ROLE_ADMIN);
+        } else if (ERoleRegister.getUser().contains(register.getRole())) {
+            addRoleToUser(user.getNrp(), ERole.ROLE_USER);
+        }
     }
 
     @Override

@@ -22,6 +22,8 @@ public final class LaundryMapper {
     public LaundryDto entityToLaundryDto(Laundry laundry) {
         LaundryDto laundryDto = modelMapper.map(laundry, LaundryDto.class);
         laundryDto.setUserNrp(laundry.getUser().getNrp());
+        laundryDto.setUserName(laundry.getUser().getName());
+        laundryDto.setTanggal_aduan(laundry.getCreatedAt());
         return laundryDto;
     }
 

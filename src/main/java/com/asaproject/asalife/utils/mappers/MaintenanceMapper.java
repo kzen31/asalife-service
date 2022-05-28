@@ -18,6 +18,7 @@ public final class MaintenanceMapper {
         MaintenanceDto maintenanceDto = modelMapper.map(maintenance, MaintenanceDto.class);
         maintenanceDto.setUserName(maintenance.getUser().getName());
         maintenanceDto.setUserNrp(maintenance.getUser().getNrp());
+        maintenanceDto.setTanggalAduan(maintenance.getCreatedAt());
         return maintenanceDto;
     }
 

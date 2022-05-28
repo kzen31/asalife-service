@@ -3,6 +3,7 @@ package com.asaproject.asalife.utils.mappers;
 import com.asaproject.asalife.domains.entities.User;
 import com.asaproject.asalife.domains.models.reqres.UpdateUser;
 import com.asaproject.asalife.domains.models.requests.AdminRegister;
+import com.asaproject.asalife.domains.models.requests.Register;
 import com.asaproject.asalife.domains.models.requests.UserRegister;
 import com.asaproject.asalife.domains.models.responses.MyProfile;
 
@@ -11,6 +12,15 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import java.security.Principal;
 
 public final class UserAdminMapper {
+    public static User userRegisterCommon(Register register) {
+        User user = new User();
+        user.setName(register.getName());
+        user.setDepartment(register.getDepartment());
+        user.setNrp(register.getNrp());
+        user.setPassword(register.getPassword());
+        return user;
+    }
+
     public static User userRegisterToUser(UserRegister userRegister) {
         User user = new User();
         user.setName(userRegister.getName());
