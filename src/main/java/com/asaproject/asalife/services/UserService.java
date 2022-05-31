@@ -4,6 +4,7 @@ import com.asaproject.asalife.domains.entities.User;
 import com.asaproject.asalife.domains.models.reqres.UpdateUser;
 import com.asaproject.asalife.domains.models.requests.*;
 import com.asaproject.asalife.domains.models.responses.MyProfile;
+import com.asaproject.asalife.domains.models.responses.RegisMany;
 import com.asaproject.asalife.domains.models.responses.TokenResponse;
 
 import org.springframework.security.authentication.BadCredentialsException;
@@ -13,6 +14,8 @@ import java.util.List;
 
 public interface UserService {
     void register(Register register) throws Exception;
+
+    RegisMany registerCommonMany(List<Register> registers) throws Exception;
 
     void registerUser(UserRegister userRegister) throws Exception;
 

@@ -2,6 +2,7 @@ package com.asaproject.asalife.controllers;
 
 import com.asaproject.asalife.domains.models.requests.*;
 import com.asaproject.asalife.domains.models.responses.ApiResponse;
+import com.asaproject.asalife.domains.models.responses.RegisMany;
 import com.asaproject.asalife.domains.models.responses.TokenResponse;
 import com.asaproject.asalife.services.RefreshTokenService;
 import com.asaproject.asalife.services.TokenService;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -66,6 +68,21 @@ public class AuthController extends HandlerController {
             userService.register(user);
             return ResponseEntity.created(uri)
                     .body(ApiResponse.builder().message("Create User Success").build());
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (e.getMessage().equals("NRP_UNAVAILABLE")) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "NRP is taken", e.getCause());
+            }
+            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, e.getMessage());
+        }
+    }
+
+    @PostMapping("/regis-many")
+    public ResponseEntity<RegisMany> registerCommonMany(@Valid @RequestBody List<Register> users) {
+        URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/regis-many").toUriString());
+        try {
+            RegisMany regisMany = userService.registerCommonMany(users);
+            return ResponseEntity.ok(regisMany);
         } catch (Exception e) {
             e.printStackTrace();
             if (e.getMessage().equals("NRP_UNAVAILABLE")) {

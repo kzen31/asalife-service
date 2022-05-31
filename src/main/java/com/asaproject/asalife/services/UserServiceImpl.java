@@ -1,13 +1,13 @@
 package com.asaproject.asalife.services;
 
 import com.asaproject.asalife.domains.ERole;
-import com.asaproject.asalife.domains.ERoleAdminRegister;
 import com.asaproject.asalife.domains.ERoleRegister;
 import com.asaproject.asalife.domains.entities.Role;
 import com.asaproject.asalife.domains.entities.User;
 import com.asaproject.asalife.domains.models.reqres.UpdateUser;
 import com.asaproject.asalife.domains.models.requests.*;
 import com.asaproject.asalife.domains.models.responses.MyProfile;
+import com.asaproject.asalife.domains.models.responses.RegisMany;
 import com.asaproject.asalife.domains.models.responses.TokenResponse;
 import com.asaproject.asalife.repositories.RoleRepository;
 import com.asaproject.asalife.repositories.UserRepository;
@@ -25,6 +25,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import javax.transaction.Transactional;
 import java.security.Principal;
@@ -64,6 +65,46 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         } else if (ERoleRegister.getUser().contains(register.getRole())) {
             addRoleToUser(user.getNrp(), ERole.ROLE_USER);
         }
+    }
+
+    @Override
+    public RegisMany registerCommonMany(List<Register> registers) throws Exception {
+        long countSuccess = 0L;
+        long countFail = 0L;
+        long countNrpExist = 0L;
+        for (Register register: registers) {
+            if (ObjectUtils.isEmpty(register.getNrp())) {
+                countFail++;
+                continue;
+            }
+            if (ObjectUtils.isEmpty(register.getName())) {
+                countFail++;
+                continue;
+            }
+            if (ObjectUtils.isEmpty(register.getPassword())) {
+                countFail++;
+                continue;
+            }
+            if (ObjectUtils.isEmpty(register.getDepartment())) {
+                countFail++;
+                continue;
+            }
+            if (ObjectUtils.isEmpty(register.getRole())) {
+                countFail++;
+                continue;
+            }
+            if (!getIsNrpAvailable(register.getNrp())) {
+                countNrpExist++;
+                continue;
+            }
+            register(register);
+            countSuccess++;
+        }
+        RegisMany regisMany = new RegisMany();
+        regisMany.setCountSuccess(countSuccess);
+        regisMany.setCountFail(countFail);
+        regisMany.setCountNrpExist(countNrpExist);
+        return regisMany;
     }
 
     @Override
