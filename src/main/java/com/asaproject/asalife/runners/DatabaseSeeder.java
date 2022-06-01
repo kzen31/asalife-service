@@ -4,14 +4,18 @@ import com.asaproject.asalife.domains.ERole;
 import com.asaproject.asalife.domains.entities.*;
 import com.asaproject.asalife.domains.models.reqres.SetTaskMess;
 import com.asaproject.asalife.domains.models.reqres.SetTaskRoom;
+import com.asaproject.asalife.domains.models.requests.RatingManyRequest;
 import com.asaproject.asalife.repositories.*;
 
+import com.asaproject.asalife.utils.mappers.UserAdminMapper;
+import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 import javax.transaction.Transactional;
 import java.util.Arrays;
@@ -40,6 +44,7 @@ public class DatabaseSeeder implements ApplicationRunner {
 
     private final TaskRoomRepository taskRoomRepository;
     private final TaskMessRepository taskMessRepository;
+    private final RatingCateringManyRepository ratingCateringManyRepository;
 
     @Override
     public void run(ApplicationArguments args) {
@@ -60,7 +65,7 @@ public class DatabaseSeeder implements ApplicationRunner {
         saveRatingCateringAll();
         saveTaskRoomMany ();
         saveTaskMessMany();
-
+        saveManyRatingCatering();
     }
 
     private void saveRoles() {
@@ -463,5 +468,33 @@ public class DatabaseSeeder implements ApplicationRunner {
         taskMess.setToiletLantaiSudutLantai(setTaskMess.getToiletlantaisudutlantai());
         taskMess.setToiletTeras(setTaskMess.getToiletteras());
         taskMessRepository.save(taskMess);
+    }
+
+    void saveManyRatingCatering() {
+        saveRatingCatering("001", new RatingManyRequest(1,2,3,1,1,1,3,2,"Makanan lebih bervariasi"));
+        saveRatingCatering("002", new RatingManyRequest(3,2,3,1,1,2,1,1,"Minuman lebih bervariasi"));
+        saveRatingCatering("002", new RatingManyRequest(3,2,1,2,2,2,3,3,"Makanan Tambah Garam"));
+        saveRatingCatering("111", new RatingManyRequest(1,3,1,2,3,5,3,4,"Makanan matang sempurna"));
+        saveRatingCatering("112", new RatingManyRequest(2,2,3,4,3,5,3,2,"Makanan jangan terlambat"));
+        saveRatingCatering("112", new RatingManyRequest(1,3,1,4,4,5,3,1,"Makanan jangan basi"));
+        saveRatingCatering("113", new RatingManyRequest(2,3,1,4,4,5,3,1,"Makanan bersih"));
+    }
+
+    void saveRatingCatering(String nrp, RatingManyRequest ratingManyRequest) {
+        User user = userRepository.findByNrp(nrp);
+
+        RatingCateringMany ratingCateringMany = new RatingCateringMany();
+        ratingCateringMany.setNilai1(ratingManyRequest.getNilai1());
+        ratingCateringMany.setNilai2(ratingManyRequest.getNilai2());
+        ratingCateringMany.setNilai3(ratingManyRequest.getNilai3());
+        ratingCateringMany.setNilai4(ratingManyRequest.getNilai4());
+        ratingCateringMany.setNilai5(ratingManyRequest.getNilai5());
+        ratingCateringMany.setNilai6(ratingManyRequest.getNilai6());
+        ratingCateringMany.setNilai7(ratingManyRequest.getNilai7());
+        ratingCateringMany.setNilai8(ratingManyRequest.getNilai8());
+        ratingCateringMany.setSaran(ratingManyRequest.getSaran());
+
+        ratingCateringMany.setUser(user);
+        ratingCateringManyRepository.save(ratingCateringMany);
     }
 }
