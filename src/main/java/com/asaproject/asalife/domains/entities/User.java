@@ -20,7 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 public class User extends Auditable implements UserDetails {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 

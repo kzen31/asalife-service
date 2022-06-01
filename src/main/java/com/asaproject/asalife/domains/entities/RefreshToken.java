@@ -19,7 +19,7 @@ import javax.persistence.*;
 @Table(name = "refreshtokens")
 public class RefreshToken extends Auditable implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @JsonIgnore

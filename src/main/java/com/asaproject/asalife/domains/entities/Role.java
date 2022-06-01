@@ -19,7 +19,7 @@ import javax.persistence.*;
 public class Role extends Auditable implements GrantedAuthority {
     @JsonIgnore
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
 

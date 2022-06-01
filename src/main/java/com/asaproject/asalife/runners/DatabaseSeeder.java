@@ -81,37 +81,85 @@ public class DatabaseSeeder implements ApplicationRunner {
     }
 
     private void saveUsers() {
+        User hcgs = new User();
+        hcgs.setNrp("001");
+        hcgs.setName("Admin");
+        hcgs.setPassword(passwordEncoder.encode("123"));
+        hcgs.setDepartment("it");
+        hcgs.setRoles(Arrays.asList(roleRepository.findByName(ERole.ROLE_HCGS),
+                roleRepository.findByName(ERole.ROLE_MEGAUSER),
+                roleRepository.findByName(ERole.ROLE_ADMIN)));
+        registerUserAdminIfNotExists(hcgs);
+
+        User prog1 = new User();
+        prog1.setNrp("002");
+        prog1.setName("Shidiq Pitoyo");
+        prog1.setPassword(passwordEncoder.encode("123"));
+        prog1.setDepartment("it");
+        prog1.setRoles(Arrays.asList(roleRepository.findByName(ERole.ROLE_PROG),
+                roleRepository.findByName(ERole.ROLE_SUPERUSER),
+                roleRepository.findByName(ERole.ROLE_ADMIN)));
+        registerUserAdminIfNotExists(prog1);
+
+        User prog2 = new User();
+        prog2.setNrp("003");
+        prog2.setName("Muhammad Nuh Almadani");
+        prog2.setPassword(passwordEncoder.encode("123"));
+        prog2.setDepartment("it");
+        prog2.setRoles(Arrays.asList(roleRepository.findByName(ERole.ROLE_PROG),
+                roleRepository.findByName(ERole.ROLE_SUPERUSER),
+                roleRepository.findByName(ERole.ROLE_ADMIN)));
+        registerUserAdminIfNotExists(prog2);
+
         User customer = new User();
         customer.setNrp("111");
-        customer.setName("budi");
+        customer.setName("Saif Masharil");
         customer.setPassword(passwordEncoder.encode("123"));
-        customer.setRoles(Arrays.asList(roleRepository.findByName(ERole.ROLE_CUSTOMER),
+        customer.setDepartment("it");
+        customer.setRoles(Arrays.asList(roleRepository.findByName(ERole.ROLE_CUS),
+                roleRepository.findByName(ERole.ROLE_CUSTOMER),
                 roleRepository.findByName(ERole.ROLE_USER)));
         registerUserAdminIfNotExists(customer);
 
-        User worker = new User();
-        worker.setNrp("112");
-        worker.setName("binomo");
-        worker.setPassword(passwordEncoder.encode("123"));
-        worker.setRoles(Arrays.asList(roleRepository.findByName(ERole.ROLE_WORKER),
+        User mt = new User();
+        mt.setNrp("112");
+        mt.setName("Yusuf Firmansyah");
+        mt.setPassword(passwordEncoder.encode("123"));
+        mt.setDepartment("it");
+        mt.setRoles(Arrays.asList(roleRepository.findByName(ERole.ROLE_MT),
+                roleRepository.findByName(ERole.ROLE_WORKER),
                 roleRepository.findByName(ERole.ROLE_USER)));
-        registerUserAdminIfNotExists(worker);
+        registerUserAdminIfNotExists(mt);
 
-        User megauser = new User();
-        megauser.setNrp("001");
-        megauser.setName("asa");
-        megauser.setPassword(passwordEncoder.encode("123"));
-        megauser.setRoles(Arrays.asList(roleRepository.findByName(ERole.ROLE_MEGAUSER),
-                roleRepository.findByName(ERole.ROLE_ADMIN)));
-        registerUserAdminIfNotExists(megauser);
+        User hk = new User();
+        hk.setNrp("113");
+        hk.setName("Angga Jayadiyuda");
+        hk.setPassword(passwordEncoder.encode("123"));
+        hk.setDepartment("it");
+        hk.setRoles(Arrays.asList(roleRepository.findByName(ERole.ROLE_HK),
+                roleRepository.findByName(ERole.ROLE_WORKER),
+                roleRepository.findByName(ERole.ROLE_USER)));
+        registerUserAdminIfNotExists(hk);
 
-        User superuser = new User();
-        superuser.setNrp("002");
-        superuser.setName("loj");
-        superuser.setPassword(passwordEncoder.encode("123"));
-        superuser.setRoles(Arrays.asList(roleRepository.findByName(ERole.ROLE_SUPERUSER),
+        User spv = new User();
+        spv.setNrp("114");
+        spv.setName("Nieko");
+        spv.setPassword(passwordEncoder.encode("123"));
+        spv.setDepartment("it");
+        spv.setRoles(Arrays.asList(roleRepository.findByName(ERole.ROLE_SPV),
+                roleRepository.findByName(ERole.ROLE_MEGAUSER),
                 roleRepository.findByName(ERole.ROLE_ADMIN)));
-        registerUserAdminIfNotExists(superuser);
+        registerUserAdminIfNotExists(spv);
+
+        User gs = new User();
+        gs.setNrp("115");
+        gs.setName("Rendy Pranata");
+        gs.setPassword(passwordEncoder.encode("123"));
+        gs.setDepartment("it");
+        gs.setRoles(Arrays.asList(roleRepository.findByName(ERole.ROLE_GS),
+                roleRepository.findByName(ERole.ROLE_MEGAUSER),
+                roleRepository.findByName(ERole.ROLE_ADMIN)));
+        registerUserAdminIfNotExists(gs);
     }
 
     private void saveAduanCateringAll() {
