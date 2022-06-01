@@ -60,10 +60,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             throw new Exception("NRP_UNAVAILABLE");
         saveUser(user);
         addRoleToUser(user.getNrp(), RoleCommonMapper.mapRole(register.getRole()));
-        if (ERoleRegister.getAdmin().contains(register.getRole())) {
-            addRoleToUser(user.getNrp(), ERole.ROLE_ADMIN);
-        } else if (ERoleRegister.getUser().contains(register.getRole())) {
+
+        if (ERoleRegister.getWorker().contains(register.getRole())) {
             addRoleToUser(user.getNrp(), ERole.ROLE_USER);
+            addRoleToUser(user.getNrp(), ERole.ROLE_WORKER);
+        } else if (ERoleRegister.getSuperUser().contains(register.getRole())) {
+            addRoleToUser(user.getNrp(), ERole.ROLE_ADMIN);
+            addRoleToUser(user.getNrp(), ERole.ROLE_SUPERUSER);
+        } else if (ERoleRegister.getMegaUser().contains(register.getRole())) {
+            addRoleToUser(user.getNrp(), ERole.ROLE_ADMIN);
+            addRoleToUser(user.getNrp(), ERole.ROLE_MEGAUSER);
+        } else {
+            addRoleToUser(user.getNrp(), ERole.ROLE_USER);
+            addRoleToUser(user.getNrp(), ERole.ROLE_CUSTOMER);
         }
     }
 

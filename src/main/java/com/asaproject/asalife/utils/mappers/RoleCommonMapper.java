@@ -11,14 +11,20 @@ import java.util.stream.Collectors;
 public final class RoleCommonMapper {
     public static ERole mapRole(ERoleRegister roleRegister) {
         switch (roleRegister) {
-            case CUSTOMER:
-                return ERole.ROLE_CUSTOMER;
-            case WORKER:
-                return ERole.ROLE_WORKER;
-            case MEGAUSER:
-                return ERole.ROLE_MEGAUSER;
-            case SUPERUSER:
-                return ERole.ROLE_SUPERUSER;
+            case CUS:
+                return ERole.ROLE_CUS;
+            case MT:
+                return ERole.ROLE_MT;
+            case HK:
+                return ERole.ROLE_HK;
+            case SPV:
+                return ERole.ROLE_SPV;
+            case GS:
+                return ERole.ROLE_GS;
+            case HCGS:
+                return ERole.ROLE_HCGS;
+            case PROG:
+                return ERole.ROLE_PROG;
             default:
                 return null;
         }

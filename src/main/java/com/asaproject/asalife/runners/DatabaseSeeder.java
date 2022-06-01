@@ -70,6 +70,14 @@ public class DatabaseSeeder implements ApplicationRunner {
         saveRoleIfNotExists(new Role(null, ERole.ROLE_WORKER));
         saveRoleIfNotExists(new Role(null, ERole.ROLE_SUPERUSER));
         saveRoleIfNotExists(new Role(null, ERole.ROLE_MEGAUSER));
+
+        saveRoleIfNotExists(new Role(null, ERole.ROLE_CUS));
+        saveRoleIfNotExists(new Role(null, ERole.ROLE_MT));
+        saveRoleIfNotExists(new Role(null, ERole.ROLE_HK));
+        saveRoleIfNotExists(new Role(null, ERole.ROLE_SPV));
+        saveRoleIfNotExists(new Role(null, ERole.ROLE_GS));
+        saveRoleIfNotExists(new Role(null, ERole.ROLE_HCGS));
+        saveRoleIfNotExists(new Role(null, ERole.ROLE_PROG));
     }
 
     private void saveUsers() {

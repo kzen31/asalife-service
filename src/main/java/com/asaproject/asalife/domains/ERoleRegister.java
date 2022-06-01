@@ -3,16 +3,23 @@ package com.asaproject.asalife.domains;
 import java.util.EnumSet;
 
 public enum ERoleRegister {
-    SUPERUSER,
-    MEGAUSER,
-    CUSTOMER,
-    WORKER;
+    CUS,
+    MT,
+    HK,
+    SPV,
+    GS,
+    HCGS,
+    PROG;
 
-    public static EnumSet<ERoleRegister> getAdmin() {
-        return EnumSet.of(SUPERUSER, MEGAUSER);
+    public static EnumSet<ERoleRegister> getWorker() {
+        return EnumSet.of(MT, HK);
     }
 
-    public static EnumSet<ERoleRegister> getUser() {
-        return EnumSet.of(CUSTOMER, WORKER);
+    public static EnumSet<ERoleRegister> getSuperUser() {
+        return EnumSet.of(SPV, GS);
+    }
+
+    public static EnumSet<ERoleRegister> getMegaUser() {
+        return EnumSet.of(HCGS, PROG);
     }
 }
