@@ -25,4 +25,9 @@ public class UserController extends HandlerController {
     public ResponseEntity<MyProfile> getProfile(Principal principal) {
         return ResponseEntity.ok(userService.getMyProfile(principal));
     }
+
+    @GetMapping("/mt")
+    public ResponseEntity<List<User>> getMt() {
+        return ResponseEntity.ok(userService.getMt());
+    }
 }

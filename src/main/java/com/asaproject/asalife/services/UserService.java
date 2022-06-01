@@ -36,4 +36,6 @@ public interface UserService {
     UpdateUser updateUser(Principal principal, UpdateUser updateUser);
 
     MyProfile getMyProfile(Principal principal);
+
+    List<User> getMt();
 }

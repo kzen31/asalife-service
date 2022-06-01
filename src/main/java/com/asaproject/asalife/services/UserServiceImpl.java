@@ -204,6 +204,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return UserAdminMapper.principalToMyProfile(principal);
     }
 
+    @Override
+    public List<User> getMt() {
+        return userRepo.findByRole();
+    }
 
     private void saveUser(User user) {
         log.info("Saving new user {}", user.getName());
