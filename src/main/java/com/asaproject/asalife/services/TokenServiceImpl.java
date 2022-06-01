@@ -73,7 +73,7 @@ public class TokenServiceImpl implements TokenService {
         }
 
         String newToken = jwtService.generateToken(token.getUser().getUsername());
-        return new TokenResponse(newToken, refreshToken, RoleUserMapper.rolesToERoles(token.getUser().getRoles()));
+        return new TokenResponse(newToken, refreshToken, RoleUserMapper.rolesToERoles(token.getUser().getRoles()), token.getUser());
     }
 
     @Override
@@ -81,6 +81,6 @@ public class TokenServiceImpl implements TokenService {
         String jwtToken = jwtService.generateToken(user.getNrp());
         String refreshToken = refreshToken(user.getNrp());
 
-        return new TokenResponse(jwtToken, refreshToken, RoleUserMapper.rolesToERoles(user.getRoles()));
+        return new TokenResponse(jwtToken, refreshToken, RoleUserMapper.rolesToERoles(user.getRoles()), user);
     }
 }
