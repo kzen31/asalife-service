@@ -93,27 +93,27 @@ public class DatabaseSeeder implements ApplicationRunner {
 
         User prog1 = new User();
         prog1.setNrp("002");
-        prog1.setName("Shidiq Pitoyo");
+        prog1.setName("Dani");
         prog1.setPassword(passwordEncoder.encode("123"));
         prog1.setDepartment("it");
         prog1.setRoles(Arrays.asList(roleRepository.findByName(ERole.ROLE_PROG),
-                roleRepository.findByName(ERole.ROLE_SUPERUSER),
+                roleRepository.findByName(ERole.ROLE_MEGAUSER),
                 roleRepository.findByName(ERole.ROLE_ADMIN)));
         registerUserAdminIfNotExists(prog1);
 
         User prog2 = new User();
         prog2.setNrp("003");
-        prog2.setName("Muhammad Nuh Almadani");
+        prog2.setName("zain");
         prog2.setPassword(passwordEncoder.encode("123"));
         prog2.setDepartment("it");
         prog2.setRoles(Arrays.asList(roleRepository.findByName(ERole.ROLE_PROG),
-                roleRepository.findByName(ERole.ROLE_SUPERUSER),
+                roleRepository.findByName(ERole.ROLE_MEGAUSER),
                 roleRepository.findByName(ERole.ROLE_ADMIN)));
         registerUserAdminIfNotExists(prog2);
 
         User customer = new User();
         customer.setNrp("111");
-        customer.setName("Saif Masharil");
+        customer.setName("Saif");
         customer.setPassword(passwordEncoder.encode("123"));
         customer.setDepartment("it");
         customer.setRoles(Arrays.asList(roleRepository.findByName(ERole.ROLE_CUS),
@@ -123,7 +123,7 @@ public class DatabaseSeeder implements ApplicationRunner {
 
         User mt = new User();
         mt.setNrp("112");
-        mt.setName("Yusuf Firmansyah");
+        mt.setName("Yusuf");
         mt.setPassword(passwordEncoder.encode("123"));
         mt.setDepartment("it");
         mt.setRoles(Arrays.asList(roleRepository.findByName(ERole.ROLE_MT),
@@ -133,7 +133,7 @@ public class DatabaseSeeder implements ApplicationRunner {
 
         User hk = new User();
         hk.setNrp("113");
-        hk.setName("Angga Jayadiyuda");
+        hk.setName("Angga");
         hk.setPassword(passwordEncoder.encode("123"));
         hk.setDepartment("it");
         hk.setRoles(Arrays.asList(roleRepository.findByName(ERole.ROLE_HK),
@@ -147,17 +147,17 @@ public class DatabaseSeeder implements ApplicationRunner {
         spv.setPassword(passwordEncoder.encode("123"));
         spv.setDepartment("it");
         spv.setRoles(Arrays.asList(roleRepository.findByName(ERole.ROLE_SPV),
-                roleRepository.findByName(ERole.ROLE_MEGAUSER),
+                roleRepository.findByName(ERole.ROLE_SUPERUSER),
                 roleRepository.findByName(ERole.ROLE_ADMIN)));
         registerUserAdminIfNotExists(spv);
 
         User gs = new User();
         gs.setNrp("115");
-        gs.setName("Rendy Pranata");
+        gs.setName("Rendy");
         gs.setPassword(passwordEncoder.encode("123"));
         gs.setDepartment("it");
         gs.setRoles(Arrays.asList(roleRepository.findByName(ERole.ROLE_GS),
-                roleRepository.findByName(ERole.ROLE_MEGAUSER),
+                roleRepository.findByName(ERole.ROLE_SUPERUSER),
                 roleRepository.findByName(ERole.ROLE_ADMIN)));
         registerUserAdminIfNotExists(gs);
     }
