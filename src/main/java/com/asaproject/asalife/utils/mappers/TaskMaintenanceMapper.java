@@ -18,6 +18,7 @@ public final class TaskMaintenanceMapper {
         TaskMaintenanceDto taskMaintenanceDto = modelMapper.map(taskMaintenance, TaskMaintenanceDto.class);
         taskMaintenanceDto.setUserNrp(taskMaintenance.getUser().getNrp());
         taskMaintenanceDto.setUserName(taskMaintenance.getUser().getName());
+        taskMaintenanceDto.setCreated_at(taskMaintenance.getCreatedAt());
         return taskMaintenanceDto;
     }
 
