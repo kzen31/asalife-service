@@ -61,10 +61,12 @@ public class MaintenanceServiceImpl implements MaintenanceService{
         if (ObjectUtils.isEmpty(maintenance) || !ObjectUtils.isEmpty(maintenance.getDeletedAt())) {
             throw new NotFoundException("MAINTENANCE_NOT_FOUND");
         }
+        String status = StatusMaintenanceMapper.mapStatus(maintenanceOrder.getStatus());
 
         maintenance.setPriority(maintenanceOrder.getPriority());
         maintenance.setPicNrp(maintenanceOrder.getPicnrp());
         maintenance.setDuration(maintenanceOrder.getDuration());
+        maintenance.setStatus(status);
         maintenanceRepository.save(maintenance);
     }
 
