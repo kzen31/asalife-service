@@ -29,6 +29,8 @@ public interface UserService {
 
     TokenResponse signIn(SignInRequest signInRequest) throws Exception;
 
+    TokenResponse signInAdmin(SignInRequest signInRequest) throws Exception;
+
     void changePassword(Principal principal, PasswordChangeRequest passwordChangeRequest) throws BadCredentialsException;
 
     UpdateUser getProfileUpdate(Principal principal);

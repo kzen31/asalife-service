@@ -29,7 +29,9 @@ import org.springframework.util.ObjectUtils;
 
 import javax.transaction.Transactional;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -162,6 +164,33 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         if (user == null)
             throw new NotFoundException("USER_NOT_FOUND");
+        if (!passwordEncoder.matches(signInRequest.getPassword(), user.getPassword()))
+            throw new BadCredentialsException("PASSWORD_WRONG");
+
+        Exception exception = tokenService.authUser(nrp, password);
+        if (exception instanceof DisabledException) {
+            return null;
+        } else if (exception != null) {
+            throw exception;
+        }
+
+        return tokenService.getToken(user);
+    }
+
+    @Override
+    public TokenResponse signInAdmin(SignInRequest signInRequest) throws Exception {
+        String nrp = signInRequest.getNrp();
+        String password = signInRequest.getPassword();
+
+        User user = userRepo.findByNrp(nrp);
+
+        if (user == null)
+            throw new NotFoundException("USER_NOT_FOUND");
+
+        List<ERole> list = new ArrayList<>();
+        user.getRoles().forEach(role -> list.add(role.getName()));
+        if (!list.contains(ERole.ROLE_MEGAUSER))
+            throw new Exception("FORBIDDEN");
         if (!passwordEncoder.matches(signInRequest.getPassword(), user.getPassword()))
             throw new BadCredentialsException("PASSWORD_WRONG");
 

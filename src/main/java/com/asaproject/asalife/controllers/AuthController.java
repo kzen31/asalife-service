@@ -1,5 +1,6 @@
 package com.asaproject.asalife.controllers;
 
+import com.asaproject.asalife.domains.ERole;
 import com.asaproject.asalife.domains.models.requests.*;
 import com.asaproject.asalife.domains.models.responses.ApiResponse;
 import com.asaproject.asalife.domains.models.responses.RegisMany;
@@ -11,6 +12,7 @@ import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.web.bind.annotation.*;
@@ -143,4 +145,25 @@ public class AuthController extends HandlerController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User not found", e.getCause());
         }
     }
+
+    @PostMapping("/admin-signin")
+    public ResponseEntity<TokenResponse> signInAdmin(@Valid @RequestBody SignInRequest signInRequest) {
+        try {
+            TokenResponse result = userService.signInAdmin(signInRequest);
+            if (result == null)
+                throw new DisabledException(null);
+            return ResponseEntity.ok(result);
+        } catch (BadCredentialsException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Nrp or password is incorrect", e.getCause());
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found", e.getCause());
+        } catch (Exception e) {
+            if (e.getMessage().equals("FORBIDDEN")) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User do not have access", e.getCause());
+            }
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, "Failed to login", e.getCause());
+        }
+    }
+
 }
