@@ -12,6 +12,8 @@ import java.util.List;
 public interface HousekeepingRepository extends JpaRepository<Housekeeping, Long> {
     List<Housekeeping> findAllByUserOrderByCreatedAtAsc(User user);
 
+    List<Housekeeping> findAllByOrderByCreatedAtAsc();
+
     @Query(value = "SELECT * FROM Housekeeping c WHERE c.id = :id", nativeQuery = true)
     Housekeeping findHousekeepingByIdNative(@Param("id") Long id);
 

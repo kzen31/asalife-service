@@ -21,4 +21,6 @@ public interface CateringService {
     List<CateringDto> getUserCaterings(Principal principal);
 
     CateringDto updateStatusCatering(Long id, StatusCatering statusCatering) throws Exception;
+
+    void deleteCatering(Long id) throws Exception;
 }

@@ -57,4 +57,16 @@ public class LaundryController extends HandlerController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
+
+    @DeleteMapping ("/delete-record/{id}")
+    public ResponseEntity<ApiResponse> deleteRecordLaundry(@PathVariable Long id) {
+        try {
+            laundryService.deleteLaundry(id);
+            return ResponseEntity.ok(ApiResponse.builder().message("Successfully Delete Record Laundry").build());
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Record Laundry Not Found", e.getCause());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request not valid", e.getCause());
+        }
+    }
 }

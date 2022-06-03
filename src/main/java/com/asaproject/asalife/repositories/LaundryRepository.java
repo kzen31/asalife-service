@@ -1,5 +1,6 @@
 package com.asaproject.asalife.repositories;
 
+import com.asaproject.asalife.domains.entities.Housekeeping;
 import com.asaproject.asalife.domains.entities.Laundry;
 import com.asaproject.asalife.domains.entities.RatingCatering;
 import com.asaproject.asalife.domains.entities.User;
@@ -12,6 +13,8 @@ import java.util.List;
 
 public interface LaundryRepository extends JpaRepository<Laundry, Long> {
     List<Laundry> findAllByUser(User user);
+
+    List<Laundry> findAllByOrderByCreatedAtAsc();
 
     @Query(value = "SELECT * FROM Laundry c  WHERE c.user_id = :id " +
             "ORDER BY c.created_at ASC ", nativeQuery = true)

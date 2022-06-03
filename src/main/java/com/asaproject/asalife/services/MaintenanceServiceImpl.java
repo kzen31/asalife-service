@@ -29,7 +29,7 @@ public class MaintenanceServiceImpl implements MaintenanceService{
 
     @Override
     public List<MaintenanceDto> getAllMaintenance() {
-        return maintenanceMapper.mapMaintenanceDtoToList(maintenanceRepository.findAllAndOrder());
+        return maintenanceMapper.mapMaintenanceDtoToList(maintenanceRepository.findAllByOrderByCreatedAtAsc());
     }
 
     @Override
@@ -89,6 +89,21 @@ public class MaintenanceServiceImpl implements MaintenanceService{
             throw new NotFoundException("MAINTENANCE_NOT_FOUND");
         }
 
+        maintenance.setDeletedAt(new Date());
+        maintenanceRepository.save(maintenance);
+    }
+
+    @Override
+    public void deleteMaintenance(Long id) throws Exception {
+        Maintenance maintenance = maintenanceRepository.findMaintenanceByIdNative(id);
+
+        if(ObjectUtils.isEmpty(maintenance)) {
+            throw new NotFoundException("NOT_FOUND");
+        }
+
+        if (!ObjectUtils.isEmpty(maintenance.getDeletedAt())) {
+            throw new NotFoundException("NOT_FOUND");
+        }
         maintenance.setDeletedAt(new Date());
         maintenanceRepository.save(maintenance);
     }

@@ -23,4 +23,6 @@ public interface LaundryService {
     void updateStatusLaundry(Long id, @RequestBody StatusLaundry statusLaundry)throws Exception;
 
     Boolean isLaundryExist(Long id);
+
+    void deleteLaundry(Long id) throws Exception;
 }

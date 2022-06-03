@@ -23,4 +23,6 @@ public interface MaintenanceService {
     void updateOrderStatus(Long id, StatusMaintenance StatusMaintenance) throws Exception;
 
     void cancelOrder(Long id) throws Exception;
+
+    void deleteMaintenance(Long id) throws Exception;
 }

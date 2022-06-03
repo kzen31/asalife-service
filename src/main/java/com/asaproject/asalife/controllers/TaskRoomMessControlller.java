@@ -61,7 +61,7 @@ public class TaskRoomMessControlller extends HandlerController{
         }
     }
 
-    @PutMapping("/room-delete/{id}")
+    @DeleteMapping("/room-delete/{id}")
     public ResponseEntity<ApiResponse> deleteATaskRoom(@PathVariable Long id) {
         try {
             taskRoomService.deleteTaskRoom(id);
@@ -107,7 +107,7 @@ public class TaskRoomMessControlller extends HandlerController{
         }
     }
 
-    @PutMapping("/mess-delete/{id}")
+    @DeleteMapping("/mess-delete/{id}")
     public ResponseEntity<ApiResponse> deleteATaskMess(@PathVariable Long id) {
         try {
             taskMessService.deleteTaskMess(id);

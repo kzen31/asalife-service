@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.security.Principal;
+import java.util.Date;
 import java.util.InvalidPropertiesFormatException;
 import java.util.List;
 
@@ -88,5 +89,20 @@ public class CateringServiceImpl implements CateringService{
         catering.setStatus(status);
         cateringRepo.save(catering);
         return cateringMapper.entityToCateringDto(cateringRepo.findCateringByIdNative(id));
+    }
+
+    @Override
+    public void deleteCatering(Long id) throws Exception {
+        Catering catering = cateringRepo.findCateringByIdNative(id);
+
+        if(ObjectUtils.isEmpty(catering)) {
+            throw new NotFoundException("NOT_FOUND");
+        }
+
+        if (!ObjectUtils.isEmpty(catering.getDeletedAt())) {
+            throw new NotFoundException("NOT_FOUND");
+        }
+        catering.setDeletedAt(new Date());
+        cateringRepo.save(catering);
     }
 }

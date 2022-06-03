@@ -1,5 +1,6 @@
 package com.asaproject.asalife.services;
 
+import com.asaproject.asalife.domains.entities.Catering;
 import com.asaproject.asalife.domains.entities.Laundry;
 import com.asaproject.asalife.domains.entities.User;
 import com.asaproject.asalife.domains.models.requests.LaundryRequest;
@@ -17,6 +18,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.security.Principal;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -38,7 +40,7 @@ public class LaundryServiceImpl implements LaundryService{
 
     @Override
     public List<Laundry> getAllLaundry() {
-       return laundryRepository.findAllAndOrder();
+       return laundryRepository.findAllByOrderByCreatedAtAsc();
     }
 
 
@@ -77,5 +79,20 @@ public class LaundryServiceImpl implements LaundryService{
     @Override
     public Boolean isLaundryExist(Long id){
         return !ObjectUtils.isEmpty(laundryRepository.findById(id));
+    }
+
+    @Override
+    public void deleteLaundry(Long id) throws Exception {
+        Laundry laundry = laundryRepository.findLaundryByIdNative(id);
+
+        if(ObjectUtils.isEmpty(laundry)) {
+            throw new NotFoundException("NOT_FOUND");
+        }
+
+        if (!ObjectUtils.isEmpty(laundry.getDeletedAt())) {
+            throw new NotFoundException("NOT_FOUND");
+        }
+        laundry.setDeletedAt(new Date());
+        laundryRepository.save(laundry);
     }
 }

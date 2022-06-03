@@ -17,4 +17,6 @@ public interface HousekeepingService {
     void updateStatusHousekeeping(Long id, StatusHousekeeping statusHousekeeping) throws Exception;
 
     Boolean isHousekeepingExist(Long id);
+
+    void deleteHousekeeping(Long id) throws Exception;
 }

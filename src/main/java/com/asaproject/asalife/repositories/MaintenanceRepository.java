@@ -1,5 +1,6 @@
 package com.asaproject.asalife.repositories;
 
+import com.asaproject.asalife.domains.entities.Laundry;
 import com.asaproject.asalife.domains.entities.Maintenance;
 import com.asaproject.asalife.domains.entities.User;
 import com.asaproject.asalife.domains.models.interfaces.CountByMonth;
@@ -11,6 +12,8 @@ import java.util.List;
 
 public interface MaintenanceRepository extends JpaRepository<Maintenance, Long> {
     List<Maintenance> findAllByUserOrderByCreatedAtAsc(User user);
+
+    List<Maintenance> findAllByOrderByCreatedAtAsc();
 
     List<Maintenance> findAllByPicNrpOrderByCreatedAtAsc(String picNrp);
 

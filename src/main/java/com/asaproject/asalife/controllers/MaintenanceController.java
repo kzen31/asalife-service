@@ -127,7 +127,7 @@ public class MaintenanceController extends HandlerController {
         }
     }
 
-    @PutMapping("/task-delete/{id}")
+    @DeleteMapping("/task-delete/{id}")
     public ResponseEntity<ApiResponse> deleteTaskMaintenance(@PathVariable Long id) {
         try {
             taskMaintenanceService.deleteTask(id);
@@ -148,6 +148,18 @@ public class MaintenanceController extends HandlerController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
+    }
+
+    @DeleteMapping ("/delete-record/{id}")
+    public ResponseEntity<ApiResponse> deleteRecordMaintenance(@PathVariable Long id) {
+        try {
+            maintenanceService.deleteMaintenance(id);
+            return ResponseEntity.ok(ApiResponse.builder().message("Successfully Delete Record Maintenance").build());
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Record Maintenance Not Found", e.getCause());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request not valid", e.getCause());
         }
     }
 }

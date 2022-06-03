@@ -265,4 +265,16 @@ public class CateringController extends HandlerController {
     public ResponseEntity<List<RatingCateringMany>> getRatingCateringMany() {
         return ResponseEntity.ok(ratingCateringManyService.getRatingCateringMany());
     }
+
+    @DeleteMapping ("/delete-record/{id}")
+    public ResponseEntity<ApiResponse> deleteRecordCatering(@PathVariable Long id) {
+        try {
+            cateringService.deleteCatering(id);
+            return ResponseEntity.ok(ApiResponse.builder().message("Successfully Delete Record Catering").build());
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Record Catering Not Found", e.getCause());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request not valid", e.getCause());
+        }
+    }
 }

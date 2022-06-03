@@ -1,6 +1,7 @@
 package com.asaproject.asalife.services;
 
 import com.asaproject.asalife.domains.entities.Housekeeping;
+import com.asaproject.asalife.domains.entities.Laundry;
 import com.asaproject.asalife.domains.entities.User;
 import com.asaproject.asalife.domains.models.requests.HousekeepingRequest;
 import com.asaproject.asalife.domains.models.requests.StatusHousekeeping;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.security.Principal;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -27,7 +29,7 @@ public class HousekeepingServiceImpl implements HousekeepingService{
 
     @Override
     public List<HousekeepingDto> getAll() {
-        return housekeepingMapper.createListHousekeepingDto(housekeepingRepository.findAllAndOrder());
+        return housekeepingMapper.createListHousekeepingDto(housekeepingRepository.findAllByOrderByCreatedAtAsc());
     }
 
     @Override
@@ -63,5 +65,20 @@ public class HousekeepingServiceImpl implements HousekeepingService{
     @Override
     public Boolean isHousekeepingExist(Long id){
         return !ObjectUtils.isEmpty(housekeepingRepository.findById(id));
+    }
+
+    @Override
+    public void deleteHousekeeping(Long id) throws Exception {
+        Housekeeping housekeeping = housekeepingRepository.findHousekeepingByIdNative(id);
+
+        if(ObjectUtils.isEmpty(housekeeping)) {
+            throw new NotFoundException("NOT_FOUND");
+        }
+
+        if (!ObjectUtils.isEmpty(housekeeping.getDeletedAt())) {
+            throw new NotFoundException("NOT_FOUND");
+        }
+        housekeeping.setDeletedAt(new Date());
+        housekeepingRepository.save(housekeeping);
     }
 }

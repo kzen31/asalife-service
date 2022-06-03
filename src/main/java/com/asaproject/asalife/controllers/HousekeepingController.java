@@ -135,4 +135,16 @@ public class HousekeepingController extends HandlerController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
+
+    @DeleteMapping ("/delete-record/{id}")
+    public ResponseEntity<ApiResponse> deleteRecordHousekeeping(@PathVariable Long id) {
+        try {
+            housekeepingService.deleteHousekeeping(id);
+            return ResponseEntity.ok(ApiResponse.builder().message("Successfully Delete Record Housekeeping").build());
+        } catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Record Housekeeping Not Found", e.getCause());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request not valid", e.getCause());
+        }
+    }
 }
