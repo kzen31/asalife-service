@@ -19,10 +19,10 @@ public interface CateringRepository extends JpaRepository<Catering, Long> {
     @Query(value = "SELECT * FROM Catering c WHERE c.id = :id", nativeQuery = true)
     Catering findCateringByIdNative(@Param("id") Long id);
 
-    @Query(value = "SELECT COUNT(c) FROM Catering c WHERE c.status='CLOSED'", nativeQuery = true)
+    @Query(value = "SELECT COUNT(c) FROM Catering c WHERE c.status='CLOSED' AND c.created_at IS NULL ", nativeQuery = true)
     Long countClosed();
 
-    @Query(value = "SELECT COUNT(c) FROM Catering c WHERE c.status!='CLOSED'", nativeQuery = true)
+    @Query(value = "SELECT COUNT(c) FROM Catering c WHERE c.status!='CLOSED' AND c.created_at IS NULL ", nativeQuery = true)
     Long countOngoing();
 
     @Query(value = "SELECT m.dte, m.tahun, m.bulan, count(id) AS total  " +
@@ -33,11 +33,11 @@ public interface CateringRepository extends JpaRepository<Catering, Long> {
             "SELECT DATE_TRUNC('month', NOW()) as dte, DATE_PART('year', NOW()) AS tahun, DATE_PART('month', NOW()) AS bulan " +
             ") as m LEFT JOIN catering  c " +
             "ON DATE_TRUNC('month', c.created_at) = m.dte " +
-            "WHERE m.dte >=  DATE_TRUNC('month', NOW() - interval '5 month') " +
+            "WHERE m.dte >=  DATE_TRUNC('month', NOW() - interval '5 month')  AND c.created_at IS NULL " +
             "GROUP BY 1, 2, 3 " +
             "ORDER BY 1 DESC, 2 DESC, 3 DESC ", nativeQuery = true)
     List<CountByMonth> countByMonth();
 
-    @Query(value = "SELECT count(c.id) FROM Catering c WHERE c.status = :status", nativeQuery = true)
+    @Query(value = "SELECT count(c.id) FROM Catering c WHERE c.status = :status AND c.created_at IS NULL ", nativeQuery = true)
     Long countCateringByStatus(@Param("status") String status);
 }
