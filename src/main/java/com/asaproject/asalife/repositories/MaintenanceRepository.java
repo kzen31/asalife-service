@@ -23,10 +23,10 @@ public interface MaintenanceRepository extends JpaRepository<Maintenance, Long> 
     @Query(value = "SELECT * FROM Maintenance c ORDER BY c.created_at ASC", nativeQuery = true)
     List<Maintenance> findAllAndOrder();
 
-    @Query(value = "SELECT COUNT(c) FROM Maintenance c WHERE c.status='CLOSED' AND c.created_at IS NULL ", nativeQuery = true)
+    @Query(value = "SELECT COUNT(c) FROM Maintenance c WHERE c.status='CLOSED' AND c.deleted_at IS NULL ", nativeQuery = true)
     Long countClosed();
 
-    @Query(value = "SELECT COUNT(c) FROM Maintenance c WHERE c.status!='CLOSED' AND c.created_at IS NULL ", nativeQuery = true)
+    @Query(value = "SELECT COUNT(c) FROM Maintenance c WHERE c.status!='CLOSED' AND c.deleted_at IS NULL ", nativeQuery = true)
     Long countOngoing();
 
     @Query(value = "SELECT m.dte, m.tahun, m.bulan, count(id) AS total  " +
@@ -37,11 +37,11 @@ public interface MaintenanceRepository extends JpaRepository<Maintenance, Long> 
             "SELECT DATE_TRUNC('month', NOW()) as dte, DATE_PART('year', NOW()) AS tahun, DATE_PART('month', NOW()) AS bulan " +
             ") as m LEFT JOIN Maintenance  c " +
             "ON DATE_TRUNC('month', c.created_at) = m.dte " +
-            "WHERE m.dte >=  DATE_TRUNC('month', NOW() - interval '5 month') AND c.created_at IS NULL " +
+            "WHERE m.dte >=  DATE_TRUNC('month', NOW() - interval '5 month') AND c.deleted_at IS NULL " +
             "GROUP BY 1, 2, 3 " +
             "ORDER BY 1 DESC, 2 DESC, 3 DESC ", nativeQuery = true)
     List<CountByMonth> countByMonth();
 
-    @Query(value = "SELECT count(c.id) FROM Maintenance c WHERE c.status = :status AND c.created_at IS NULL ", nativeQuery = true)
+    @Query(value = "SELECT count(c.id) FROM Maintenance c WHERE c.status = :status AND c.deleted_at IS NULL ", nativeQuery = true)
     Long countMaintenanceByStatus(@Param("status") String status);
 }

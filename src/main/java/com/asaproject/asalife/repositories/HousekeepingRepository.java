@@ -20,10 +20,10 @@ public interface HousekeepingRepository extends JpaRepository<Housekeeping, Long
     @Query(value = "SELECT * FROM Housekeeping c ORDER BY c.created_at ASC", nativeQuery = true)
     List<Housekeeping> findAllAndOrder();
 
-    @Query(value = "SELECT COUNT(c) FROM Housekeeping c WHERE c.status='DONE' AND c.created_at IS NULL ", nativeQuery = true)
+    @Query(value = "SELECT COUNT(c) FROM Housekeeping c WHERE c.status='DONE' AND c.deleted_at IS NULL ", nativeQuery = true)
     Long countClosed();
 
-    @Query(value = "SELECT COUNT(c) FROM Housekeeping c WHERE c.status!='DONE' AND c.created_at IS NULL ", nativeQuery = true)
+    @Query(value = "SELECT COUNT(c) FROM Housekeeping c WHERE c.status!='DONE' AND c.deleted_at IS NULL ", nativeQuery = true)
     Long countOngoing();
 
     @Query(value = "SELECT m.dte, m.tahun, m.bulan, count(id) AS total  " +
@@ -34,11 +34,11 @@ public interface HousekeepingRepository extends JpaRepository<Housekeeping, Long
             "SELECT DATE_TRUNC('month', NOW()) as dte, DATE_PART('year', NOW()) AS tahun, DATE_PART('month', NOW()) AS bulan " +
             ") as m LEFT JOIN Housekeeping  c " +
             "ON DATE_TRUNC('month', c.created_at) = m.dte " +
-            "WHERE m.dte >=  DATE_TRUNC('month', NOW() - interval '5 month')  AND c.created_at IS NULL " +
+            "WHERE m.dte >=  DATE_TRUNC('month', NOW() - interval '5 month')  AND c.deleted_at IS NULL " +
             "GROUP BY 1, 2, 3 " +
             "ORDER BY 1 DESC, 2 DESC, 3 DESC ", nativeQuery = true)
     List<CountByMonth> countByMonth();
 
-    @Query(value = "SELECT count(c.id) FROM Housekeeping c WHERE c.status = :status AND c.created_at IS NULL ", nativeQuery = true)
+    @Query(value = "SELECT count(c.id) FROM Housekeeping c WHERE c.status = :status AND c.deleted_at IS NULL ", nativeQuery = true)
     Long countHOusekeepingByStatus(@Param("status") String status);
 }
