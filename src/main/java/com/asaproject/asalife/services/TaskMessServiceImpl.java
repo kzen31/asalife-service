@@ -3,6 +3,7 @@ package com.asaproject.asalife.services;
 import com.asaproject.asalife.domains.entities.TaskMess;
 import com.asaproject.asalife.domains.entities.User;
 import com.asaproject.asalife.domains.models.reqres.SetTaskMess;
+import com.asaproject.asalife.domains.models.requests.EditTaskMess;
 import com.asaproject.asalife.repositories.TaskMessRepository;
 import com.asaproject.asalife.utils.mappers.TaskMessMapper;
 import com.asaproject.asalife.utils.mappers.UserAdminMapper;
@@ -32,11 +33,37 @@ public class TaskMessServiceImpl implements TaskMessService{
     }
 
     @Override
-    public void updateTaskMess(Long id, SetTaskMess setTaskMess) throws Exception {
+    public void updateTaskMess(Long id, EditTaskMess editTaskMess) throws Exception {
         try {
             TaskMess taskMess = findById(id);
-            User user = taskMess.getUser();
-            setTaskMessToEntity(user, taskMess, setTaskMess);
+
+            taskMess.setRuangTvKacaJendelaKusen(editTaskMess.getRuangtvkacajendelakusen());
+            taskMess.setRuangTvCermin(editTaskMess.getRuangtvcermin());
+            taskMess.setRuangTvDispenser(editTaskMess.getRuangtvdispenser());
+            taskMess.setRuangTvAc(editTaskMess.getRuangtvac());
+            taskMess.setRuangTvFurniture(editTaskMess.getRuangtvfurniture());
+            taskMess.setRuangTvRakTv(editTaskMess.getRuangtvraktv());
+            taskMess.setRuangTvTiraiKarpet(editTaskMess.getRuangtvtiraikarpet());
+            taskMess.setRuangTvDinding(editTaskMess.getRuangtvdinding());
+            taskMess.setRuangTvLantai(editTaskMess.getRuangtvlantai());
+
+            taskMess.setKoridorTempatSampah(editTaskMess.getKoridortempatsampah());
+            taskMess.setKoridorPintu(editTaskMess.getKoridorpintu());
+            taskMess.setKoridorLantaiSudutLantai(editTaskMess.getKoridorlantaisudutlantai());
+            taskMess.setKoridorKeset(editTaskMess.getKoridorkeset());
+            taskMess.setKoridorPantry(editTaskMess.getKoridorpantry());
+            taskMess.setKoridorWastafelChromeFixture(editTaskMess.getKoridorwastafelchromefixture());
+            taskMess.setKoridorPeralatanMakanRakPiring(editTaskMess.getKoridorperalatanmakanrakpiring());
+            taskMess.setKoridorPintuDinding(editTaskMess.getKoridorpintudinding());
+            taskMess.setKoridorKancaJendelaKusen(editTaskMess.getKoridorkancajendelakusen());
+
+            taskMess.setToiletPintuDinding(editTaskMess.getToiletpintudinding());
+            taskMess.setToiletTempatSampah(editTaskMess.getToilettempatsampah());
+            taskMess.setToiletWastafelChromeFixture(editTaskMess.getToiletwastafelchromefixture());
+            taskMess.setToiletUrinoirSelangToiletBowl(editTaskMess.getToileturinoirselangtoiletbowl());
+            taskMess.setToiletShowerAreaCurtain(editTaskMess.getToiletshowerareacurtain());
+            taskMess.setToiletLantaiSudutLantai(editTaskMess.getToiletlantaisudutlantai());
+            taskMess.setToiletTeras(editTaskMess.getToiletteras());
         } catch (Exception e){
             throw new NotFoundException(e.getMessage());
         }

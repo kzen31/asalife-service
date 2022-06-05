@@ -3,6 +3,7 @@ package com.asaproject.asalife.services;
 import com.asaproject.asalife.domains.entities.TaskRoom;
 import com.asaproject.asalife.domains.entities.User;
 import com.asaproject.asalife.domains.models.reqres.SetTaskRoom;
+import com.asaproject.asalife.domains.models.requests.EditTaskRoom;
 import com.asaproject.asalife.repositories.TaskRoomRepository;
 import com.asaproject.asalife.utils.mappers.TaskRoomMapper;
 import com.asaproject.asalife.utils.mappers.UserAdminMapper;
@@ -65,11 +66,27 @@ public class TaskRoomServiceImpl implements TaskRoomService{
     }
 
     @Override
-    public void updateTaskRoom(Long id, SetTaskRoom setTaskRoom) throws Exception {
+    public void updateTaskRoom(Long id, EditTaskRoom editTaskRoom) throws Exception {
         try {
             TaskRoom taskRoom = findById(id);
-            User user = taskRoom.getUser();
-            setTaskRoomToEntity(user, taskRoom, setTaskRoom);
+            taskRoom.setLantaiKamar(editTaskRoom.getLantaikamar());
+            taskRoom.setLantaiToilet(editTaskRoom.getLantaitoilet());
+            taskRoom.setLantaiLangitKamar(editTaskRoom.getLantailangitkamar());
+            taskRoom.setLantaiLangitKamarMandi(editTaskRoom.getLantailangitkamarmandi());
+            taskRoom.setWc(editTaskRoom.getWc());
+            taskRoom.setWastafel(editTaskRoom.getWastafel());
+            taskRoom.setTempatTidur(editTaskRoom.getTempattidur());
+            taskRoom.setSprei(editTaskRoom.getSprei());
+            taskRoom.setSelimut(editTaskRoom.getSelimut());
+            taskRoom.setAc(editTaskRoom.getAc());
+            taskRoom.setMeja(editTaskRoom.getMeja());
+            taskRoom.setCermin(editTaskRoom.getCermin());
+            taskRoom.setKeran(editTaskRoom.getKeran());
+            taskRoom.setShower(editTaskRoom.getShower());
+            taskRoom.setTempatSampah(editTaskRoom.getTempatsampah());
+            taskRoom.setJendela(editTaskRoom.getJendela());
+            taskRoom.setGorden(editTaskRoom.getGorden());
+            taskRoom.setLemari(editTaskRoom.getLemari());
         } catch (Exception e){
             throw new NotFoundException(e.getMessage());
         }

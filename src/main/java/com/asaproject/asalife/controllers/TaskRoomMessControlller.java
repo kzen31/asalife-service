@@ -4,6 +4,8 @@ import com.asaproject.asalife.domains.entities.TaskMess;
 import com.asaproject.asalife.domains.entities.TaskRoom;
 import com.asaproject.asalife.domains.models.reqres.SetTaskMess;
 import com.asaproject.asalife.domains.models.reqres.SetTaskRoom;
+import com.asaproject.asalife.domains.models.requests.EditTaskMess;
+import com.asaproject.asalife.domains.models.requests.EditTaskRoom;
 import com.asaproject.asalife.domains.models.responses.ApiResponse;
 import com.asaproject.asalife.services.TaskMessService;
 import com.asaproject.asalife.services.TaskRoomService;
@@ -50,9 +52,9 @@ public class TaskRoomMessControlller extends HandlerController{
     }
 
     @PutMapping("/room-update/{id}")
-    public ResponseEntity<ApiResponse> updateATaskRoom(@PathVariable Long id, @Valid @RequestBody SetTaskRoom setTaskRoom) {
+    public ResponseEntity<ApiResponse> updateATaskRoom(@PathVariable Long id, @Valid @RequestBody EditTaskRoom editTaskRoom) {
         try {
-            taskRoomService.updateTaskRoom(id,setTaskRoom);
+            taskRoomService.updateTaskRoom(id, editTaskRoom);
             return ResponseEntity.ok(ApiResponse.builder().message("Successfully Update A Task Room").build());
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Room with given id is Not Found");
@@ -96,9 +98,9 @@ public class TaskRoomMessControlller extends HandlerController{
     }
 
     @PutMapping("/mess-update/{id}")
-    public ResponseEntity<ApiResponse> updateATaskMess(@PathVariable Long id, @Valid @RequestBody SetTaskMess setTaskMess) {
+    public ResponseEntity<ApiResponse> updateATaskMess(@PathVariable Long id, @Valid @RequestBody EditTaskMess editTaskMess) {
         try {
-            taskMessService.updateTaskMess(id,setTaskMess);
+            taskMessService.updateTaskMess(id, editTaskMess);
             return ResponseEntity.ok(ApiResponse.builder().message("Successfully Update A Task Mess").build());
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Mess with given id is Not Found");
