@@ -166,4 +166,42 @@ public class AuthController extends HandlerController {
         }
     }
 
+    @Secured({ ERole.Constants.ADMIN })
+    @PutMapping("/edit")
+    public ResponseEntity<ApiResponse> editUser(@Valid @RequestBody UpdateDetailUser updateDetailUser) {
+        try {
+            userService.updateDetailUser(updateDetailUser);
+            return ResponseEntity.ok(ApiResponse.builder().message("Successfully Edit User").build());
+        }   catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e.getCause());
+        }   catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e.getCause());
+        }
+    }
+
+    @Secured({ ERole.Constants.ADMIN })
+    @PutMapping("/reset")
+    public ResponseEntity<ApiResponse> resetPassword(@Valid @RequestBody PasswordChangeRequest passwordChangeRequest) {
+        try {
+            userService.changePassword(passwordChangeRequest);
+            return ResponseEntity.ok(ApiResponse.builder().message("Successfully Edit User Password").build());
+        }   catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e.getCause());
+        }   catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e.getCause());
+        }
+    }
+
+    @Secured({ ERole.Constants.ADMIN })
+    @DeleteMapping("/delete")
+    public ResponseEntity<ApiResponse> deleteUser(@Valid @RequestBody NrpRequest nrp) {
+        try {
+            userService.deleteUser(nrp);
+            return ResponseEntity.ok(ApiResponse.builder().message("Successfully Delete User").build());
+        }   catch (NotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage(), e.getCause());
+        }   catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage(), e.getCause());
+        }
+    }
 }

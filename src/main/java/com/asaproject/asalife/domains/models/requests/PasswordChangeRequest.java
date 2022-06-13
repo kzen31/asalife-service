@@ -10,8 +10,9 @@ import javax.validation.constraints.NotEmpty;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PasswordChangeRequest {
-    @NotEmpty(message = "Cannot null")
-    private String oldPassword;
-    @NotEmpty(message = "Cannot null")
-    private String newPassword;
+    @NotEmpty(message = "NRP cannot null")
+    private String nrp;
+
+    @NotEmpty(message = "new Password Cannot null")
+    private String password;
 }

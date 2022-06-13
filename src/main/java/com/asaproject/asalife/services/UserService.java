@@ -15,6 +15,8 @@ import java.util.List;
 public interface UserService {
     void register(Register register) throws Exception;
 
+    void updateDetailUser(UpdateDetailUser updateDetailUser) throws Exception;
+
     RegisMany registerCommonMany(List<Register> registers) throws Exception;
 
     void registerUser(UserRegister userRegister) throws Exception;
@@ -31,7 +33,7 @@ public interface UserService {
 
     TokenResponse signInAdmin(SignInRequest signInRequest) throws Exception;
 
-    void changePassword(Principal principal, PasswordChangeRequest passwordChangeRequest) throws BadCredentialsException;
+    void changePassword(PasswordChangeRequest passwordChangeRequest) throws Exception;
 
     UpdateUser getProfileUpdate(Principal principal);
 
@@ -40,4 +42,6 @@ public interface UserService {
     MyProfile getMyProfile(Principal principal);
 
     List<User> getMt();
+
+    void deleteUser(NrpRequest nrpRequest) throws Exception;
 }

@@ -4,6 +4,7 @@ import com.asaproject.asalife.domains.entities.User;
 import com.asaproject.asalife.domains.models.reqres.UpdateUser;
 import com.asaproject.asalife.domains.models.requests.AdminRegister;
 import com.asaproject.asalife.domains.models.requests.Register;
+import com.asaproject.asalife.domains.models.requests.UpdateDetailUser;
 import com.asaproject.asalife.domains.models.requests.UserRegister;
 import com.asaproject.asalife.domains.models.responses.MyProfile;
 
@@ -74,4 +75,12 @@ public final class UserAdminMapper {
         return myProfile;
     }
 
+    public static Register updateUserToRegister(UpdateDetailUser updateDetailUser) {
+        Register register = new Register();
+        register.setNrp(updateDetailUser.getNrp());
+        register.setName(updateDetailUser.getName());
+        register.setRole(updateDetailUser.getRole());
+        register.setDepartment(updateDetailUser.getDepartment());
+        return register;
+    }
 }

@@ -11,10 +11,7 @@ import com.asaproject.asalife.domains.models.responses.RegisMany;
 import com.asaproject.asalife.domains.models.responses.TokenResponse;
 import com.asaproject.asalife.repositories.RoleRepository;
 import com.asaproject.asalife.repositories.UserRepository;
-import com.asaproject.asalife.utils.mappers.RoleAdminMapper;
-import com.asaproject.asalife.utils.mappers.RoleCommonMapper;
-import com.asaproject.asalife.utils.mappers.RoleUserMapper;
-import com.asaproject.asalife.utils.mappers.UserAdminMapper;
+import com.asaproject.asalife.utils.mappers.*;
 
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +27,9 @@ import org.springframework.util.ObjectUtils;
 import javax.transaction.Transactional;
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -61,8 +59,29 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (!getIsNrpAvailable(user.getNrp()))
             throw new Exception("NRP_UNAVAILABLE");
         saveUser(user);
-        addRoleToUser(user.getNrp(), RoleCommonMapper.mapRole(register.getRole()));
+        mapRoles(user, register);
+    }
 
+    @Override
+    public void updateDetailUser(UpdateDetailUser updateDetailUser) throws Exception {
+        User user = getUser(updateDetailUser.getNrp());
+
+        if (ObjectUtils.isEmpty(user)) {
+            throw new NotFoundException("USER_UNAVAILABLE");
+        }
+        Collection<Role> roles = new ArrayList<>();
+
+        user.setName(updateDetailUser.getName());
+        user.setDepartment(updateDetailUser.getDepartment());
+        user.setRoles(roles);
+
+        Register register = UserAdminMapper.updateUserToRegister(updateDetailUser);
+
+        mapRoles(user, register);
+    }
+
+    public void mapRoles(User user, Register register) {
+        addRoleToUser(user.getNrp(), RoleCommonMapper.mapRole(register.getRole()));
         if (ERoleRegister.getWorker().contains(register.getRole())) {
             addRoleToUser(user.getNrp(), ERole.ROLE_USER);
             addRoleToUser(user.getNrp(), ERole.ROLE_WORKER);
@@ -164,6 +183,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         if (user == null)
             throw new NotFoundException("USER_NOT_FOUND");
+        if (!ObjectUtils.isEmpty(user.getDeletedAt()))
+            throw new NotFoundException("USER_NOT_FOUND");
         if (!passwordEncoder.matches(signInRequest.getPassword(), user.getPassword()))
             throw new BadCredentialsException("PASSWORD_WRONG");
 
@@ -187,10 +208,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (user == null)
             throw new NotFoundException("USER_NOT_FOUND");
 
-        List<ERole> list = new ArrayList<>();
-        user.getRoles().forEach(role -> list.add(role.getName()));
-        if (!list.contains(ERole.ROLE_MEGAUSER))
+        if (!isUserAMegaUser(user))
             throw new Exception("FORBIDDEN");
+
         if (!passwordEncoder.matches(signInRequest.getPassword(), user.getPassword()))
             throw new BadCredentialsException("PASSWORD_WRONG");
 
@@ -205,12 +225,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void changePassword(Principal principal, PasswordChangeRequest passwordChangeRequest) throws BadCredentialsException {
-        User userPrincipal = UserAdminMapper.principalToUser(principal);
-        User user = userRepo.getById(userPrincipal.getId());
-        if (!passwordEncoder.matches(passwordChangeRequest.getOldPassword(), user.getPassword()))
-            throw new BadCredentialsException("OLD_PASSWORD_WRONG");
-        user.setPassword(passwordEncoder.encode(passwordChangeRequest.getNewPassword()));
+    public void changePassword(PasswordChangeRequest passwordChangeRequest) throws Exception {
+        User user = getUser(passwordChangeRequest.getNrp());
+
+        if (ObjectUtils.isEmpty(user)) {
+            throw new NotFoundException("USER_NOT_FOUND");
+        }
+
+        user.setPassword(passwordEncoder.encode(passwordChangeRequest.getPassword()));
     }
 
     @Override
@@ -236,6 +258,28 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public List<User> getMt() {
         return userRepo.findByRole();
+    }
+
+    @Override
+    public void deleteUser(NrpRequest nrpRequest) throws Exception {
+        User user = getUser(nrpRequest.getNrp());
+        if (ObjectUtils.isEmpty(user)) {
+            throw new NotFoundException("USER_NOT_FOUND");
+        }
+
+        if (!ObjectUtils.isEmpty(user.getDeletedAt())) {
+            throw new NotFoundException("USER_NOT_FOUND");
+        }
+
+        if (isUserAMegaUser(user)) {
+            throw new Exception("CANNOT_DELETE_MEGAUSER");
+        }
+
+        user.setDeletedAt(new Date());
+    }
+
+    private boolean isUserAMegaUser(User user) {
+        return user.getRoles().stream().anyMatch(role -> role.getName().equals(ERole.ROLE_MEGAUSER));
     }
 
     private void saveUser(User user) {
