@@ -24,6 +24,7 @@ public final class HousekeepingMapper {
         HousekeepingDto housekeepingDto = modelMapper.map(housekeeping, HousekeepingDto.class);
         housekeepingDto.setUserNrp(housekeeping.getUser().getNrp());
         housekeepingDto.setUserName(housekeeping.getUser().getName());
+        housekeepingDto.setDepartment(housekeeping.getUser().getDepartment());
         return housekeepingDto;
     }
 

@@ -13,6 +13,7 @@ public class CateringDto {
     private long id;
     private String userName;
     private String userNrp;
+    private String department;
     private String lokasi;
     private String deskripsi;
     private String kritik_saran;

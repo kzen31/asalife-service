@@ -23,6 +23,7 @@ public final class LaundryMapper {
         LaundryDto laundryDto = modelMapper.map(laundry, LaundryDto.class);
         laundryDto.setUserNrp(laundry.getUser().getNrp());
         laundryDto.setUserName(laundry.getUser().getName());
+        laundryDto.setDepartment(laundry.getUser().getDepartment());
         laundryDto.setTanggal_aduan(laundry.getCreatedAt());
         return laundryDto;
     }

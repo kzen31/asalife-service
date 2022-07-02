@@ -14,6 +14,7 @@ public class MaintenanceDto {
     private long id;
     private String userName;
     private String userNrp;
+    private String department;
     private String jenisAduan;
     private String lokasi;
     private LocalDateTime tanggalAduan;

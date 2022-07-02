@@ -31,6 +31,7 @@ public final class CateringMapper {
         CateringDto cateringDto = modelMapper.map(catering, CateringDto.class);
         cateringDto.setUserName(catering.getUser().getName());
         cateringDto.setUserNrp(catering.getUser().getNrp());
+        cateringDto.setDepartment(catering.getUser().getDepartment());
         cateringDto.setTanggalAduan(catering.getCreatedAt());
         return cateringDto;
     }

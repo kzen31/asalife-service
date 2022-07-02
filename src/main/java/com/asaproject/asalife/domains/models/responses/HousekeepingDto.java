@@ -14,6 +14,7 @@ public class HousekeepingDto {
     private long id;
     private String userNrp;
     private String userName;
+    private String department;
     private String lokasi;
     private String deskripsi;
     private String status;

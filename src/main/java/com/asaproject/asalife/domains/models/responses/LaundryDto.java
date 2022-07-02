@@ -14,6 +14,7 @@ public class LaundryDto {
     private long id;
     private String userNrp;
     private String userName;
+    private String department;
     private String mess;
     private String no_kamar;
     private String jenis_pakaian;
