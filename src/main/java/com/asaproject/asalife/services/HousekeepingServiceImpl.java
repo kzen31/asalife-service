@@ -1,11 +1,12 @@
 package com.asaproject.asalife.services;
 
 import com.asaproject.asalife.domains.entities.Housekeeping;
-import com.asaproject.asalife.domains.entities.Laundry;
 import com.asaproject.asalife.domains.entities.User;
 import com.asaproject.asalife.domains.models.requests.HousekeepingRequest;
 import com.asaproject.asalife.domains.models.requests.StatusHousekeeping;
 import com.asaproject.asalife.domains.models.responses.HousekeepingDto;
+import com.asaproject.asalife.firebase.NotificationData;
+import com.asaproject.asalife.firebase.NotificationService;
 import com.asaproject.asalife.repositories.HousekeepingRepository;
 import com.asaproject.asalife.utils.mappers.HousekeepingMapper;
 import com.asaproject.asalife.utils.mappers.StatusHousekeepingUserMapper;
@@ -26,6 +27,7 @@ import java.util.List;
 public class HousekeepingServiceImpl implements HousekeepingService{
     private final HousekeepingRepository housekeepingRepository;
     private final HousekeepingMapper housekeepingMapper;
+    private final NotificationService notificationService;
 
     @Override
     public List<HousekeepingDto> getAll() {
@@ -40,7 +42,7 @@ public class HousekeepingServiceImpl implements HousekeepingService{
     }
 
     @Override
-    public void addByUser(Principal principal, HousekeepingRequest housekeepingRequest) {
+    public void addByUser(Principal principal, HousekeepingRequest housekeepingRequest) throws Exception {
         User user = UserAdminMapper.principalToUser(principal);
 
         Housekeeping housekeeping = new Housekeeping();
@@ -48,6 +50,13 @@ public class HousekeepingServiceImpl implements HousekeepingService{
         housekeeping.setLokasi(housekeepingRequest.getLokasi());
         housekeeping.setUser(user);
         housekeepingRepository.save(housekeeping);
+
+        try {
+            NotificationData data = new NotificationData("ROLE_SPV","Aduan Housekeeping","ada aduan housekeeping baru, mohon segera diproses","Deskripsi aduan : " + housekeepingRequest.getDeskripsi() );
+            notificationService.sendNotification(data);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
     }
 
     @Override

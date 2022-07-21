@@ -18,7 +18,7 @@ public interface LaundryService {
 
     List<Laundry> getAllLaundryByUser(Principal principal);
 
-    void addLaundry(Principal principal, LaundryRequest laundryRequest);
+    void addLaundry(Principal principal, LaundryRequest laundryRequest) throws Exception;
 
     void updateStatusLaundry(Long id, @RequestBody StatusLaundry statusLaundry)throws Exception;
 

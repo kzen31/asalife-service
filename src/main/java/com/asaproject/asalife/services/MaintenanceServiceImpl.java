@@ -6,6 +6,8 @@ import com.asaproject.asalife.domains.models.requests.MaintenanceOrder;
 import com.asaproject.asalife.domains.models.requests.MaintenanceRequest;
 import com.asaproject.asalife.domains.models.requests.StatusMaintenance;
 import com.asaproject.asalife.domains.models.responses.MaintenanceDto;
+import com.asaproject.asalife.firebase.NotificationData;
+import com.asaproject.asalife.firebase.NotificationService;
 import com.asaproject.asalife.repositories.MaintenanceRepository;
 import com.asaproject.asalife.utils.mappers.MaintenanceMapper;
 import com.asaproject.asalife.utils.mappers.StatusMaintenanceMapper;
@@ -26,6 +28,7 @@ import java.util.List;
 public class MaintenanceServiceImpl implements MaintenanceService{
     private final MaintenanceRepository maintenanceRepository;
     private final MaintenanceMapper maintenanceMapper;
+    private final NotificationService notificationService;
 
     @Override
     public List<MaintenanceDto> getAllMaintenance() {
@@ -45,7 +48,7 @@ public class MaintenanceServiceImpl implements MaintenanceService{
     }
 
     @Override
-    public void addMaintenance(Principal principal, MaintenanceRequest maintenanceRequest) {
+    public void addMaintenance(Principal principal, MaintenanceRequest maintenanceRequest) throws Exception {
         User user = UserAdminMapper.principalToUser(principal);
         Maintenance maintenance = new Maintenance();
 
@@ -53,6 +56,13 @@ public class MaintenanceServiceImpl implements MaintenanceService{
         maintenance.setLokasi(maintenanceRequest.getLokasi());
         maintenance.setJenisAduan(maintenanceRequest.getJenisaduan());
         maintenanceRepository.save(maintenance);
+
+        try {
+            NotificationData data = new NotificationData("ROLE_GS","Aduan Maintenance","ada aduan maintenance baru, mohon segera dilengkapi PIC, schedule, dan priority","Jenis aduan : " + maintenanceRequest.getJenisaduan() );
+            notificationService.sendNotification(data);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
     }
 
     @Override
@@ -68,6 +78,13 @@ public class MaintenanceServiceImpl implements MaintenanceService{
         maintenance.setDuration(maintenanceOrder.getDuration());
         maintenance.setStatus(status);
         maintenanceRepository.save(maintenance);
+
+        try {
+            NotificationData data = new NotificationData("ROLE_MT","Aduan Maintenance","ada aduan maintenance baru, mohon segera diproses","Priority aduan : " + maintenanceOrder.getPriority() );
+            notificationService.sendNotification(data);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
     }
 
     @Override

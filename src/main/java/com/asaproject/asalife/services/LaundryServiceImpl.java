@@ -1,11 +1,12 @@
 package com.asaproject.asalife.services;
 
-import com.asaproject.asalife.domains.entities.Catering;
 import com.asaproject.asalife.domains.entities.Laundry;
 import com.asaproject.asalife.domains.entities.User;
 import com.asaproject.asalife.domains.models.requests.LaundryRequest;
 import com.asaproject.asalife.domains.models.requests.StatusLaundry;
 import com.asaproject.asalife.domains.models.responses.LaundryDto;
+import com.asaproject.asalife.firebase.NotificationData;
+import com.asaproject.asalife.firebase.NotificationService;
 import com.asaproject.asalife.repositories.LaundryRepository;
 import com.asaproject.asalife.utils.mappers.LaundryMapper;
 import com.asaproject.asalife.utils.mappers.StatusLaundryUserMapper;
@@ -27,6 +28,7 @@ import java.util.List;
 public class LaundryServiceImpl implements LaundryService{
     private final LaundryRepository laundryRepository;
     private final LaundryMapper laundryMapper;
+    private final NotificationService notificationService;
 
     @Override
     public List<LaundryDto> getAllLaundryDto() {
@@ -51,7 +53,7 @@ public class LaundryServiceImpl implements LaundryService{
     }
 
     @Override
-    public void addLaundry(Principal principal, LaundryRequest laundryRequest) {
+    public void addLaundry(Principal principal, LaundryRequest laundryRequest) throws Exception {
         User user = UserAdminMapper.principalToUser(principal);
         Laundry laundry = new Laundry();
 
@@ -62,6 +64,13 @@ public class LaundryServiceImpl implements LaundryService{
         laundry.setMess(laundryRequest.getMess());
         laundry.setUser(user);
         laundryRepository.save(laundry);
+
+        try {
+            NotificationData data = new NotificationData("ROLE_SPV","Aduan Laundry","ada aduan laundry baru, mohon segera diproses","Deviasi aduan laundry : " + laundryRequest.getJenis_deviasi() );
+            notificationService.sendNotification(data);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
     }
 
     @Override

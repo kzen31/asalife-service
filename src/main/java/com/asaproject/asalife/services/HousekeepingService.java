@@ -12,7 +12,7 @@ public interface HousekeepingService {
 
     List<HousekeepingDto> getAllByUser(Principal principal);
 
-    void addByUser(Principal principal, HousekeepingRequest housekeepingRequest);
+    void addByUser(Principal principal, HousekeepingRequest housekeepingRequest) throws Exception;
 
     void updateStatusHousekeeping(Long id, StatusHousekeeping statusHousekeeping) throws Exception;
 
