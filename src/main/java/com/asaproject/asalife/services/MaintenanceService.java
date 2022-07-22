@@ -18,7 +18,7 @@ public interface MaintenanceService {
 
     void addMaintenance(Principal principal, MaintenanceRequest maintenanceRequest) throws Exception;
 
-    void updateOrder(Long id, MaintenanceOrder maintenanceOrder) throws Exception;
+    void updateComplaintDetail(Long id, MaintenanceOrder maintenanceOrder) throws Exception;
 
     void updateOrderStatus(Long id, StatusMaintenance StatusMaintenance) throws Exception;
 

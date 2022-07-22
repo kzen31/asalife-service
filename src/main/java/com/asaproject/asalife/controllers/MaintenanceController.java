@@ -58,7 +58,7 @@ public class MaintenanceController extends HandlerController {
     @PutMapping("/update-order/{id}")
     public ResponseEntity<ApiResponse> updateOrderMaintenance(@PathVariable Long id, @Valid @RequestBody MaintenanceOrder maintenanceOrder) {
         try {
-            maintenanceService.updateOrder(id, maintenanceOrder);
+            maintenanceService.updateComplaintDetail(id, maintenanceOrder);
             return ResponseEntity.ok(ApiResponse.builder().message("Successfully Update Order PIC").build());
         } catch (NotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());

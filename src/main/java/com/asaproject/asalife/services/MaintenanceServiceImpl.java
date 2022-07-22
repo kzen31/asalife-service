@@ -67,17 +67,14 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     }
 
     @Override
-    public void updateOrder(Long id, MaintenanceOrder maintenanceOrder) throws Exception {
+    public void updateComplaintDetail(Long id, MaintenanceOrder maintenanceOrder) throws Exception {
         Maintenance maintenance = maintenanceRepository.findMaintenanceByIdNative(id);
         if (ObjectUtils.isEmpty(maintenance) || !ObjectUtils.isEmpty(maintenance.getDeletedAt())) {
             throw new NotFoundException("MAINTENANCE_NOT_FOUND");
         }
-        String status = StatusMaintenanceMapper.mapStatus(maintenanceOrder.getStatus());
-
         maintenance.setPriority(maintenanceOrder.getPriority());
         maintenance.setPicNrp(maintenanceOrder.getPicnrp());
         maintenance.setDuration(maintenanceOrder.getDuration());
-        maintenance.setStatus(status);
         maintenanceRepository.save(maintenance);
 
         try {
