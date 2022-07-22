@@ -4,10 +4,7 @@ import com.asaproject.asalife.controllers.HandlerController;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
@@ -18,9 +15,9 @@ import javax.validation.Valid;
 public class NotificationController extends HandlerController {
     private final NotificationService notificationService;
 
-    @PostMapping("/dummy-notif")
-    public ResponseEntity<String> sendDummyNotification() {
-        NotificationData data = new NotificationData("MT", "Sampel notif", "Sample body", "Sample message");
+    @PostMapping("/dummy-notif/{topic}")
+    public ResponseEntity<String> sendDummyNotification(@PathVariable String topic) {
+        NotificationData data = new NotificationData(topic, "Sample notif", "Sample body", "Sample message");
         try {
             notificationService.sendNotification(data);
             return ResponseEntity.ok("sukses kirim notif");

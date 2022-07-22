@@ -14,18 +14,19 @@ import com.asaproject.asalife.utils.mappers.StatusMaintenanceMapper;
 import com.asaproject.asalife.utils.mappers.UserAdminMapper;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.joda.time.DateTime;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
 import java.security.Principal;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class MaintenanceServiceImpl implements MaintenanceService{
+public class MaintenanceServiceImpl implements MaintenanceService {
     private final MaintenanceRepository maintenanceRepository;
     private final MaintenanceMapper maintenanceMapper;
     private final NotificationService notificationService;
@@ -58,7 +59,7 @@ public class MaintenanceServiceImpl implements MaintenanceService{
         maintenanceRepository.save(maintenance);
 
         try {
-            NotificationData data = new NotificationData("ROLE_GS","Aduan Maintenance","ada aduan maintenance baru, mohon segera dilengkapi PIC, schedule, dan priority","Jenis aduan : " + maintenanceRequest.getJenisaduan() );
+            NotificationData data = new NotificationData("ROLE_GS", "Aduan Maintenance", "ada aduan maintenance baru, mohon segera dilengkapi PIC, schedule, dan priority", "Jenis aduan : " + maintenanceRequest.getJenisaduan());
             notificationService.sendNotification(data);
         } catch (Exception e) {
             throw new Exception(e.getMessage());
@@ -80,7 +81,7 @@ public class MaintenanceServiceImpl implements MaintenanceService{
         maintenanceRepository.save(maintenance);
 
         try {
-            NotificationData data = new NotificationData("ROLE_MT","Aduan Maintenance","ada aduan maintenance baru, mohon segera diproses","Priority aduan : " + maintenanceOrder.getPriority() );
+            NotificationData data = new NotificationData("ROLE_MT", "Aduan Maintenance", "ada aduan maintenance baru, mohon segera diproses", "Priority aduan : " + maintenanceOrder.getPriority());
             notificationService.sendNotification(data);
         } catch (Exception e) {
             throw new Exception(e.getMessage());
@@ -114,7 +115,7 @@ public class MaintenanceServiceImpl implements MaintenanceService{
     public void deleteMaintenance(Long id) throws Exception {
         Maintenance maintenance = maintenanceRepository.findMaintenanceByIdNative(id);
 
-        if(ObjectUtils.isEmpty(maintenance)) {
+        if (ObjectUtils.isEmpty(maintenance)) {
             throw new NotFoundException("NOT_FOUND");
         }
 
@@ -123,5 +124,49 @@ public class MaintenanceServiceImpl implements MaintenanceService{
         }
         maintenance.setDeletedAt(new Date());
         maintenanceRepository.save(maintenance);
+    }
+
+    @Override
+    @Scheduled(cron = "0 0 6 * * *")
+    public void sendNotificationMTChecker() throws Exception {
+        try {
+            List<Maintenance> recordMaintenance = maintenanceRepository.findAllByOrderByCreatedAtAsc();
+            int expiredAduan = 0;
+            int toBeExpiredAduan = 0;
+
+            for (Maintenance maintenance : recordMaintenance) {
+                if (ObjectUtils.isEmpty(maintenance.getDuration())) {
+                    break;
+                }
+
+                DateTime dateRecord = new DateTime(maintenance.getDuration());
+
+                if (dateRecord.isEqual(new DateTime().minus(1)) && !maintenance.getStatus().equals("CLOSED")) {
+                    toBeExpiredAduan = toBeExpiredAduan + 1;
+                }
+
+                if (dateRecord.isEqual(new DateTime()) && !maintenance.getStatus().equals("CLOSED")) {
+                    expiredAduan = expiredAduan + 1;
+                }
+            }
+
+            String message = "Pemberitahuan masa akhir penyelesaian aduan";
+            if (expiredAduan == 0 && toBeExpiredAduan != 0) {
+                message = "Besok hari, batas penyelesaian " + toBeExpiredAduan + " aduan akan berakhir";
+            } else if (expiredAduan != 0 && toBeExpiredAduan == 0) {
+                message = "Hari ini batas penyelesaian " + toBeExpiredAduan + " aduan akan berakhir";
+            } else if (expiredAduan != 0 && toBeExpiredAduan != 0) {
+                message = "Batas penyelesaian " + toBeExpiredAduan + " aduan akan berakhir hari ini" +
+                        " dan batas penyelesaian " + toBeExpiredAduan + " akan berakhir besok";
+            }
+
+            NotificationData messageToHCGS = new NotificationData("ROLE_HCGS", "Aduan Maintenance", "pemberitahuan batas akhir penyelesaian aduan", message);
+            notificationService.sendNotification(messageToHCGS);
+
+            NotificationData messageToPROG = new NotificationData("ROLE_PROG", "Aduan Maintenance", "pemberitahuan batas akhir penyelesaian aduan", message);
+            notificationService.sendNotification(messageToPROG);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
     }
 }

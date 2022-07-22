@@ -25,4 +25,6 @@ public interface MaintenanceService {
     void cancelOrder(Long id) throws Exception;
 
     void deleteMaintenance(Long id) throws Exception;
+
+    void sendNotificationMTChecker() throws Exception;
 }
