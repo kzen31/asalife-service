@@ -4,6 +4,8 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -37,24 +39,104 @@ public class FcmClient {
         }
     }
 
-    public void fcmClientNotification(Map<String, String> detail, NotificationData data)
+    public void fcmClientNotificationToTopic(Map<String, String> detail, NotificationData data)
             throws InterruptedException, ExecutionException {
 
-        AndroidConfig androidConfig = AndroidConfig.builder()
+        AndroidConfig androidConfig = getAndroidConfig(data);
+
+        ApnsConfig apnsConfig = getApnsConfig(data);
+
+        Message message = getMessageToTopic(detail, data, androidConfig, apnsConfig);
+
+        String response = FirebaseMessaging.getInstance().sendAsync(message).get();
+        System.out.println("Sent message: " + response);
+    }
+
+    public void fcmClientNotificationToToken(Map<String, String> detail, NotificationData data, String token)
+            throws InterruptedException, ExecutionException {
+
+        AndroidConfig androidConfig = getAndroidConfig(data);
+
+        ApnsConfig apnsConfig = getApnsConfig(data);
+
+        Message message = getMessageToToken(detail, data, androidConfig, apnsConfig, token);
+
+        String response = FirebaseMessaging.getInstance().sendAsync(message).get();
+        System.out.println("Sent message: " + response);
+    }
+
+    private AndroidConfig getAndroidConfig(NotificationData data) {
+        return AndroidConfig.builder()
                 .setTtl(Duration.ofMinutes(2).toMillis()).setCollapseKey(data.getTopic())
                 .setPriority(Priority.HIGH)
                 .setNotification(AndroidNotification.builder().setTag(data.getTopic()).build()).build();
+    }
 
-        ApnsConfig apnsConfig = ApnsConfig.builder()
+    private ApnsConfig getApnsConfig(NotificationData data) {
+        return ApnsConfig.builder()
                 .setAps(Aps.builder().setCategory(data.getTopic()).setThreadId(data.getTopic()).build()).build();
+    }
 
-        Message message = Message.builder().putAllData(detail).setTopic(data.getTopic())
+    private Message getMessageToTopic(Map<String, String> detail,
+                                      NotificationData data,
+                                      AndroidConfig androidConfig,
+                                      ApnsConfig apnsConfig) {
+        return Message.builder().putAllData(detail).setTopic(data.getTopic())
                 .setApnsConfig(apnsConfig).setAndroidConfig(androidConfig)
                 .setNotification(Notification.builder().setTitle(data.getTitle())
                         .setBody(data.getBody()).build())
                 .build();
+    }
 
-        String response = FirebaseMessaging.getInstance().sendAsync(message).get();
-        System.out.println("Sent message: " + response);
+    private Message getMessageToToken(Map<String, String> detail,
+                                      NotificationData data,
+                                      AndroidConfig androidConfig,
+                                      ApnsConfig apnsConfig,
+                                      String token) {
+        return Message.builder().putAllData(detail).setTopic(data.getTopic())
+                .setApnsConfig(apnsConfig).setAndroidConfig(androidConfig)
+                .setNotification(Notification.builder().setTitle(data.getTitle())
+                        .setBody(data.getBody()).build()).setToken(token)
+                .build();
+    }
+
+    public void sendMessageToToken(NotificationTokenData request)
+            throws InterruptedException, ExecutionException {
+        Message message = getPreconfiguredMessageToToken(request);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String jsonOutput = gson.toJson(message);
+        String response = sendAndGetResponse(message);
+        System.out.println("Sent message to token. Device token: " + request.getToken() + ", " + response+ " msg "+jsonOutput);
+    }
+
+    private Message getPreconfiguredMessageToToken(NotificationTokenData request) {
+        return getPreconfiguredMessageBuilder(request).setToken(request.getToken())
+                .build();
+    }
+
+    private String sendAndGetResponse(Message message) throws InterruptedException, ExecutionException {
+        return FirebaseMessaging.getInstance().sendAsync(message).get();
+    }
+
+    private Message.Builder getPreconfiguredMessageBuilder(NotificationTokenData request) {
+        AndroidConfig androidConfig = getAndroidConfigToken(request.getTopic());
+        ApnsConfig apnsConfig = getApnsConfigToken(request.getTopic());
+        return Message.builder()
+                .setApnsConfig(apnsConfig).setAndroidConfig(androidConfig).setNotification(
+                        Notification.builder().setTitle(request.getTitle())
+                                .setBody(request.getBody()).build());
+    }
+
+    private AndroidConfig getAndroidConfigToken(String topic) {
+        return AndroidConfig.builder()
+                .setTtl(Duration.ofMinutes(2).toMillis()).setCollapseKey(topic)
+                .setPriority(AndroidConfig.Priority.HIGH)
+                .setNotification(AndroidNotification.builder().setSound(NotificationParameter.SOUND.getValue())
+                        .setColor(NotificationParameter.COLOR.getValue()).setTag(topic).build()).build();
+    }
+
+    private ApnsConfig getApnsConfigToken(String topic) {
+        return ApnsConfig.builder()
+                .setAps(Aps.builder().setCategory(topic).setThreadId(topic).build()).build();
     }
 }

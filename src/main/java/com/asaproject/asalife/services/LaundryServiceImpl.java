@@ -67,7 +67,7 @@ public class LaundryServiceImpl implements LaundryService{
 
         try {
             NotificationData data = new NotificationData("ROLE_SPV","Aduan Laundry","ada aduan laundry baru, mohon segera diproses","Deviasi aduan laundry : " + laundryRequest.getJenis_deviasi() );
-            notificationService.sendNotification(data);
+            notificationService.sendNotificationTopic(data);
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }

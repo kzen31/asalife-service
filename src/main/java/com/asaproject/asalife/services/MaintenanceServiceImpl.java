@@ -60,7 +60,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
         try {
             NotificationData data = new NotificationData("ROLE_GS", "Aduan Maintenance", "ada aduan maintenance baru, mohon segera dilengkapi PIC, schedule, dan priority", "Jenis aduan : " + maintenanceRequest.getJenisaduan());
-            notificationService.sendNotification(data);
+            notificationService.sendNotificationTopic(data);
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
@@ -79,7 +79,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
         try {
             NotificationData data = new NotificationData("ROLE_MT", "Aduan Maintenance", "ada aduan maintenance baru, mohon segera diproses", "Priority aduan : " + maintenanceOrder.getPriority());
-            notificationService.sendNotification(data);
+            notificationService.sendNotificationTopic(data);
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
@@ -158,10 +158,10 @@ public class MaintenanceServiceImpl implements MaintenanceService {
             }
 
             NotificationData messageToHCGS = new NotificationData("ROLE_HCGS", "Aduan Maintenance", "pemberitahuan batas akhir penyelesaian aduan", message);
-            notificationService.sendNotification(messageToHCGS);
+            notificationService.sendNotificationTopic(messageToHCGS);
 
             NotificationData messageToPROG = new NotificationData("ROLE_PROG", "Aduan Maintenance", "pemberitahuan batas akhir penyelesaian aduan", message);
-            notificationService.sendNotification(messageToPROG);
+            notificationService.sendNotificationTopic(messageToPROG);
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }

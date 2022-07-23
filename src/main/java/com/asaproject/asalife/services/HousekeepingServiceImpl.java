@@ -53,7 +53,7 @@ public class HousekeepingServiceImpl implements HousekeepingService{
 
         try {
             NotificationData data = new NotificationData("ROLE_SPV","Aduan Housekeeping","ada aduan housekeeping baru, mohon segera diproses","Deskripsi aduan : " + housekeepingRequest.getDeskripsi() );
-            notificationService.sendNotification(data);
+            notificationService.sendNotificationTopic(data);
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }

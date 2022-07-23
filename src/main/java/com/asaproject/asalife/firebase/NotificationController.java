@@ -19,7 +19,7 @@ public class NotificationController extends HandlerController {
     public ResponseEntity<String> sendDummyNotification(@PathVariable String topic) {
         NotificationData data = new NotificationData(topic, "Sample notif", "Sample body", "Sample message");
         try {
-            notificationService.sendNotification(data);
+            notificationService.sendNotificationTopic(data);
             return ResponseEntity.ok("sukses kirim notif");
         } catch (Exception e){
             throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, e.getMessage());
@@ -29,7 +29,39 @@ public class NotificationController extends HandlerController {
     @PostMapping("/custom-notif")
     public ResponseEntity<String> sendNotification(@Valid @RequestBody NotificationData data) {
         try {
-            notificationService.sendNotification(data);
+            notificationService.sendNotificationTopic(data);
+            return ResponseEntity.ok("sukses kirim notif");
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, e.getMessage());
+        }
+    }
+
+    @PostMapping("/dummy-token")
+    public ResponseEntity<String> sendDummyNotificationToken(@RequestBody String token) {
+        NotificationData data = new NotificationData("Sample topic", "Sample notif", "Sample body", "Sample message");
+
+        try {
+            notificationService.sendNotificationToken(data, token);
+            return ResponseEntity.ok("sukses kirim notif");
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, e.getMessage());
+        }
+    }
+
+    @PostMapping("/custom-token/{token}")
+    public ResponseEntity<String> sendNotificationToken(@PathVariable String token, @Valid @RequestBody NotificationData data) {
+        try {
+            notificationService.sendNotificationToken(data, token);
+            return ResponseEntity.ok("sukses kirim notif");
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, e.getMessage());
+        }
+    }
+
+    @PostMapping("/notification/token")
+    public ResponseEntity sendTokenNotification(@RequestBody NotificationTokenData request) {
+        try {
+            notificationService.sendPushNotificationToToken(request);
             return ResponseEntity.ok("sukses kirim notif");
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, e.getMessage());
