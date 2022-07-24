@@ -471,13 +471,13 @@ public class DatabaseSeeder implements ApplicationRunner {
     }
 
     void saveManyRatingCatering() {
-        saveRatingCatering("001", new RatingManyRequest(1,2,3,1,1,1,3,2,"Makanan lebih bervariasi"));
-        saveRatingCatering("002", new RatingManyRequest(3,2,3,1,1,2,1,1,"Minuman lebih bervariasi"));
-        saveRatingCatering("002", new RatingManyRequest(3,2,1,2,2,2,3,3,"Makanan Tambah Garam"));
-        saveRatingCatering("111", new RatingManyRequest(1,3,1,2,3,5,3,4,"Makanan matang sempurna"));
-        saveRatingCatering("112", new RatingManyRequest(2,2,3,4,3,5,3,2,"Makanan jangan terlambat"));
-        saveRatingCatering("112", new RatingManyRequest(1,3,1,4,4,5,3,1,"Makanan jangan basi"));
-        saveRatingCatering("113", new RatingManyRequest(2,3,1,4,4,5,3,1,"Makanan bersih"));
+        saveRatingCatering("001", new RatingManyRequest(1,2,3,1,1,1,3,2, "Dinner", "Makanan lebih bervariasi"));
+        saveRatingCatering("002", new RatingManyRequest(3,2,3,1,1,2,1,1,"Lunch","Minuman lebih bervariasi"));
+        saveRatingCatering("002", new RatingManyRequest(3,2,1,2,2,2,3,3,"Supper","Makanan Tambah Garam"));
+        saveRatingCatering("111", new RatingManyRequest(1,3,1,2,3,5,3,4,"Lunch","Makanan matang sempurna"));
+        saveRatingCatering("112", new RatingManyRequest(2,2,3,4,3,5,3,2,"Dinner","Makanan jangan terlambat"));
+        saveRatingCatering("112", new RatingManyRequest(1,3,1,4,4,5,3,1,"Lunch","Makanan jangan basi"));
+        saveRatingCatering("113", new RatingManyRequest(2,3,1,4,4,5,3,1,"Lunch","Makanan bersih"));
     }
 
     void saveRatingCatering(String nrp, RatingManyRequest ratingManyRequest) {
@@ -493,6 +493,7 @@ public class DatabaseSeeder implements ApplicationRunner {
         ratingCateringMany.setNilai7(ratingManyRequest.getNilai7());
         ratingCateringMany.setNilai8(ratingManyRequest.getNilai8());
         ratingCateringMany.setSaran(ratingManyRequest.getSaran());
+        ratingCateringMany.setWaktu(ratingManyRequest.getWaktu());
 
         ratingCateringMany.setUser(user);
         ratingCateringManyRepository.save(ratingCateringMany);

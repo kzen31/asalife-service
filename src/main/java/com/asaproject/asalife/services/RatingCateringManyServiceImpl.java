@@ -38,6 +38,7 @@ public class RatingCateringManyServiceImpl implements RatingCateringManyService 
         ratingCateringMany.setNilai7(ratingManyRequest.getNilai7());
         ratingCateringMany.setNilai8(ratingManyRequest.getNilai8());
         ratingCateringMany.setSaran(ratingManyRequest.getSaran());
+        ratingCateringMany.setWaktu(ratingManyRequest.getWaktu());
 
         ratingCateringMany.setUser(user);
 

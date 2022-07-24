@@ -46,6 +46,9 @@ public class RatingCateringMany extends Auditable implements Serializable {
     private int nilai8;
 
     @Column(nullable = false)
+    private String waktu;
+
+    @Column(nullable = false)
     private String saran;
 
     @ManyToOne(fetch = FetchType.LAZY)

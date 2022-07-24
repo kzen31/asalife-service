@@ -34,6 +34,9 @@ public class RatingManyRequest {
     @NotNull(message = "Nilai8 Bobot is mandatory")
     private int nilai8;
 
+    @NotNull(message = "waktu is mandatory")
+    private String waktu;
+
     @NotNull(message = "saran Bobot is mandatory")
     private String saran;
 }
