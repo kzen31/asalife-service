@@ -105,4 +105,7 @@ public class TaskMess extends Auditable implements Serializable {
 
     @Column(nullable = false)
     private String mess;
+
+    @Column
+    private Boolean verified =  false;
 }

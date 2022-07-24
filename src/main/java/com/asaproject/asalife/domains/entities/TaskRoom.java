@@ -87,4 +87,7 @@ public class TaskRoom extends Auditable implements Serializable {
 
     @Column(nullable = false)
     private String noKamar;
+
+    @Column
+    private Boolean verified =  false;
 }

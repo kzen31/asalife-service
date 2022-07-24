@@ -87,6 +87,7 @@ public class TaskRoomServiceImpl implements TaskRoomService{
             taskRoom.setJendela(editTaskRoom.getJendela());
             taskRoom.setGorden(editTaskRoom.getGorden());
             taskRoom.setLemari(editTaskRoom.getLemari());
+            taskRoom.setVerified(true);
         } catch (Exception e){
             throw new NotFoundException(e.getMessage());
         }

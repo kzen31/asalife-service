@@ -64,6 +64,8 @@ public class TaskMessServiceImpl implements TaskMessService{
             taskMess.setToiletShowerAreaCurtain(editTaskMess.getToiletshowerareacurtain());
             taskMess.setToiletLantaiSudutLantai(editTaskMess.getToiletlantaisudutlantai());
             taskMess.setToiletTeras(editTaskMess.getToiletteras());
+
+            taskMess.setVerified(true);
         } catch (Exception e){
             throw new NotFoundException(e.getMessage());
         }
