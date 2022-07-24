@@ -11,4 +11,5 @@ public class RecordDashboard {
     private String title;
     private String iconClass;
     private Long total;
+    private Long closed;
 }

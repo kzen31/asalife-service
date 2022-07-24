@@ -42,12 +42,16 @@ public class MainDashboardServiceImpl implements MainDashboardService {
         recordLaundry.setTitle("Laundry");
         recordLaundry.setIconClass("water-check");
         recordLaundry.setTotal(getTotalRecordLaundry());
+        recordLaundry.setClosed(getTotalClosedLaundry());
         return recordLaundry;
     }
 
     @Override
     public Long getTotalRecordLaundry() {
         return laundryRepository.count();
+    }
+    public Long getTotalClosedLaundry() {
+        return laundryRepository.countClosed();
     }
 
     @Override
@@ -56,12 +60,16 @@ public class MainDashboardServiceImpl implements MainDashboardService {
         recordCatering.setTitle("Catering");
         recordCatering.setIconClass("food-fork-drink");
         recordCatering.setTotal(getTotalRecordCatering());
+        recordCatering.setClosed(getTotalClosedCatering());
         return recordCatering;
     }
 
     @Override
     public Long getTotalRecordCatering() {
         return cateringRepository.count();
+    }
+    public Long getTotalClosedCatering() {
+        return cateringRepository.countClosed();
     }
 
     @Override
@@ -70,12 +78,16 @@ public class MainDashboardServiceImpl implements MainDashboardService {
         recordMaintenance.setTitle("Maintenance");
         recordMaintenance.setIconClass("tools");
         recordMaintenance.setTotal(getTotalRecordMaintenance());
+        recordMaintenance.setClosed(getTotalClosedMaintenance());
         return recordMaintenance;
     }
 
     @Override
     public Long getTotalRecordMaintenance() {
         return maintenanceRepository.count();
+    }
+    public Long getTotalClosedMaintenance() {
+        return maintenanceRepository.countClosed();
     }
 
     @Override
@@ -84,12 +96,16 @@ public class MainDashboardServiceImpl implements MainDashboardService {
         recordHousekeeping.setTitle("Housekeeping");
         recordHousekeeping.setIconClass("hand-heart");
         recordHousekeeping.setTotal(getTotalRecordHousekeeping());
+        recordHousekeeping.setClosed(getTotalClosedHousekeeping());
         return recordHousekeeping;
     }
 
     @Override
     public Long getTotalRecordHousekeeping() {
         return housekeepingRepository.count();
+    }
+    public Long getTotalClosedHousekeeping() {
+        return housekeepingRepository.countClosed();
     }
 
     @Override
@@ -102,12 +118,7 @@ public class MainDashboardServiceImpl implements MainDashboardService {
 
     @Override
     public CountByStatus getCountClosed() {
-        Long countCateringClosed = cateringRepository.countClosed();
-        Long countLaundryClosed = laundryRepository.countClosed();
-        Long countHousekeepingClosed = housekeepingRepository.countClosed();
-        Long countMaintenanceClosed = maintenanceRepository.countClosed();
-
-        Long total = countCateringClosed + countLaundryClosed + countHousekeepingClosed + countMaintenanceClosed;
+        Long total = getTotalClosedCatering() + getTotalClosedLaundry() + getTotalClosedHousekeeping() + getTotalClosedMaintenance();
 
         CountByStatus countClosed = new CountByStatus();
         countClosed.setStatus("CLOSED");
